@@ -26,7 +26,7 @@ Scope: a single self-hosted instance running the Docker Compose deployment behin
 | **Restore resurrects deleted reports** | An append-only deletion journal outside the DB, re-applied at startup | The journal must be kept with the deployment, not with the backups |
 | **Malicious PR adds tracking** | Strict CSP (`default-src 'none'`, `script-src 'self' 'wasm-unsafe-eval'`) plus a test that scans for third-party tags and analytics | A reviewer must still read the PR |
 | **Hostile lookalike fork** | The README names the official instance. The Apache license grants no trademark rights | Reputational |
-| **Trusted-proxy misconfiguration** | `STM_TRUSTED_PROXIES` (exact addresses only): the forwarding header (`STM_CLIENT_IP_HEADER`) is honored only from listed proxies, and the selected value must parse as an IP | If unset behind a proxy, every visitor shares one rate limit and same-connection dedup is off. If it lists an address clients can reach, or the proxy passes client headers through, clients choose their own bucket |
+| **Trusted-proxy misconfiguration** | `STM_TRUSTED_PROXIES` (exact addresses only): the forwarding header (`STM_CLIENT_IP_HEADER`) is honored only from listed proxies, and the selected value must parse as an IP. `cf-connecting-ip` mode reads that header only when the listed proxy's `X-Real-IP` lies in `STM_UPSTREAM_CIDRS` (Cloudflare's ranges); otherwise `X-Real-IP` is used | If unset behind a proxy, every visitor shares one rate limit and same-connection dedup is off. If it lists an address clients can reach, or the proxy passes client headers through, clients choose their own bucket |
 
 ## Scrubber residual risks
 

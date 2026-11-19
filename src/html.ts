@@ -14,12 +14,6 @@ export const THEME_COLOR = '#204A73';
 /** Page background for the installed app's splash screen (--canvas). */
 export const BACKGROUND_COLOR = '#F8FAFC';
 
-/** Non-nagging install hint (footer and receipt). The button stays hidden unless the browser offers an install prompt. */
-export const INSTALL_HINT = `<div class="install-hint meta">
-<p><strong>Add Spam Patterns to your home screen for one-tap filing.</strong> Android (Chrome): open the ⋮ menu and choose <em>Add to Home screen</em> or <em>Install app</em>. iPhone (Safari): tap the Share button, then <em>Add to Home Screen</em>.</p>
-<p><button class="btn btn-secondary install-btn" type="button" hidden>Install Spam Patterns</button></p>
-</div>`;
-
 export interface LayoutOptions {
   title: string;
   path: string;
@@ -91,7 +85,6 @@ ${o.body}
 <footer class="site-footer">
   <div class="wrap">
     <nav aria-label="Footer">${FOOT.map((f) => `<a href="${f[0]}">${esc(f[1])}</a>`).join('')}</nav>
-    ${INSTALL_HINT}
     <p class="meta">Spam Patterns is a project of Reseed LLC. Reports are voluntary submissions. A listing is not an allegation against any person or business.</p>
   </div>
 </footer>

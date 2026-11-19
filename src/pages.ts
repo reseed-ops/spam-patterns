@@ -4,7 +4,7 @@ import { AREA_CODE_SOURCE, AREA_CODE_VERSION, allAreaCodes, lookupAreaCode } fro
 import { CATEGORIES } from './categories.ts';
 import type { Config } from './config.ts';
 import { FLAG_REASONS } from './filing.ts';
-import { CLAIMED_ORIGIN_WARNING, INSTALL_HINT, esc, fmtDay, layout } from './html.ts';
+import { CLAIMED_ORIGIN_WARNING, esc, fmtDay, layout } from './html.ts';
 import { STATE_NAMES, groupByState, renderLegend, renderMap, renderStateList, reportsWord, stateSummary } from './map.ts';
 import { MATCHING_RULES_VERSION, PATTERN_THRESHOLD, TIER_LABEL, type AreaCount, type Pattern } from './patterns.ts';
 import { MASK, REDACTION_RULES_VERSION, scrubMessage } from './scrub.ts';
@@ -390,7 +390,6 @@ ${paused}
 <h2>Junk mail too?</h2>
 <p>Paper junk mail has its own opt-outs. <a href="/junk-mail">How to cut down junk mail</a> lists the routes that work and what each one covers.</p>
 </section>
-${INSTALL_HINT}
 <p><a href="/delete">Delete a report</a> · <a href="/">Back to overview</a></p>
 </section>
 </div>`;
@@ -414,7 +413,6 @@ export function reportCompletePage(ctx: PageCtx): string {
 <h2>Junk mail too?</h2>
 <p>Paper junk mail has its own opt-outs. <a href="/junk-mail">How to cut down junk mail</a> lists the routes that work and what each one covers.</p>
 </section>
-${INSTALL_HINT}
 <p><a href="/delete">Delete a report</a> · <a href="/">Back to overview</a></p></div>`;
   return layout({ title: 'Report filed', path: '/report/complete', body, demo: ctx.cfg.intakeMode === 'demo' });
 }

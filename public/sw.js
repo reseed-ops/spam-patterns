@@ -11,7 +11,7 @@
 // every release gets a fresh cache and old caches are deleted on activate.
 'use strict';
 
-var VERSION = '0.1.7';
+var VERSION = '0.1.8';
 var CACHE = 'stm-v' + VERSION;
 var OFFLINE_URL = '/offline';
 

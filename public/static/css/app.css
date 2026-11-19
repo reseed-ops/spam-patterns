@@ -195,12 +195,6 @@ a.tile.bin3:hover, a.tile.bin4:hover { color: var(--bin-text-dark); }
 .flow-hint { margin: 4px 0 0; }
 @media (min-width: 1132px) { .flow-hint { display: none; } }
 
-/* install hint (footer and receipt), never a popup */
-.install-hint { margin: 16px 0; }
-.install-hint p { margin: 0 0 8px; }
-.install-btn { margin-top: 4px; }
-.site-footer .install-hint { border-top: 1px solid var(--divider); padding-top: 12px; }
-
 @media (forced-colors: active) {
   .btn { border: 2px solid ButtonText; }
   .tile { border: 1px solid GrayText; color: GrayText; }

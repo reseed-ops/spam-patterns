@@ -1,4 +1,4 @@
-// v0.1.6: PWA (manifest, service worker, install hint), the /junk-mail guide,
+// v0.1.6: PWA (manifest, service worker; install hint removed in v0.1.8), the /junk-mail guide,
 // the logo and the "How it works" diagram. The service worker's runtime
 // behavior (registration, offline /report, never serving filing endpoints
 // from cache) is exercised in headless Chromium (PWA-STATUS.md); here we
@@ -132,19 +132,23 @@ describe('PWA: manifest, service worker, icons', () => {
       assert.ok(text.includes('<script src="/static/js/pwa.js" defer></script>'), p);
       assert.ok(text.includes('<img class="logo" src="/static/img/logo.svg" alt="" width="32" height="32">Spam Patterns</a>'), p);
       assert.ok(!/<script(?![^>]*\bsrc=)[^>]*>/.test(text), `inline script on ${p}`);
-      // Footer: junk-mail link and the install hint.
+      // Footer: junk-mail link; no install hint or button (v0.1.8).
       assert.ok(text.includes('<a href="/junk-mail">Stop junk mail</a>'), p);
-      assert.ok(text.includes('Add Spam Patterns to your home screen for one-tap filing.'), p);
+      assert.ok(!text.includes('Add Spam Patterns to your home screen'), `install hint on ${p}`);
+      assert.ok(!/install-btn|install-hint|Install Spam Patterns/.test(text), `install button on ${p}`);
     }
   });
 
-  it('the install button is hidden unless the browser offers an install prompt', async () => {
+  it('no page pushes installation: no install button, hint or prompt call (v0.1.8)', async () => {
     const { text } = await get(s.base, '/');
-    assert.match(text, /<button class="btn btn-secondary install-btn" type="button" hidden>/);
+    assert.ok(!/<button[^>]*install/i.test(text), 'no install button');
+    assert.ok(!/home screen/i.test(text), 'no install hint');
     const js = read('public/static/js/pwa.js');
-    assert.match(js, /beforeinstallprompt/);
     assert.match(js, /register\('\/sw\.js', \{ scope: '\/' \}\)/);
+    assert.ok(!/\.prompt\(|install-btn|\.hidden/.test(js), 'never shows or triggers an install prompt');
     assert.ok(!/alert\(|confirm\(|setTimeout/.test(js), 'no popups or timed nags');
+    const css = read('public/static/css/app.css');
+    assert.ok(!/install-(hint|btn)/.test(css), 'no install styles left');
   });
 
   it('the offline fallback page renders', async () => {
@@ -197,8 +201,9 @@ describe('/junk-mail guide', () => {
       const { text } = await get(s.base, p);
       const path = text.slice(text.indexOf('class="reporter-path"'));
       assert.ok(path.includes('<a href="/junk-mail">How to cut down junk mail</a>'), p);
-      // Install line appears on the receipt itself, not just the footer.
-      assert.ok(text.split('Add Spam Patterns to your home screen').length - 1 >= 2, p);
+      // No install line on the receipt or anywhere else (v0.1.8).
+      assert.ok(!text.includes('Add Spam Patterns to your home screen'), p);
+      assert.ok(!/install-btn|Install Spam Patterns/.test(text), p);
     }
     const r = (await get(s.base, '/report')).text;
     const done = r.slice(r.indexOf('data-step="done"'));

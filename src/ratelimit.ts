@@ -7,6 +7,10 @@
 import type { IncomingMessage } from 'node:http';
 import { isIP } from 'node:net';
 import type { Keys } from './crypto.ts';
+import { type Cidr, expandV6, inCidrs, ipValue } from './cidr.ts';
+import type { ClientIpHeader } from './config.ts';
+
+export type { ClientIpHeader };
 
 export class WindowLimiter {
   private hits = new Map<string, number>();
@@ -63,8 +67,6 @@ function norm(ip: string): string {
   return ip.replace(/^::ffff:/, '').trim();
 }
 
-export type ClientIpHeader = 'x-forwarded-for' | 'x-real-ip';
-
 export interface ClientAddress {
   /** The address used for rate limits: the real client, or the socket peer. */
   ip: string;
@@ -81,22 +83,42 @@ export interface ClientAddress {
  * proxy. Only then is a forwarding header read:
  *   - `x-forwarded-for` (default): read right to left, skipping other
  *     trusted proxies, so entries a client forges on the left are ignored;
- *   - `x-real-ip`: a single address set by the proxy (Railway overwrites it).
+ *   - `x-real-ip`: a single address set by the proxy (Railway overwrites it);
+ *   - `cf-connecting-ip`: a chain for Cloudflare in front of Railway. The
+ *     x-real-ip value is resolved exactly as above. Only if it falls inside
+ *     one of `upstream` (Cloudflare's published ranges, STM_UPSTREAM_CIDRS)
+ *     is the cf-connecting-ip header read, and it must parse as an address.
+ *     Any failed link falls back to the x-real-ip value, never to the cf
+ *     header. A cf-connecting-ip forged straight to the origin is useless:
+ *     the trusted proxy writes the forger's own address into x-real-ip, and
+ *     that address is not in the upstream ranges.
  * The selected value must parse as an IP address; anything else falls back
  * to the socket peer, untrusted. Without STM_TRUSTED_PROXIES every request
  * behind a proxy looks like the proxy (documented in docs/self-hosting.md).
  */
-export function resolveClient(req: IncomingMessage, trusted: string[], header: ClientIpHeader = 'x-forwarded-for'): ClientAddress {
+export function resolveClient(
+  req: IncomingMessage,
+  trusted: string[],
+  header: ClientIpHeader = 'x-forwarded-for',
+  upstream: readonly Cidr[] = [],
+): ClientAddress {
   const remote = norm(req.socket.remoteAddress ?? 'unknown');
   const peer: ClientAddress = { ip: remote, trusted: false };
   if (!trusted.includes(remote)) return peer;
-  const raw = req.headers[header];
-  if (header === 'x-real-ip') {
+  if (header === 'x-real-ip' || header === 'cf-connecting-ip') {
     // Node joins repeated unknown headers with ", ", which then fails isIP.
+    const raw = req.headers['x-real-ip'];
     const v = norm(Array.isArray(raw) ? raw.join(',') : (raw ?? ''));
     if (isIP(v) === 0 || trusted.includes(v)) return peer;
-    return { ip: v, trusted: true };
+    const real: ClientAddress = { ip: v, trusted: true };
+    if (header === 'x-real-ip' || !inCidrs(v, upstream)) return real;
+    const cfRaw = req.headers['cf-connecting-ip'];
+    const c = norm(Array.isArray(cfRaw) ? cfRaw.join(',') : (cfRaw ?? ''));
+    // ipValue also refuses zone-scoped IPv6, which isIP accepts.
+    if (ipValue(c) === null || trusted.includes(c)) return real;
+    return { ip: c, trusted: true };
   }
+  const raw = req.headers[header];
   const chain = (Array.isArray(raw) ? raw.join(',') : (raw ?? ''))
     .split(',')
     .map(norm)
@@ -112,23 +134,13 @@ export function resolveClient(req: IncomingMessage, trusted: string[], header: C
 }
 
 /** Back-compatible form: the address only. */
-export function clientIp(req: IncomingMessage, trusted: string[], header: ClientIpHeader = 'x-forwarded-for'): string {
-  return resolveClient(req, trusted, header).ip;
-}
-
-/** Expands an IPv6 address to 8 lowercase 4-digit groups (input must pass isIP === 6). */
-function expandV6(ip: string): string[] {
-  let s = ip.toLowerCase().replace(/%.*$/, '');
-  const m = /(\d+\.\d+\.\d+\.\d+)$/.exec(s);
-  if (m) {
-    const o = m[1]!.split('.').map(Number);
-    s = s.slice(0, -m[1]!.length) + ((o[0]! << 8) | o[1]!).toString(16) + ':' + ((o[2]! << 8) | o[3]!).toString(16);
-  }
-  const [head, tail] = s.includes('::') ? s.split('::') : [s, undefined];
-  const h = head ? head.split(':') : [];
-  const t = tail === undefined ? [] : tail ? tail.split(':') : [];
-  const fill = tail === undefined ? [] : Array<string>(8 - h.length - t.length).fill('0');
-  return [...h, ...fill, ...t].map((g) => g.padStart(4, '0'));
+export function clientIp(
+  req: IncomingMessage,
+  trusted: string[],
+  header: ClientIpHeader = 'x-forwarded-for',
+  upstream: readonly Cidr[] = [],
+): string {
+  return resolveClient(req, trusted, header, upstream).ip;
 }
 
 /**

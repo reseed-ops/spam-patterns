@@ -36,6 +36,16 @@ List exact addresses only (no CIDR ranges); a request from any other peer is tre
 
 On Railway (observed November 2026, not a Railway guarantee): the app sees the edge proxy as a pool of peers in `100.64.0.0/10` (`100.64.0.1` to `100.64.0.21` at the time), Railway overwrites `X-Real-IP` with the client address, and it rebuilds `X-Forwarded-For` as `client, <edge address>`, so the right-to-left walk would select the edge. Use `STM_CLIENT_IP_HEADER=x-real-ip` there. If Railway adds peers, requests through them fall back to the shared bucket until the list is updated.
 
+**A CDN in front of the trusted proxy (Cloudflare).** Some setups put Cloudflare in front of the proxy, giving the path visitor → Cloudflare → proxy → app. If the proxy reports Cloudflare's egress address as its client, every visitor behind one Cloudflare edge shares a bucket. For that case set `STM_CLIENT_IP_HEADER=cf-connecting-ip` and `STM_UPSTREAM_CIDRS` to Cloudflare's published ranges (https://www.cloudflare.com/ips/), comma-separated, IPv4 and IPv6. `STM_TRUSTED_PROXIES` keeps its exact-address meaning. `CF-Connecting-IP` is read only when all three of these hold:
+
+1. The socket peer is a listed trusted proxy.
+2. The `X-Real-IP` value that proxy set falls inside one of the `STM_UPSTREAM_CIDRS` ranges.
+3. `CF-Connecting-IP` is present once and parses as an address.
+
+If any check fails, the `X-Real-IP` value is used and the CF header is ignored. So a `CF-Connecting-IP` forged straight to the origin does nothing: the proxy writes the forger's own address into `X-Real-IP`, and that address is not a Cloudflare range. The service refuses to start if `cf-connecting-ip` is set without `STM_UPSTREAM_CIDRS` or `STM_TRUSTED_PROXIES`, or if any range is malformed (including a `/0` or one with host bits set). Cloudflare changes its list now and then, so re-check it. When the header is not `cf-connecting-ip`, `STM_UPSTREAM_CIDRS` is still validated but has no effect.
+
+Check before you rely on it. Behind Cloudflare in November 2026, Railway was observed to put the *visitor's* address (not Cloudflare's) in `X-Real-IP`, and to pass `CF-Connecting-IP` through unchanged. With that behaviour, `x-real-ip` alone already keys on the visitor, and the chain always takes its fallback. Confirm what your proxy actually sends, with a diagnostic that records header presence only and never values, before choosing a mode.
+
 Whatever proxy you use, do not enable request-body logging, and do not add error trackers or analytics. The privacy page describes what the app does, not what your proxy does.
 
 ## Operating

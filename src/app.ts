@@ -283,7 +283,7 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
     const url = new URL(req.url ?? '/', 'http://localhost');
     const path = url.pathname.replace(/\/+$/, '') || '/';
     const method = req.method ?? 'GET';
-    const client = resolveClient(req, cfg.trustedProxies, cfg.clientIpHeader);
+    const client = resolveClient(req, cfg.trustedProxies, cfg.clientIpHeader, cfg.upstreamCidrs);
     const ip = client.ip;
 
     // Image or multipart bodies are never accepted anywhere: the screenshot

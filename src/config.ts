@@ -1,5 +1,6 @@
 import { existsSync } from 'node:fs';
 import { isIP } from 'node:net';
+import { type Cidr, parseCidrList } from './cidr.ts';
 
 // Runtime configuration. Every variable is documented in .env.example.
 // The HMAC key is required and has no working default: the service refuses
@@ -8,6 +9,8 @@ import { isIP } from 'node:net';
 export const PLACEHOLDER_KEY = 'REPLACE_WITH_OUTPUT_OF_openssl_rand_hex_32';
 
 export type IntakeMode = 'demo' | 'live';
+
+export type ClientIpHeader = 'x-forwarded-for' | 'x-real-ip' | 'cf-connecting-ip';
 
 export interface Config {
   port: number;
@@ -20,7 +23,9 @@ export interface Config {
   deletePerIpPerHour: number;
   flagPerIpPerHour: number;
   trustedProxies: string[];
-  clientIpHeader: 'x-forwarded-for' | 'x-real-ip';
+  clientIpHeader: ClientIpHeader;
+  /** STM_UPSTREAM_CIDRS: networks of the proxy in front of the trusted proxies (Cloudflare). Used only with cf-connecting-ip. */
+  upstreamCidrs: Cidr[];
   duplicateWindowHours: number;
   senderTokenTtlDays: number;
   abuseContact: string;
@@ -61,10 +66,35 @@ export function parseHmacKey(raw: string | undefined): Buffer {
   return Buffer.from(v, 'hex');
 }
 
-function clientIpHeader(env: NodeJS.ProcessEnv): 'x-forwarded-for' | 'x-real-ip' {
+function clientIpHeader(env: NodeJS.ProcessEnv): ClientIpHeader {
   const v = (env.STM_CLIENT_IP_HEADER ?? '').trim().toLowerCase() || 'x-forwarded-for';
-  if (v !== 'x-forwarded-for' && v !== 'x-real-ip') throw new Error('STM_CLIENT_IP_HEADER must be "x-forwarded-for" or "x-real-ip"');
+  if (v !== 'x-forwarded-for' && v !== 'x-real-ip' && v !== 'cf-connecting-ip') {
+    throw new Error('STM_CLIENT_IP_HEADER must be "x-forwarded-for", "x-real-ip" or "cf-connecting-ip"');
+  }
   return v;
+}
+
+function upstreamCidrList(env: NodeJS.ProcessEnv): Cidr[] {
+  try {
+    return parseCidrList(env.STM_UPSTREAM_CIDRS);
+  } catch (e) {
+    throw new Error(`STM_UPSTREAM_CIDRS: ${e instanceof Error ? e.message : String(e)}`);
+  }
+}
+
+/**
+ * cf-connecting-ip is honored only through the full chain (see
+ * resolveClient), so a config that could never complete it is refused at
+ * startup rather than silently ignored.
+ */
+function checkClientIpChain(header: ClientIpHeader, trusted: string[], upstream: Cidr[]): void {
+  if (header !== 'cf-connecting-ip') return;
+  if (upstream.length === 0) {
+    throw new Error('STM_CLIENT_IP_HEADER=cf-connecting-ip requires STM_UPSTREAM_CIDRS (the upstream proxy\'s published ranges)');
+  }
+  if (trusted.length === 0) {
+    throw new Error('STM_CLIENT_IP_HEADER=cf-connecting-ip requires STM_TRUSTED_PROXIES (the exact peers that set X-Real-IP)');
+  }
 }
 
 function trustedProxyList(env: NodeJS.ProcessEnv): string[] {
@@ -82,6 +112,10 @@ function trustedProxyList(env: NodeJS.ProcessEnv): string[] {
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
   const mode = (env.STM_INTAKE_MODE ?? 'demo').trim();
   if (mode !== 'demo' && mode !== 'live') throw new Error('STM_INTAKE_MODE must be "demo" or "live"');
+  const trustedProxies = trustedProxyList(env);
+  const header = clientIpHeader(env);
+  const upstreamCidrs = upstreamCidrList(env);
+  checkClientIpChain(header, trustedProxies, upstreamCidrs);
   return {
     port: int(env, 'PORT', 8080, 1),
     host: env.HOST?.trim() || '0.0.0.0',
@@ -92,8 +126,9 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): Config {
     globalDailySubmissions: int(env, 'STM_GLOBAL_DAILY_SUBMISSIONS', 500, 1),
     deletePerIpPerHour: int(env, 'STM_DELETE_PER_IP_PER_HOUR', 20, 1),
     flagPerIpPerHour: int(env, 'STM_FLAG_PER_IP_PER_HOUR', 10, 1),
-    trustedProxies: trustedProxyList(env),
-    clientIpHeader: clientIpHeader(env),
+    trustedProxies,
+    clientIpHeader: header,
+    upstreamCidrs,
     duplicateWindowHours: int(env, 'STM_DUPLICATE_WINDOW_HOURS', 24, 1),
     senderTokenTtlDays: int(env, 'STM_SENDER_TOKEN_TTL_DAYS', 30, 1),
     abuseContact: mailto(env, 'STM_ABUSE_CONTACT', 'abuse@example.invalid'),
