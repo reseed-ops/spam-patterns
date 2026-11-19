@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1240 300" role="img" aria-labelledby="spam-text-map-title" font-family="system-ui, sans-serif">
+  <title id="spam-text-map-title">How Spam Patterns works</title>
+
+  <g fill="none" stroke="#3B6B9B" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+    <path d="M237 150h23 M485 150h23 M733 150h23 M981 150h23"/>
+  </g>
+  <g fill="#3B6B9B" aria-hidden="true">
+    <path d="m253 144 8 6-8 6z m248 0 8 6-8 6z m248 0 8 6-8 6z m248 0 8 6-8 6z"/>
+  </g>
+
+  <g transform="translate(16 75)">
+    <rect width="216" height="150" rx="16" fill="#FFFFFF" stroke="#6D98C5" stroke-width="2"/>
+    <circle cx="29" cy="29" r="17" fill="#204A73"/>
+    <text x="29" y="29" dy=".35em" text-anchor="middle" fill="#FFFFFF" font-size="17" font-weight="700">1</text>
+    <g transform="translate(92 19)" fill="none" stroke="#3B6B9B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <rect x="3" y="1" width="17" height="30" rx="3"/>
+      <path d="M9 26h5"/>
+      <path d="M14 7h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-5 4v-4h-1a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2Z" fill="#FFFFFF"/>
+      <path d="M17 13h8"/>
+    </g>
+    <text x="108" y="79" text-anchor="middle" fill="#172333" font-size="19" font-weight="650">You get a spam text</text>
+    <text x="108" y="105" text-anchor="middle" fill="#475569" font-size="13.5"><tspan x="108">Screenshot it or</tspan><tspan x="108" dy="18">paste the text</tspan></text>
+  </g>
+
+  <g transform="translate(264 75)">
+    <rect width="216" height="150" rx="16" fill="#F1F5F9" stroke="#6D98C5" stroke-width="2"/>
+    <circle cx="29" cy="29" r="17" fill="#204A73"/>
+    <text x="29" y="29" dy=".35em" text-anchor="middle" fill="#FFFFFF" font-size="17" font-weight="700">2</text>
+    <g transform="translate(92 19)" fill="none" stroke="#3B6B9B" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+      <path d="M9 14V9a7 7 0 0 1 14 0v5"/>
+      <rect x="4" y="14" width="24" height="16" rx="3"/>
+      <path d="M16 20v4"/>
+    </g>
+    <text x="108" y="79" text-anchor="middle" fill="#172333" font-size="19" font-weight="650">Read on your device</text>
+    <text x="108" y="105" text-anchor="middle" fill="#475569" font-size="13.5"><tspan x="108">The image never leaves</tspan><tspan x="108" dy="18">your phone</tspan></text>
+  </g>
+
+  <g transform="translate(512 75)">
+    <rect width="216" height="150" rx="16" fill="#FFFFFF" stroke="#6D98C5" stroke-width="2"/>
+    <circle cx="29" cy="29" r="17" fill="#204A73"/>
+    <text x="29" y="29" dy=".35em" text-anchor="middle" fill="#FFFFFF" font-size="17" font-weight="700">3</text>
+    <g transform="translate(92 19)" fill="none" stroke="#3B6B9B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="m3 18 14-14a2 2 0 0 1 3 0l8 8a2 2 0 0 1 0 3L15 28H11l-8-7a2 2 0 0 1 0-3Z"/>
+      <path d="m9 12 11 11m-5 5h14"/>
+    </g>
+    <text x="108" y="79" text-anchor="middle" fill="#172333" font-size="19" font-weight="650">Details scrubbed</text>
+    <text x="108" y="105" text-anchor="middle" fill="#475569" font-size="13.5"><tspan x="108">Names, numbers and links</tspan><tspan x="108" dy="18">removed automatically</tspan></text>
+  </g>
+
+  <g transform="translate(760 75)">
+    <rect width="216" height="150" rx="16" fill="#F1F5F9" stroke="#6D98C5" stroke-width="2"/>
+    <circle cx="29" cy="29" r="17" fill="#204A73"/>
+    <text x="29" y="29" dy=".35em" text-anchor="middle" fill="#FFFFFF" font-size="17" font-weight="700">4</text>
+    <g transform="translate(92 19)" fill="none" stroke="#3B6B9B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="16" cy="16" r="14"/>
+      <path d="m9 16 5 5 9-10"/>
+    </g>
+    <text x="108" y="79" text-anchor="middle" fill="#172333" font-size="19" font-weight="650">You review, then file</text>
+    <text x="108" y="105" text-anchor="middle" fill="#475569" font-size="13.5"><tspan x="108">Nothing is stored before</tspan><tspan x="108" dy="18">you approve it</tspan></text>
+  </g>
+
+  <g transform="translate(1008 75)">
+    <rect width="216" height="150" rx="16" fill="#FFFFFF" stroke="#6D98C5" stroke-width="2"/>
+    <circle cx="29" cy="29" r="17" fill="#204A73"/>
+    <text x="29" y="29" dy=".35em" text-anchor="middle" fill="#FFFFFF" font-size="17" font-weight="700">5</text>
+    <g transform="translate(92 19)" fill="#FFFFFF" stroke="#3B6B9B" stroke-width="2" aria-hidden="true">
+      <rect x="2" y="3" width="15" height="15" rx="2"/>
+      <rect x="8.5" y="8.5" width="15" height="15" rx="2"/>
+      <rect x="15" y="14" width="15" height="15" rx="2"/>
+    </g>
+    <text x="108" y="79" text-anchor="middle" fill="#172333" font-size="19" font-weight="650">Patterns emerge</text>
+    <text x="108" y="105" text-anchor="middle" fill="#475569" font-size="13.5"><tspan x="108">Matching scripts are</tspan><tspan x="108" dy="18">reviewed, then published</tspan></text>
+  </g>
+</svg>

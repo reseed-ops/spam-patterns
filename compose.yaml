@@ -1,0 +1,30 @@
+# One supported deployment path: this Compose file behind a TLS-terminating
+# reverse proxy (see docs/self-hosting.md). The app listens on localhost only.
+services:
+  app:
+    build: .
+    image: spam-text-map:0.1.0
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      STM_DATABASE_PATH: /data/spam-text-map.sqlite
+    ports:
+      - "127.0.0.1:8080:8080"
+    volumes:
+      - stm-data:/data
+      # Backups (npm run backup). A separate volume; copy it off the host too.
+      - stm-backups:/backup
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: local
+      options:
+        max-size: "5m"
+        max-file: "2"
+volumes:
+  stm-data:
+  stm-backups:

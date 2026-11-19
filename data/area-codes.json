@@ -1,0 +1,1931 @@
+{
+ "_source": "Generated from the NANPA NPA database CSV (https://reports.nanpa.com/public/npa_report.csv, linked from https://www.nanpa.com/reports/npa-reports) by scripts/verify-area-codes.mjs. Scope: in-service US geographic codes (states, DC, territories) and in-service toll-free codes. Area-code assignment is a numbering-plan fact, not a sender location. Corrections welcome (see CONTRIBUTING.md).",
+ "_version": "nanpa-2026-11-17",
+ "codes": {
+  "201": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "202": {
+   "region": "District of Columbia",
+   "state": "DC",
+   "kind": "geographic"
+  },
+  "203": {
+   "region": "Connecticut",
+   "state": "CT",
+   "kind": "geographic"
+  },
+  "205": {
+   "region": "Alabama",
+   "state": "AL",
+   "kind": "geographic"
+  },
+  "206": {
+   "region": "Washington",
+   "state": "WA",
+   "kind": "geographic"
+  },
+  "207": {
+   "region": "Maine",
+   "state": "ME",
+   "kind": "geographic"
+  },
+  "208": {
+   "region": "Idaho",
+   "state": "ID",
+   "kind": "geographic"
+  },
+  "209": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "210": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "212": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "213": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "214": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "215": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "216": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "217": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "218": {
+   "region": "Minnesota",
+   "state": "MN",
+   "kind": "geographic"
+  },
+  "219": {
+   "region": "Indiana",
+   "state": "IN",
+   "kind": "geographic"
+  },
+  "220": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "223": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "224": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "225": {
+   "region": "Louisiana",
+   "state": "LA",
+   "kind": "geographic"
+  },
+  "227": {
+   "region": "Maryland",
+   "state": "MD",
+   "kind": "geographic"
+  },
+  "228": {
+   "region": "Mississippi",
+   "state": "MS",
+   "kind": "geographic"
+  },
+  "229": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "231": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "234": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "235": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "239": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "240": {
+   "region": "Maryland",
+   "state": "MD",
+   "kind": "geographic"
+  },
+  "248": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "251": {
+   "region": "Alabama",
+   "state": "AL",
+   "kind": "geographic"
+  },
+  "252": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "253": {
+   "region": "Washington",
+   "state": "WA",
+   "kind": "geographic"
+  },
+  "254": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "256": {
+   "region": "Alabama",
+   "state": "AL",
+   "kind": "geographic"
+  },
+  "260": {
+   "region": "Indiana",
+   "state": "IN",
+   "kind": "geographic"
+  },
+  "262": {
+   "region": "Wisconsin",
+   "state": "WI",
+   "kind": "geographic"
+  },
+  "267": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "269": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "270": {
+   "region": "Kentucky",
+   "state": "KY",
+   "kind": "geographic"
+  },
+  "272": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "274": {
+   "region": "Wisconsin",
+   "state": "WI",
+   "kind": "geographic"
+  },
+  "276": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "279": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "281": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "283": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "301": {
+   "region": "Maryland",
+   "state": "MD",
+   "kind": "geographic"
+  },
+  "302": {
+   "region": "Delaware",
+   "state": "DE",
+   "kind": "geographic"
+  },
+  "303": {
+   "region": "Colorado",
+   "state": "CO",
+   "kind": "geographic"
+  },
+  "304": {
+   "region": "West Virginia",
+   "state": "WV",
+   "kind": "geographic"
+  },
+  "305": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "307": {
+   "region": "Wyoming",
+   "state": "WY",
+   "kind": "geographic"
+  },
+  "308": {
+   "region": "Nebraska",
+   "state": "NE",
+   "kind": "geographic"
+  },
+  "309": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "310": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "312": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "313": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "314": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "315": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "316": {
+   "region": "Kansas",
+   "state": "KS",
+   "kind": "geographic"
+  },
+  "317": {
+   "region": "Indiana",
+   "state": "IN",
+   "kind": "geographic"
+  },
+  "318": {
+   "region": "Louisiana",
+   "state": "LA",
+   "kind": "geographic"
+  },
+  "319": {
+   "region": "Iowa",
+   "state": "IA",
+   "kind": "geographic"
+  },
+  "320": {
+   "region": "Minnesota",
+   "state": "MN",
+   "kind": "geographic"
+  },
+  "321": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "323": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "324": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "325": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "326": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "327": {
+   "region": "Arkansas",
+   "state": "AR",
+   "kind": "geographic"
+  },
+  "329": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "330": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "331": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "332": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "334": {
+   "region": "Alabama",
+   "state": "AL",
+   "kind": "geographic"
+  },
+  "336": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "337": {
+   "region": "Louisiana",
+   "state": "LA",
+   "kind": "geographic"
+  },
+  "339": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "340": {
+   "region": "US Virgin Islands",
+   "state": "VI",
+   "kind": "territory"
+  },
+  "341": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "346": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "347": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "350": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "351": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "352": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "353": {
+   "region": "Wisconsin",
+   "state": "WI",
+   "kind": "geographic"
+  },
+  "357": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "360": {
+   "region": "Washington",
+   "state": "WA",
+   "kind": "geographic"
+  },
+  "361": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "363": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "364": {
+   "region": "Kentucky",
+   "state": "KY",
+   "kind": "geographic"
+  },
+  "369": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "380": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "385": {
+   "region": "Utah",
+   "state": "UT",
+   "kind": "geographic"
+  },
+  "386": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "401": {
+   "region": "Rhode Island",
+   "state": "RI",
+   "kind": "geographic"
+  },
+  "402": {
+   "region": "Nebraska",
+   "state": "NE",
+   "kind": "geographic"
+  },
+  "404": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "405": {
+   "region": "Oklahoma",
+   "state": "OK",
+   "kind": "geographic"
+  },
+  "406": {
+   "region": "Montana",
+   "state": "MT",
+   "kind": "geographic"
+  },
+  "407": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "408": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "409": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "410": {
+   "region": "Maryland",
+   "state": "MD",
+   "kind": "geographic"
+  },
+  "412": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "413": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "414": {
+   "region": "Wisconsin",
+   "state": "WI",
+   "kind": "geographic"
+  },
+  "415": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "417": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "419": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "423": {
+   "region": "Tennessee",
+   "state": "TN",
+   "kind": "geographic"
+  },
+  "424": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "425": {
+   "region": "Washington",
+   "state": "WA",
+   "kind": "geographic"
+  },
+  "430": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "432": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "434": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "435": {
+   "region": "Utah",
+   "state": "UT",
+   "kind": "geographic"
+  },
+  "436": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "440": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "442": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "443": {
+   "region": "Maryland",
+   "state": "MD",
+   "kind": "geographic"
+  },
+  "445": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "447": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "448": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "457": {
+   "region": "Louisiana",
+   "state": "LA",
+   "kind": "geographic"
+  },
+  "458": {
+   "region": "Oregon",
+   "state": "OR",
+   "kind": "geographic"
+  },
+  "463": {
+   "region": "Indiana",
+   "state": "IN",
+   "kind": "geographic"
+  },
+  "464": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "465": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "469": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "470": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "471": {
+   "region": "Mississippi",
+   "state": "MS",
+   "kind": "geographic"
+  },
+  "472": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "475": {
+   "region": "Connecticut",
+   "state": "CT",
+   "kind": "geographic"
+  },
+  "478": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "479": {
+   "region": "Arkansas",
+   "state": "AR",
+   "kind": "geographic"
+  },
+  "480": {
+   "region": "Arizona",
+   "state": "AZ",
+   "kind": "geographic"
+  },
+  "483": {
+   "region": "Alabama",
+   "state": "AL",
+   "kind": "geographic"
+  },
+  "484": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "501": {
+   "region": "Arkansas",
+   "state": "AR",
+   "kind": "geographic"
+  },
+  "502": {
+   "region": "Kentucky",
+   "state": "KY",
+   "kind": "geographic"
+  },
+  "503": {
+   "region": "Oregon",
+   "state": "OR",
+   "kind": "geographic"
+  },
+  "504": {
+   "region": "Louisiana",
+   "state": "LA",
+   "kind": "geographic"
+  },
+  "505": {
+   "region": "New Mexico",
+   "state": "NM",
+   "kind": "geographic"
+  },
+  "507": {
+   "region": "Minnesota",
+   "state": "MN",
+   "kind": "geographic"
+  },
+  "508": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "509": {
+   "region": "Washington",
+   "state": "WA",
+   "kind": "geographic"
+  },
+  "510": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "512": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "513": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "515": {
+   "region": "Iowa",
+   "state": "IA",
+   "kind": "geographic"
+  },
+  "516": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "517": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "518": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "520": {
+   "region": "Arizona",
+   "state": "AZ",
+   "kind": "geographic"
+  },
+  "530": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "531": {
+   "region": "Nebraska",
+   "state": "NE",
+   "kind": "geographic"
+  },
+  "534": {
+   "region": "Wisconsin",
+   "state": "WI",
+   "kind": "geographic"
+  },
+  "539": {
+   "region": "Oklahoma",
+   "state": "OK",
+   "kind": "geographic"
+  },
+  "540": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "541": {
+   "region": "Oregon",
+   "state": "OR",
+   "kind": "geographic"
+  },
+  "551": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "557": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "559": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "561": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "562": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "563": {
+   "region": "Iowa",
+   "state": "IA",
+   "kind": "geographic"
+  },
+  "564": {
+   "region": "Washington",
+   "state": "WA",
+   "kind": "geographic"
+  },
+  "567": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "570": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "571": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "572": {
+   "region": "Oklahoma",
+   "state": "OK",
+   "kind": "geographic"
+  },
+  "573": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "574": {
+   "region": "Indiana",
+   "state": "IN",
+   "kind": "geographic"
+  },
+  "575": {
+   "region": "New Mexico",
+   "state": "NM",
+   "kind": "geographic"
+  },
+  "580": {
+   "region": "Oklahoma",
+   "state": "OK",
+   "kind": "geographic"
+  },
+  "582": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "585": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "586": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "601": {
+   "region": "Mississippi",
+   "state": "MS",
+   "kind": "geographic"
+  },
+  "602": {
+   "region": "Arizona",
+   "state": "AZ",
+   "kind": "geographic"
+  },
+  "603": {
+   "region": "New Hampshire",
+   "state": "NH",
+   "kind": "geographic"
+  },
+  "605": {
+   "region": "South Dakota",
+   "state": "SD",
+   "kind": "geographic"
+  },
+  "606": {
+   "region": "Kentucky",
+   "state": "KY",
+   "kind": "geographic"
+  },
+  "607": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "608": {
+   "region": "Wisconsin",
+   "state": "WI",
+   "kind": "geographic"
+  },
+  "609": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "610": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "612": {
+   "region": "Minnesota",
+   "state": "MN",
+   "kind": "geographic"
+  },
+  "614": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "615": {
+   "region": "Tennessee",
+   "state": "TN",
+   "kind": "geographic"
+  },
+  "616": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "617": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "618": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "619": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "620": {
+   "region": "Kansas",
+   "state": "KS",
+   "kind": "geographic"
+  },
+  "621": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "623": {
+   "region": "Arizona",
+   "state": "AZ",
+   "kind": "geographic"
+  },
+  "624": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "626": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "628": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "629": {
+   "region": "Tennessee",
+   "state": "TN",
+   "kind": "geographic"
+  },
+  "630": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "631": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "636": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "640": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "641": {
+   "region": "Iowa",
+   "state": "IA",
+   "kind": "geographic"
+  },
+  "645": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "646": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "650": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "651": {
+   "region": "Minnesota",
+   "state": "MN",
+   "kind": "geographic"
+  },
+  "656": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "657": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "659": {
+   "region": "Alabama",
+   "state": "AL",
+   "kind": "geographic"
+  },
+  "660": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "661": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "662": {
+   "region": "Mississippi",
+   "state": "MS",
+   "kind": "geographic"
+  },
+  "667": {
+   "region": "Maryland",
+   "state": "MD",
+   "kind": "geographic"
+  },
+  "669": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "670": {
+   "region": "CNMI",
+   "state": "MP",
+   "kind": "territory"
+  },
+  "671": {
+   "region": "Guam",
+   "state": "GU",
+   "kind": "territory"
+  },
+  "678": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "679": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "680": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "681": {
+   "region": "West Virginia",
+   "state": "WV",
+   "kind": "geographic"
+  },
+  "682": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "684": {
+   "region": "American Samoa",
+   "state": "AS",
+   "kind": "territory"
+  },
+  "686": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "689": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "701": {
+   "region": "North Dakota",
+   "state": "ND",
+   "kind": "geographic"
+  },
+  "702": {
+   "region": "Nevada",
+   "state": "NV",
+   "kind": "geographic"
+  },
+  "703": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "704": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "706": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "707": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "708": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "712": {
+   "region": "Iowa",
+   "state": "IA",
+   "kind": "geographic"
+  },
+  "713": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "714": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "715": {
+   "region": "Wisconsin",
+   "state": "WI",
+   "kind": "geographic"
+  },
+  "716": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "717": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "718": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "719": {
+   "region": "Colorado",
+   "state": "CO",
+   "kind": "geographic"
+  },
+  "720": {
+   "region": "Colorado",
+   "state": "CO",
+   "kind": "geographic"
+  },
+  "724": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "725": {
+   "region": "Nevada",
+   "state": "NV",
+   "kind": "geographic"
+  },
+  "726": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "727": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "728": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "729": {
+   "region": "Tennessee",
+   "state": "TN",
+   "kind": "geographic"
+  },
+  "730": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "731": {
+   "region": "Tennessee",
+   "state": "TN",
+   "kind": "geographic"
+  },
+  "732": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "734": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "737": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "738": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "740": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "743": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "747": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "748": {
+   "region": "Colorado",
+   "state": "CO",
+   "kind": "geographic"
+  },
+  "754": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "757": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "760": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "762": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "763": {
+   "region": "Minnesota",
+   "state": "MN",
+   "kind": "geographic"
+  },
+  "765": {
+   "region": "Indiana",
+   "state": "IN",
+   "kind": "geographic"
+  },
+  "769": {
+   "region": "Mississippi",
+   "state": "MS",
+   "kind": "geographic"
+  },
+  "770": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "771": {
+   "region": "District of Columbia",
+   "state": "DC",
+   "kind": "geographic"
+  },
+  "772": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "773": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "774": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "775": {
+   "region": "Nevada",
+   "state": "NV",
+   "kind": "geographic"
+  },
+  "779": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "781": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "785": {
+   "region": "Kansas",
+   "state": "KS",
+   "kind": "geographic"
+  },
+  "786": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "787": {
+   "region": "Puerto Rico",
+   "state": "PR",
+   "kind": "territory"
+  },
+  "800": {
+   "region": "Toll-free (non-geographic)",
+   "state": null,
+   "kind": "toll_free"
+  },
+  "801": {
+   "region": "Utah",
+   "state": "UT",
+   "kind": "geographic"
+  },
+  "802": {
+   "region": "Vermont",
+   "state": "VT",
+   "kind": "geographic"
+  },
+  "803": {
+   "region": "South Carolina",
+   "state": "SC",
+   "kind": "geographic"
+  },
+  "804": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "805": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "806": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "808": {
+   "region": "Hawaii",
+   "state": "HI",
+   "kind": "geographic"
+  },
+  "810": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "812": {
+   "region": "Indiana",
+   "state": "IN",
+   "kind": "geographic"
+  },
+  "813": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "814": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "815": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "816": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "817": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "818": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "820": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "821": {
+   "region": "South Carolina",
+   "state": "SC",
+   "kind": "geographic"
+  },
+  "826": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "828": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "830": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "831": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "832": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "833": {
+   "region": "Toll-free (non-geographic)",
+   "state": null,
+   "kind": "toll_free"
+  },
+  "835": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "837": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "838": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "839": {
+   "region": "South Carolina",
+   "state": "SC",
+   "kind": "geographic"
+  },
+  "840": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "843": {
+   "region": "South Carolina",
+   "state": "SC",
+   "kind": "geographic"
+  },
+  "844": {
+   "region": "Toll-free (non-geographic)",
+   "state": null,
+   "kind": "toll_free"
+  },
+  "845": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "847": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "848": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "850": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "854": {
+   "region": "South Carolina",
+   "state": "SC",
+   "kind": "geographic"
+  },
+  "855": {
+   "region": "Toll-free (non-geographic)",
+   "state": null,
+   "kind": "toll_free"
+  },
+  "856": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "857": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "858": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "859": {
+   "region": "Kentucky",
+   "state": "KY",
+   "kind": "geographic"
+  },
+  "860": {
+   "region": "Connecticut",
+   "state": "CT",
+   "kind": "geographic"
+  },
+  "861": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "862": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "863": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "864": {
+   "region": "South Carolina",
+   "state": "SC",
+   "kind": "geographic"
+  },
+  "865": {
+   "region": "Tennessee",
+   "state": "TN",
+   "kind": "geographic"
+  },
+  "866": {
+   "region": "Toll-free (non-geographic)",
+   "state": null,
+   "kind": "toll_free"
+  },
+  "870": {
+   "region": "Arkansas",
+   "state": "AR",
+   "kind": "geographic"
+  },
+  "872": {
+   "region": "Illinois",
+   "state": "IL",
+   "kind": "geographic"
+  },
+  "877": {
+   "region": "Toll-free (non-geographic)",
+   "state": null,
+   "kind": "toll_free"
+  },
+  "878": {
+   "region": "Pennsylvania",
+   "state": "PA",
+   "kind": "geographic"
+  },
+  "888": {
+   "region": "Toll-free (non-geographic)",
+   "state": null,
+   "kind": "toll_free"
+  },
+  "901": {
+   "region": "Tennessee",
+   "state": "TN",
+   "kind": "geographic"
+  },
+  "903": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "904": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "906": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "907": {
+   "region": "Alaska",
+   "state": "AK",
+   "kind": "geographic"
+  },
+  "908": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "909": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "910": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "912": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "913": {
+   "region": "Kansas",
+   "state": "KS",
+   "kind": "geographic"
+  },
+  "914": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "915": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "916": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "917": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "918": {
+   "region": "Oklahoma",
+   "state": "OK",
+   "kind": "geographic"
+  },
+  "919": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "920": {
+   "region": "Wisconsin",
+   "state": "WI",
+   "kind": "geographic"
+  },
+  "924": {
+   "region": "Minnesota",
+   "state": "MN",
+   "kind": "geographic"
+  },
+  "925": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "928": {
+   "region": "Arizona",
+   "state": "AZ",
+   "kind": "geographic"
+  },
+  "929": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "930": {
+   "region": "Indiana",
+   "state": "IN",
+   "kind": "geographic"
+  },
+  "931": {
+   "region": "Tennessee",
+   "state": "TN",
+   "kind": "geographic"
+  },
+  "934": {
+   "region": "New York",
+   "state": "NY",
+   "kind": "geographic"
+  },
+  "936": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "937": {
+   "region": "Ohio",
+   "state": "OH",
+   "kind": "geographic"
+  },
+  "938": {
+   "region": "Alabama",
+   "state": "AL",
+   "kind": "geographic"
+  },
+  "939": {
+   "region": "Puerto Rico",
+   "state": "PR",
+   "kind": "territory"
+  },
+  "940": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "941": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "943": {
+   "region": "Georgia",
+   "state": "GA",
+   "kind": "geographic"
+  },
+  "945": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "947": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  },
+  "948": {
+   "region": "Virginia",
+   "state": "VA",
+   "kind": "geographic"
+  },
+  "949": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "951": {
+   "region": "California",
+   "state": "CA",
+   "kind": "geographic"
+  },
+  "952": {
+   "region": "Minnesota",
+   "state": "MN",
+   "kind": "geographic"
+  },
+  "954": {
+   "region": "Florida",
+   "state": "FL",
+   "kind": "geographic"
+  },
+  "956": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "959": {
+   "region": "Connecticut",
+   "state": "CT",
+   "kind": "geographic"
+  },
+  "970": {
+   "region": "Colorado",
+   "state": "CO",
+   "kind": "geographic"
+  },
+  "971": {
+   "region": "Oregon",
+   "state": "OR",
+   "kind": "geographic"
+  },
+  "972": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "973": {
+   "region": "New Jersey",
+   "state": "NJ",
+   "kind": "geographic"
+  },
+  "975": {
+   "region": "Missouri",
+   "state": "MO",
+   "kind": "geographic"
+  },
+  "978": {
+   "region": "Massachusetts",
+   "state": "MA",
+   "kind": "geographic"
+  },
+  "979": {
+   "region": "Texas",
+   "state": "TX",
+   "kind": "geographic"
+  },
+  "980": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "983": {
+   "region": "Colorado",
+   "state": "CO",
+   "kind": "geographic"
+  },
+  "984": {
+   "region": "North Carolina",
+   "state": "NC",
+   "kind": "geographic"
+  },
+  "985": {
+   "region": "Louisiana",
+   "state": "LA",
+   "kind": "geographic"
+  },
+  "986": {
+   "region": "Idaho",
+   "state": "ID",
+   "kind": "geographic"
+  },
+  "989": {
+   "region": "Michigan",
+   "state": "MI",
+   "kind": "geographic"
+  }
+ }
+}

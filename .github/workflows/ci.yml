@@ -1,0 +1,26 @@
+name: ci
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      # Self-hosted OCR assets (copied from node_modules; no network).
+      - run: npm run vendor
+      # Typecheck + full suite, including test/public-assets.test.ts, which
+      # fails on any third-party script, analytics tag or remote asset.
+      - run: npm test
+      - name: Area-code data is well-formed
+        run: node -e "const d=require('./data/area-codes.json');if(!d._version.startsWith('nanpa-')||Object.keys(d.codes).length<380)process.exit(1)"
