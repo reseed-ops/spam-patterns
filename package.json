@@ -1,6 +1,6 @@
 {
   "name": "spam-text-map",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "private": true,
   "description": "Privacy-first anonymous intake and formula-level grouping of unsolicited text messages.",
   "license": "Apache-2.0",

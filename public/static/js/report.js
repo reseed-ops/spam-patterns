@@ -1,5 +1,7 @@
 // Report flow. No framework, no storage APIs: the draft lives in memory only
-// and is cleared after filing. The screenshot never leaves this page: it is
+// and is cleared after filing. The one thing kept after filing is the
+// deletion receipt code, saved on this device by receipts.js (browser storage,
+// never sent anywhere); this file does not touch storage itself. The screenshot never leaves this page: it is
 // read on this device, first by the browser's built-in text reader (the
 // Shape Detection API's TextDetector) where one exists, otherwise by
 // Tesseract.js running locally (self-hosted worker, core and language data,
@@ -238,6 +240,9 @@
 
   function done(body) {
     $('receipt').textContent = body.receipt;
+    var saved = false;
+    try { saved = !!(window.STMReceipts && window.STMReceipts.save(body.receipt, Date.now())); } catch (e) { saved = false; }
+    $('receipt-saved').hidden = !saved;
     if (body.status === 'already_filed') $('done-message').textContent = body.message;
     draft = emptyDraft(); preview = null; idemKey = null;
     fillForm();

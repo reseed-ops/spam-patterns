@@ -382,6 +382,7 @@ ${paused}
 <button class="btn btn-secondary" type="button" id="copy-receipt">Copy code</button>
 <p class="meta" id="copy-status" aria-live="polite"></p>
 <p class="meta">This code is shown only once. We store only a scrambled version of it, so we cannot show it again or recover it for you.</p>
+<p class="meta" id="receipt-saved" hidden>The code is also saved in this browser on this device, so you can delete the report later from the <a href="/delete">delete page</a>. It is still worth keeping a copy somewhere else.</p>
 <section class="reporter-path" aria-label="What to do with your original">
 <h2>Keep your original</h2>
 <p>Your original is yours to keep. Leave the text on your phone, and if you used a screenshot, it stays in your photos; this site never had it. Save your deletion receipt code too.</p>
@@ -398,7 +399,7 @@ ${paused}
     path: '/report',
     body,
     demo: c.intakeMode === 'demo',
-    scripts: ['/static/js/ocr-extract.js', '/static/js/report.js'],
+    scripts: ['/static/js/ocr-extract.js', '/static/js/receipts.js', '/static/js/report.js'],
   });
 }
 
@@ -430,6 +431,7 @@ export function deletePage(ctx: PageCtx, v: DeleteView): string {
     inner = `<h1>Delete a report</h1>
 <p>Enter the receipt code you saved when you filed. Anyone with the code can delete the report, so keep it private.</p>
 ${v.error ? `<div class="notice notice-error" role="alert"><p>${esc(v.error)}</p></div>` : ''}
+${storedReceiptsSection(ctx)}
 <form method="post" action="/delete" autocomplete="off">
 <input type="hidden" name="step" value="confirm">
 <div class="field"><label for="code">Receipt code</label>
@@ -442,7 +444,7 @@ ${v.error ? `<div class="notice notice-error" role="alert"><p>${esc(v.error)}</p
   } else if (v.kind === 'confirm') {
     inner = `<h1>Delete this report?</h1>
 <p>This permanently removes the report linked to the code you entered. It cannot be undone.</p>
-<form method="post" action="/delete" autocomplete="off">
+<form method="post" action="/delete" autocomplete="off" id="delete-confirm-form">
 <input type="hidden" name="step" value="delete">
 <input type="hidden" name="code" value="${esc(v.code)}">
 <button class="btn btn-danger" type="submit">Delete report</button>
@@ -456,7 +458,32 @@ ${v.error ? `<div class="notice notice-error" role="alert"><p>${esc(v.error)}</p
 ${ok ? `<p>Copies already downloaded cannot be recalled. Deleted reports do not return when the site restores a backup; see <a href="/privacy#deletion">deletion details</a>.</p>` : `<p><a href="/delete">Try another code</a></p>`}
 <p><a href="/">Back to overview</a></p>`;
   }
-  return layout({ title: 'Delete a report', path: '/delete', body: `<div class="narrow">${inner}</div>`, demo: ctx.cfg.intakeMode === 'demo' });
+  const status = v.kind === 'result' ? ` data-status="${esc(v.status)}"` : '';
+  return layout({
+    title: 'Delete a report',
+    path: '/delete',
+    body: `<div class="narrow" id="delete-page" data-view="${esc(v.kind)}"${status}>${inner}</div>`,
+    demo: ctx.cfg.intakeMode === 'demo',
+    scripts: ['/static/js/receipts.js'],
+  });
+}
+
+/**
+ * Codes saved in this browser (receipts.js fills the list and unhides the
+ * section; without stored codes or localStorage it stays hidden). Entries
+ * show the filing date only: a code is submitted by its button, never shown.
+ */
+function storedReceiptsSection(ctx: PageCtx): string {
+  return `<section id="stored-receipts" class="stored-receipts" aria-labelledby="stored-receipts-h" hidden>
+<h2 id="stored-receipts-h">Reports filed from this browser</h2>
+<p>This browser saved the receipt codes of these reports on this device. Choose one to delete that report.</p>
+<ul class="stored-receipts-list"></ul>
+<div class="stored-receipts-forget">
+<button class="btn btn-secondary" type="button" id="forget-receipts">Remove these codes from this device</button>
+<p class="meta">This does <strong>not</strong> delete any report. It only erases the saved codes from this browser. Afterwards, deleting one of these reports needs its receipt code, or an email to <a href="mailto:${esc(ctx.cfg.abuseContact)}">${esc(ctx.cfg.abuseContact)}</a>.</p>
+</div>
+</section>
+<p class="notice notice-info" id="forget-status" role="status" tabindex="-1" hidden></p>`;
 }
 
 // ---------------- Patterns ----------------
@@ -685,6 +712,7 @@ ${
 
 <h2 id="deletion">Deletion</h2>
 <p>Your receipt code is the only way to delete a report. We store only a scrambled version of it, so we cannot recover it. Deleting removes the report at once from counts and patterns, and from every future data release. A pattern that falls below ${PATTERN_THRESHOLD} reports disappears. Copies already downloaded cannot be recalled. Backups are kept for at most 7 days, and a restore re-applies the deletion list so a deleted report does not come back.</p>
+<p id="device-codes">Deletion codes are kept only in your browser’s local storage on your own device (at most 5, for up to 90 days). The server never receives or stores these saved copies, except at the moment you use one to delete a report. To erase them, use <strong>Remove these codes from this device</strong> on the <a href="/delete">delete page</a>, or clear this site’s data in your browser.</p>
 
 <h2 id="contest">Contest or takedown</h2>
 <p>If something on this site harms you, for example a pattern that points at your business or number, tell us privately. Flagged patterns are removed from public views while they are reviewed. The maintainer aims to respond within 7 days; security and takedown requests come before other work. You can also email <a href="mailto:${esc(c.abuseContact)}">${esc(c.abuseContact)}</a>.</p>
