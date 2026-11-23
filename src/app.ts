@@ -12,7 +12,7 @@ import { intakePaused, type Config } from './config.ts';
 import { Keys, normalizeReceipt, sha256hex } from './crypto.ts';
 import { expireFilings, expireSenderTokens, openDb, type DB } from './db.ts';
 import { MSG, deleteReport, fileFlag, fileReport, prepare } from './filing.ts';
-import { BACKGROUND_COLOR, THEME_COLOR, esc } from './html.ts';
+import { BACKGROUND_COLOR, SITE_ORIGIN, THEME_COLOR, esc } from './html.ts';
 import { journalAppend, journalReapply } from './journal.ts';
 import {
   AGGREGATE_SCHEMA,
@@ -98,6 +98,21 @@ export const MANIFEST = {
     { src: '/static/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
   ],
 };
+
+/**
+ * Public, indexable pages listed in /sitemap.xml. Not listed: /delete
+ * (disallowed in robots.txt), /api/*, /report/complete and /offline.
+ * No lastmod: pages render live data and have no single real modification date.
+ */
+export const SITEMAP_PATHS = ['/', '/patterns', '/data', '/report', '/privacy', '/methodology', '/project', '/junk-mail'] as const;
+
+export const ROBOTS_TXT = `User-agent: *\nDisallow: /api/\nDisallow: /delete\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`;
+
+export const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${SITEMAP_PATHS.map((p) => `<url><loc>${esc(SITE_ORIGIN + p)}</loc></url>`).join('\n')}
+</urlset>
+`;
 
 export interface App {
   handle: (req: IncomingMessage, res: ServerResponse) => void;
@@ -352,7 +367,9 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
           res.writeHead(204, { ...SECURITY_HEADERS, 'Cache-Control': 'public, max-age=86400' });
           return void res.end();
         case '/robots.txt':
-          return send(res, 200, 'text/plain; charset=utf-8', 'User-agent: *\nDisallow: /api/\nDisallow: /delete\n');
+          return send(res, 200, 'text/plain; charset=utf-8', ROBOTS_TXT);
+        case '/sitemap.xml':
+          return send(res, 200, 'application/xml; charset=utf-8', SITEMAP_XML);
         case '/healthz':
           return json(res, 200, { ok: true, intake: intakePaused(env, pauseFile) ? 'paused' : 'open', mode: cfg.intakeMode });
       }

@@ -4,7 +4,7 @@ import { AREA_CODE_SOURCE, AREA_CODE_VERSION, allAreaCodes, lookupAreaCode } fro
 import { CATEGORIES } from './categories.ts';
 import type { Config } from './config.ts';
 import { FLAG_REASONS } from './filing.ts';
-import { CLAIMED_ORIGIN_WARNING, ICON, esc, fmtDay, layout } from './html.ts';
+import { CLAIMED_ORIGIN_WARNING, ICON, esc, fmtDay, layout, textOf, type SchemaNode } from './html.ts';
 import { STATE_NAMES, groupByState, renderLegend, renderMap, renderStateList, reportsWord, stateSummary } from './map.ts';
 import { MATCHING_RULES_VERSION, PATTERN_THRESHOLD, TIER_LABEL, type AreaCount, type Pattern } from './patterns.ts';
 import { MASK, REDACTION_RULES_VERSION, scrubMessage } from './scrub.ts';
@@ -295,8 +295,25 @@ ${p.view !== 'table' ? map : ''}
 </div></div>
 <div class="band band-tint"><div class="wrap">
 ${howItWorksSection()}
+</div></div>
+<div class="band"><div class="wrap">
+<section class="sources" aria-labelledby="sources-h">
+<h2 id="sources-h">Sources</h2>
+<ul class="meta">
+<li>Figures on this page: <span class="num">${total}</span> ${total === 1 ? 'report' : 'reports'} filed, <span class="num">${places}</span> ${places === 1 ? 'state or DC' : 'states and DC'} with reports, and <span class="num">${patterns.length}</span> ${patterns.length === 1 ? 'pattern' : 'patterns'} published, ${esc(RANGES.find((r) => r[0] === p.range)![1].toLowerCase())} (${esc(rangeLabel)}). Counted live from reports filed on this site.</li>
+<li>Counts are voluntary reports and do not measure how much spam is sent. Area codes are the sender’s claimed origin, not a location. <a href="/methodology">How counts work</a>.</li>
+<li>Patterns are published only after maintainer review: <a href="/patterns">published patterns</a> · <a href="/methodology#review">how review works</a>.</li>
+</ul>
+</section>
 </div></div>`;
-  return layout({ title: 'Overview', path: '/', body, demo: ctx.cfg.intakeMode === 'demo', fullBleed: true });
+  return layout({
+    title: 'Spam text reports and recurring scripts',
+    path: '/',
+    body,
+    demo: ctx.cfg.intakeMode === 'demo',
+    fullBleed: true,
+    description: 'See which sender area codes and recurring scripts people report in spam texts, and file your own anonymously. Screenshots are read on your device.',
+  });
 }
 
 // ---------------- Report flow ----------------
@@ -432,7 +449,44 @@ ${paused}
     body,
     demo: c.intakeMode === 'demo',
     scripts: ['/static/js/ocr-extract.js', '/static/js/receipts.js', '/static/js/report.js'],
+    description: 'File a spam text anonymously in under a minute. Screenshots are read on your device, and you review the scrubbed report before anything is saved.',
+    schema: reportHowTo(c),
   });
+}
+
+/** HowTo structured data for /report. Each step restates text the report page shows. */
+export function reportHowTo(c: Config): SchemaNode {
+  return {
+    '@type': 'HowTo',
+    name: 'Report a spam text',
+    description: 'Both ways lead to a privacy review. Nothing is saved until you select File this report. No account needed.',
+    step: [
+      {
+        '@type': 'HowToStep',
+        position: 1,
+        name: 'Upload a screenshot or enter manually',
+        text: `Upload a screenshot (PNG, JPEG, WebP, up to ${c.maxScreenshotMb} MB), or enter manually: type or paste the sender number and the message.`,
+      },
+      {
+        '@type': 'HowToStep',
+        position: 2,
+        name: 'The screenshot is read on your device',
+        text: 'The screenshot is read by software running in your browser. The image never leaves your device. We read it once to find the sender number and message. We don’t store the image.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 3,
+        name: 'Review before filing',
+        text: 'Check the scrubbed message and remove any personal details still visible. We save the report only when you select File this report.',
+      },
+      {
+        '@type': 'HowToStep',
+        position: 4,
+        name: 'Save your deletion receipt code',
+        text: 'Save your deletion receipt code to remove this report later. Anyone with the code can request deletion. This code is shown only once.',
+      },
+    ],
+  };
 }
 
 export function reportCompletePage(ctx: PageCtx): string {
@@ -497,6 +551,7 @@ ${ok ? `<p>Copies already downloaded cannot be recalled. Deleted reports do not 
     body: `<div class="narrow" id="delete-page" data-view="${esc(v.kind)}"${status}>${inner}</div>`,
     demo: ctx.cfg.intakeMode === 'demo',
     scripts: ['/static/js/receipts.js'],
+    description: 'Delete a spam text report you filed, using the receipt code you saved when you filed it.',
   });
 }
 
@@ -558,8 +613,23 @@ ${
     : `<ul class="pattern-list">${patterns.map(patternCard).join('')}</ul>`
 }
 <p class="meta">${esc(RULES_VERSIONS_TEXT)} · Skeleton grammar ${esc(SKELETON_GRAMMAR_VERSION)}. <a href="/methodology#clustering">How patterns are matched</a> · <a href="/methodology#review">How review works</a>. To contest a pattern privately, use the <a href="/privacy#contest">private flag form</a>.</p>
+<section class="sources" aria-labelledby="sources-h">
+<h2 id="sources-h">Sources</h2>
+<ul class="meta">
+<li>Published patterns: <span class="num">${patterns.length}</span>, from reports filed on this site. Each has at least ${PATTERN_THRESHOLD} eligible matching reports and was published after maintainer review.</li>
+<li>Matching rules: ${esc(RULES_VERSIONS_TEXT)} · Skeleton grammar ${esc(SKELETON_GRAMMAR_VERSION)}. <a href="/methodology#versions">Rules versions</a>.</li>
+<li>Method: <a href="/methodology#clustering">How patterns are matched</a> · <a href="/methodology#review">How review works</a>.</li>
+</ul>
+</section>
 </div>`;
-  return layout({ title: 'Patterns', path: '/patterns', body, hero, demo: ctx.cfg.intakeMode === 'demo' });
+  return layout({
+    title: 'Published spam text patterns',
+    path: '/patterns',
+    body,
+    hero,
+    demo: ctx.cfg.intakeMode === 'demo',
+    description: 'Recurring spam text messages and scripts, published only after maintainer review. A pattern shows repetition, not who sent the texts.',
+  });
 }
 
 export function patternDetailPage(ctx: PageCtx, p: Pattern | null): string {
@@ -644,7 +714,14 @@ export function dataPage(ctx: PageCtx): string {
 <p>Approved aggregate releases will be dedicated to the public domain (CC0), only to the extent Reseed and submitters hold rights. Spam senders’ own wording is not ours to dedicate and is never released.</p>
 <p class="meta">Questions or corrections: <a href="mailto:${esc(ctx.cfg.abuseContact)}">${esc(ctx.cfg.abuseContact)}</a>. Please do not include original message text or phone numbers in routine inquiries.</p>
 </div>`;
-  return layout({ title: 'Data', path: '/data', body, hero, demo: ctx.cfg.intakeMode === 'demo' });
+  return layout({
+    title: 'Data',
+    path: '/data',
+    body,
+    hero,
+    demo: ctx.cfg.intakeMode === 'demo',
+    description: 'What a Spam Patterns data release will contain: aggregate counts only, with suppression and delay rules. No data has been released yet.',
+  });
 }
 
 export const AGGREGATE_SCHEMA = {
@@ -781,7 +858,14 @@ ${flagResult ? `<div class="notice ${flagResult.ok ? 'notice-success' : 'notice-
 <p>Privacy: <a href="mailto:${esc(c.privacyContact)}">${esc(c.privacyContact)}</a> · Security: <a href="mailto:${esc(c.securityContact)}">${esc(c.securityContact)}</a> · Abuse and takedown: <a href="mailto:${esc(c.abuseContact)}">${esc(c.abuseContact)}</a></p>
 <p class="meta">Effective ${esc(fmtDay(EFFECTIVE_DATE))}. Operated by Reseed LLC.</p>
 </div>`;
-  return layout({ title: 'Privacy & threat model', path: '/privacy', body, hero, demo: c.intakeMode === 'demo' });
+  return layout({
+    title: 'Privacy & threat model',
+    path: '/privacy',
+    body,
+    hero,
+    demo: c.intakeMode === 'demo',
+    description: 'What Spam Patterns stores and publishes, how screenshots are read on your device, and the risks this site cannot protect you from.',
+  });
 }
 
 // ---------------- Methodology ----------------
@@ -799,18 +883,15 @@ export function methodologyPage(ctx: PageCtx): string {
     html: `<p class="meta">Effective ${esc(fmtDay(EFFECTIVE_DATE))}, revised ${esc(fmtDay(REVIEW_GATE_DATE))}.</p>
 <p class="rules-version"><strong>${esc(RULES_VERSIONS_TEXT)}</strong> · Skeleton grammar ${esc(SKELETON_GRAMMAR_VERSION)} · Area-code data ${esc(AREA_CODE_VERSION)}</p>`,
   };
-  const body = `<div class="prose">
-
-<h2>Who the reports come from</h2>
-<p>Reports are voluntary submissions from people who chose to file them. They are not a sample of all spam, and counts do not measure how much spam is sent. Early data may come from very few reporters.</p>
-
-<h2>The geographic proxy</h2>
-<p>Every geographic view uses the sender’s displayed area code. Sender numbers can be spoofed, so this is the claimed origin, not a location. The area code’s <strong>numbering-plan reference region</strong> is the state or territory it is assigned to. It is kept separate from any <strong>city named in the message</strong>, which is never shown publicly.</p>
+  // The sections the FAQ structured data answers from: one string each, used
+  // both in the page and (as plain text) in the schema, so the two cannot drift.
+  const whoHtml = `<p>Reports are voluntary submissions from people who chose to file them. They are not a sample of all spam, and counts do not measure how much spam is sent. Early data may come from very few reporters.</p>`;
+  const geoMainHtml = `<p>Every geographic view uses the sender’s displayed area code. Sender numbers can be spoofed, so this is the claimed origin, not a location. The area code’s <strong>numbering-plan reference region</strong> is the state or territory it is assigned to. It is kept separate from any <strong>city named in the message</strong>, which is never shown publicly.</p>`;
+  const geoScopeHtml = `<p>Area codes outside the US (Canada and the Caribbean) are not accepted in this version. Toll-free codes and US territories are counted in the table but have no map tile.</p>`;
+  const geoHtml = `${geoMainHtml}
 <p>Area-code data: ${esc(AREA_CODE_SOURCE)}</p>
-<p>Area codes outside the US (Canada and the Caribbean) are not accepted in this version. Toll-free codes and US territories are counted in the table but have no map tile.</p>
-
-<h2 id="clustering">How patterns are matched</h2>
-<p>Every report is reduced by fixed rules to a masked template: names, numbers, links, emails and places are replaced with labels. Matching runs only on that template, in three separate tiers. Each tier has its own label and they are never merged.</p>
+${geoScopeHtml}`;
+  const matchHtml = `<p>Every report is reduced by fixed rules to a masked template: names, numbers, links, emails and places are replaced with labels. Matching runs only on that template, in three separate tiers. Each tier has its own label and they are never merged.</p>
 <ol>
 <li><strong>${TIER_LABEL.exact}</strong>: the masked templates are the same after lowercasing and spacing are normalized.</li>
 <li><strong>${TIER_LABEL.near}</strong>: the templates share most of their ${SHINGLE_SIZE}-word sequences (estimated with ${MINHASH_PERMUTATIONS}-way MinHash; similarity at least ${NEAR_THRESHOLD} to the group’s first report). Each report is compared to the group’s first report only, so a chain of small edits cannot pull unrelated texts together.</li>
@@ -820,12 +901,43 @@ export function methodologyPage(ctx: PageCtx): string {
     connectionDedupEnabled(ctx.cfg)
       ? ', or the same sender hash, template and connection within 7 days, while the server has been running'
       : ''
-  }). Three reports do not establish three independent reporters, three senders, or common control. If deletions take a pattern below ${PATTERN_THRESHOLD}, it disappears from every public view at once. A group that matches the same reports as a higher tier is listed once, under the higher tier.</p>
+  }). Three reports do not establish three independent reporters, three senders, or common control. If deletions take a pattern below ${PATTERN_THRESHOLD}, it disappears from every public view at once. A group that matches the same reports as a higher tier is listed once, under the higher tier.</p>`;
+  const reviewHtml = `<p>A group that reaches ${PATTERN_THRESHOLD} eligible reports is held for review and is not shown anywhere, or counted, until a maintainer publishes it. The review checks ${esc(REVIEW_CHECKS)}. The maintainer can publish it or reject it.</p>
+<p>A decision covers the exact set of distinct masked templates that was reviewed. If a template joins or leaves the group, or deletions take it below ${PATTERN_THRESHOLD} at any point, the decision lapses and the group goes back to review. More reports of templates already reviewed do not; the report count on a published pattern updates as reports are filed or deleted.</p>
+<p>Review affects only whether a pattern is published. Every report still counts in the totals, the area-code table and the map from the moment it is filed.</p>`;
+  const limitsHtml = `<ul>
+<li>Selection bias: people who report are not a random sample.</li>
+<li>Spoofing: area codes can be faked.</li>
+<li>Extraction errors: screenshot reading and the masking rules can miss or over-remove text.</li>
+<li>Template splits and collisions: small edits can split one script into several groups, and short generic texts can collide.</li>
+<li>Coordinated submissions: a few people can file matching reports on purpose. The threshold and review stop accidents and obvious cases, not determined abuse.</li>
+<li>Whether a given script is distinctive cannot be known from a handful of reports.</li>
+</ul>`;
+  const faq: Array<[string, string]> = [
+    ['Who do the reports come from?', whoHtml],
+    // The data-provenance paragraph stays on the page (and in Sources), not in the answer.
+    ['What does the geographic proxy show?', geoMainHtml + geoScopeHtml],
+    ['How are patterns matched?', matchHtml],
+    ['Are patterns reviewed before publication?', reviewHtml],
+    ['What are the known limitations?', limitsHtml],
+  ];
+  const schema: SchemaNode = {
+    '@type': 'FAQPage',
+    mainEntity: faq.map(([q, a]) => ({ '@type': 'Question', name: q, acceptedAnswer: { '@type': 'Answer', text: textOf(a) } })),
+  };
+  const body = `<div class="prose">
+
+<h2>Who the reports come from</h2>
+${whoHtml}
+
+<h2>The geographic proxy</h2>
+${geoHtml}
+
+<h2 id="clustering">How patterns are matched</h2>
+${matchHtml}
 
 <h3 id="review">Review before publication</h3>
-<p>A group that reaches ${PATTERN_THRESHOLD} eligible reports is held for review and is not shown anywhere, or counted, until a maintainer publishes it. The review checks ${esc(REVIEW_CHECKS)}. The maintainer can publish it or reject it.</p>
-<p>A decision covers the exact set of distinct masked templates that was reviewed. If a template joins or leaves the group, or deletions take it below ${PATTERN_THRESHOLD} at any point, the decision lapses and the group goes back to review. More reports of templates already reviewed do not; the report count on a published pattern updates as reports are filed or deleted.</p>
-<p>Review affects only whether a pattern is published. Every report still counts in the totals, the area-code table and the map from the moment it is filed.</p>
+${reviewHtml}
 
 <h3>Skeleton grammar ${esc(SKELETON_GRAMMAR_VERSION)}</h3>
 <p>The skeleton is the order in which these slots first appear in the masked template:</p>
@@ -849,22 +961,31 @@ ${SLOTS.map((s) => `<tr><td class="mono">${s}</td><td>${esc(s === 'CTA' ? CTA_DE
 </dl>
 
 <h2>Known limitations</h2>
-<ul>
-<li>Selection bias: people who report are not a random sample.</li>
-<li>Spoofing: area codes can be faked.</li>
-<li>Extraction errors: screenshot reading and the masking rules can miss or over-remove text.</li>
-<li>Template splits and collisions: small edits can split one script into several groups, and short generic texts can collide.</li>
-<li>Coordinated submissions: a few people can file matching reports on purpose. The threshold and review stop accidents and obvious cases, not determined abuse.</li>
-<li>Whether a given script is distinctive cannot be known from a handful of reports.</li>
-</ul>
+${limitsHtml}
 
-<h2>Revision history</h2>
+<h2 id="history">Revision history</h2>
 <ul>
 <li>${esc(fmtDay(REVIEW_GATE_DATE))}: patterns are published only after review; ${PATTERN_THRESHOLD} matching reports now trigger a review. Redaction rules v1 and matching rules v1 named as the rules already in use. The review step changes publication only, not redaction or matching.</li>
 <li>${esc(fmtDay(EFFECTIVE_DATE))}: grammar v1 and this page first published.</li>
 </ul>
+
+<h2 id="sources">Sources</h2>
+<ul>
+<li>Rules versions: ${esc(RULES_VERSIONS_TEXT)}. The changelog is in the project repository (<span class="mono">docs/rules-changelog.md</span>). <a href="#versions">Rules versions</a>.</li>
+<li>Skeleton grammar: ${esc(SKELETON_GRAMMAR_VERSION)}. <a href="#clustering">How patterns are matched</a>.</li>
+<li>Area-code data: the <a href="https://www.nanpa.com/reports/npa-reports">NANPA NPA database</a>, version ${esc(AREA_CODE_VERSION)}, as described under the geographic proxy above.</li>
+<li>Revision history: effective ${esc(fmtDay(EFFECTIVE_DATE))}, revised ${esc(fmtDay(REVIEW_GATE_DATE))}. <a href="#history">Revision history</a>.</li>
+</ul>
 </div>`;
-  return layout({ title: 'Methodology', path: '/methodology', body, hero, demo: ctx.cfg.intakeMode === 'demo' });
+  return layout({
+    title: 'Methodology',
+    path: '/methodology',
+    body,
+    hero,
+    demo: ctx.cfg.intakeMode === 'demo',
+    description: 'How Spam Patterns reports are scrubbed, matched into patterns and reviewed before publication, with rules versions and known limitations.',
+    schema,
+  });
 }
 
 // ---------------- Self-host & contribute ----------------
@@ -897,7 +1018,14 @@ ${c.officialInstanceUrl ? `<p>The official instance is <a href="${esc(c.official
 <h2>History</h2>
 <p class="provenance">Launched November 17, 2026 as Spam Text Map; renamed Spam Patterns on November 19, 2026.</p>
 </div>`;
-  return layout({ title: 'Self-host & contribute', path: '/project', body, hero, demo: c.intakeMode === 'demo' });
+  return layout({
+    title: 'Self-host & contribute',
+    path: '/project',
+    body,
+    hero,
+    demo: c.intakeMode === 'demo',
+    description: 'Spam Patterns is open-source software under the Apache License 2.0. How to self-host it, contribute, and report security issues.',
+  });
 }
 
 // ---------------- Junk mail guide (static public-service page) ----------------

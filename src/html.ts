@@ -24,6 +24,45 @@ export interface PageHero {
   html?: string;
 }
 
+/** Canonical origin of the official instance (sitemap.xml and robots.txt). */
+export const SITE_ORIGIN = 'https://spampatterns.com';
+
+/**
+ * A schema.org node, written in the same shape as JSON-LD ("@type" plus
+ * properties). It is rendered as microdata, not as a JSON-LD script block,
+ * because pages must carry no inline <script> (see the CSP and the hygiene
+ * tests). Every value must restate content the page visibly shows.
+ */
+export interface SchemaNode {
+  '@type': string;
+  [prop: string]: string | number | SchemaNode | Array<string | SchemaNode>;
+}
+
+/** Visible text of an HTML fragment built with esc(): tags dropped, entities decoded, spacing collapsed. */
+export function textOf(html: string): string {
+  return html
+    .replace(/<\/?(?:p|li|ul|ol|h[1-6]|div|dt|dd|dl|br|table|tr|td|th)\b[^>]*>/gi, ' ')
+    .replace(/<[^>]*>/g, '')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Render a schema.org node as microdata: nested itemscopes and <meta itemprop> values. */
+export function microdata(node: SchemaNode, itemprop?: string): string {
+  const props = Object.entries(node)
+    .filter(([k]) => k !== '@type')
+    .flatMap(([k, v]) => (Array.isArray(v) ? v.map((x) => [k, x] as const) : [[k, v] as const]))
+    .map(([k, v]) => (typeof v === 'object' ? microdata(v, k) : `<meta itemprop="${esc(k)}" content="${esc(v)}">`))
+    .join('');
+  const prop = itemprop ? ` itemprop="${esc(itemprop)}"` : '';
+  return `<div${prop} itemscope itemtype="https://schema.org/${esc(node['@type'])}">${props}</div>`;
+}
+
 export interface LayoutOptions {
   title: string;
   path: string;
@@ -34,6 +73,8 @@ export interface LayoutOptions {
   hero?: PageHero;
   /** The body brings its own full-width sections and .wrap containers. */
   fullBleed?: boolean;
+  /** Structured data for this page (rendered as hidden microdata at the end of <main>). */
+  schema?: SchemaNode;
 }
 
 /** Original line-art icons for cards (decorative; aria-hidden). */
@@ -108,7 +149,7 @@ ${o.hero.html ?? ''}
     : ''
 }${o.fullBleed ? o.body : `<div class="wrap main-content">
 ${o.body}
-</div>`}
+</div>`}${o.schema ? `\n<div hidden>${microdata(o.schema)}</div>` : ''}
 </main>
 <footer class="site-footer">
   <div class="wrap">
