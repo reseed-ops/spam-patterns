@@ -4,7 +4,7 @@ import { AREA_CODE_SOURCE, AREA_CODE_VERSION, allAreaCodes, lookupAreaCode } fro
 import { CATEGORIES } from './categories.ts';
 import type { Config } from './config.ts';
 import { FLAG_REASONS } from './filing.ts';
-import { CLAIMED_ORIGIN_WARNING, esc, fmtDay, layout } from './html.ts';
+import { CLAIMED_ORIGIN_WARNING, ICON, esc, fmtDay, layout } from './html.ts';
 import { STATE_NAMES, groupByState, renderLegend, renderMap, renderStateList, reportsWord, stateSummary } from './map.ts';
 import { MATCHING_RULES_VERSION, PATTERN_THRESHOLD, TIER_LABEL, type AreaCount, type Pattern } from './patterns.ts';
 import { MASK, REDACTION_RULES_VERSION, scrubMessage } from './scrub.ts';
@@ -78,8 +78,12 @@ export function recurringScriptsSection(patterns: Pattern[]): string {
             `<li><a href="/patterns/${esc(x.id)}">${esc(x.example ?? `Template match (${x.label})`)}</a> <span class="meta">${esc(x.label)} · <span class="num">${x.count}</span> ${x.count === 1 ? 'report' : 'reports'}</span></li>`,
         )
         .join('')}</ul>`
-    : `<p class="empty">No recurring script has been published yet. ${esc(REVIEW_TRIGGER_TEXT)}</p>`;
+    : `<div class="empty-box"><img src="/static/img/pattern-illustration.svg" alt="" width="560" height="240"><div>
+<p class="status-mark">Pilot in progress</p>
+<p class="empty">No recurring script has been published yet. ${esc(REVIEW_TRIGGER_TEXT)}</p>
+</div></div>`;
   return `<section class="scripts" aria-labelledby="scripts-h">
+<p class="eyebrow">Reviewed before publication</p>
 <h2 id="scripts-h">Recurring scripts</h2>
 <p class="meta">Texts whose wording or script repeats across reports, such as lead-generation pitches. A shared script can be used by many unrelated senders and does not establish a common sender.</p>
 ${list}
@@ -98,6 +102,7 @@ export const FLOW_STEPS: Array<[string, string]> = [
 
 export function howItWorksSection(): string {
   return `<section class="how" aria-labelledby="how-h">
+<p class="eyebrow">Simple by design</p>
 <h2 id="how-h">How it works</h2>
 <figure class="flow">
 <div class="flow-scroll" tabindex="0" role="region" aria-label="How it works diagram">
@@ -238,15 +243,37 @@ ${unmappedNote}
 <a href="${esc(q({ view: 'both' }))}"${p.view === 'both' ? ' aria-current="page"' : ''}>Both</a>
 </nav>`;
 
+  // Live figures for the selected range (never a hardcoded snapshot).
+  const places = summary?.places ?? 0;
+  const metrics = `<div class="metrics" role="group" aria-label="Pilot figures, ${esc(rangeLabel)}">
+<div class="metric"><strong class="num">${total}</strong><small>${total === 1 ? 'Report' : 'Reports'} filed</small></div>
+<div class="metric"><strong class="num">${places}</strong><small>${places === 1 ? 'State or DC' : 'States and DC'} with reports</small></div>
+<div class="metric"><strong class="num">${patterns.length}</strong><small>${patterns.length === 1 ? 'Pattern' : 'Patterns'} published</small></div>
+</div>
+<p class="metrics-note meta">${esc(rangeLabel)} · counted live from filed reports · patterns appear only after review</p>`;
+
   const body = `
 <section class="hero">
+<div class="wrap hero-grid">
+<div class="hero-copy">
 <p class="tagline">A pilot tracking recurring spam texts.</p>
 <h1>Report a spam text</h1>
 <p class="lead">File a spam text in under a minute. You review exactly what is saved before anything is filed. Screenshots are read on your device and never uploaded.</p>
-<p><a class="btn btn-primary" href="/report">Report a spam text</a> <a href="/privacy">How your report is protected</a></p>
+<p class="hero-actions"><a class="btn btn-primary" href="/report">Report a spam text</a> <a href="/privacy">How your report is protected</a></p>
+<ul class="hero-trust"><li>No account</li><li>Review before filing</li><li>Screenshots read on your device</li></ul>
+</div>
+<div class="hero-art"><img src="/static/img/hero-illustration.svg" alt="" width="685" height="580"></div>
+</div>
 </section>
+<div class="wrap metrics-wrap">
+${metrics}
+</div>
+<div class="band band-tint"><div class="wrap">
 ${recurringScriptsSection(patterns)}
+</div></div>
+<div class="band"><div class="wrap">
 <section class="geo" aria-labelledby="geo-h">
+<p class="eyebrow">Claimed origin only</p>
 <h2 id="geo-h">Reported sender area codes</h2>
 <form class="filters" method="get" action="/">
 <label for="range">Date range</label>
@@ -265,8 +292,11 @@ ${p.view !== 'table' ? map : ''}
 </div>
 <p class="meta">Counts are voluntary reports and do not measure how much spam is sent. <a href="/methodology">How counts work</a>.</p>
 </section>
-${howItWorksSection()}`;
-  return layout({ title: 'Overview', path: '/', body, demo: ctx.cfg.intakeMode === 'demo' });
+</div></div>
+<div class="band band-tint"><div class="wrap">
+${howItWorksSection()}
+</div></div>`;
+  return layout({ title: 'Overview', path: '/', body, demo: ctx.cfg.intakeMode === 'demo', fullBleed: true });
 }
 
 // ---------------- Report flow ----------------
@@ -290,6 +320,7 @@ ${paused}
 <p>Both ways lead to a privacy review. Nothing is saved until you select <strong>File this report</strong>. No account needed.</p>
 <div class="choice">
 <div class="choice-item">
+<span class="icon-box">${ICON.image}</span>
 <h2>Upload a screenshot.</h2>
 <p>We read it once to find the sender number and message. We don’t store the image. You’ll review the scrubbed report before filing.</p>
 <p class="meta">The screenshot is read by software running in your browser. The image never leaves your device. Supported: PNG, JPEG, WebP, up to ${c.maxScreenshotMb} MB. <a href="/privacy#screenshots">How screenshot reading works</a></p>
@@ -298,6 +329,7 @@ ${paused}
 <p class="field-error" id="shot-error" role="alert" hidden></p>
 </div>
 <div class="choice-item">
+<span class="icon-box teal">${ICON.type}</span>
 <h2>Enter manually.</h2>
 <p>Type or paste the sender number and the message.</p>
 <button class="btn btn-secondary" type="button" data-go="details">Enter manually</button>
@@ -508,18 +540,26 @@ const TIER_EXPLAIN = `<ul class="meta">
 </ul>`;
 
 export function patternsPage(ctx: PageCtx, patterns: Pattern[]): string {
-  const body = `<h1>Patterns</h1>
-<p class="lead">Recurring messages and scripts, published after review. A pattern shows repetition in the reports. It does not show who sent the texts, or that they share a sender.</p>
+  const hero = {
+    kicker: 'Understanding the signal',
+    title: 'Patterns',
+    html: `<p class="lead">Recurring messages and scripts, published after review. A pattern shows repetition in the reports. It does not show who sent the texts, or that they share a sender.</p>`,
+  };
+  const body = `<div class="prose">
 <p>${esc(REVIEW_TRIGGER_TEXT)} A published pattern goes back to review if its matching templates change, and leaves this page if deletions take it below ${PATTERN_THRESHOLD} reports.</p>
 ${correctionLine(ctx.cfg)}
 ${TIER_EXPLAIN}
 ${
   patterns.length === 0
-    ? `<p class="empty">No pattern has been published yet.</p>`
+    ? `<div class="empty-box"><img src="/static/img/pattern-illustration.svg" alt="" width="560" height="240"><div>
+<p class="status-mark">Pilot in progress</p>
+<p class="empty">No pattern has been published yet.</p>
+</div></div>`
     : `<ul class="pattern-list">${patterns.map(patternCard).join('')}</ul>`
 }
-<p class="meta">${esc(RULES_VERSIONS_TEXT)} · Skeleton grammar ${esc(SKELETON_GRAMMAR_VERSION)}. <a href="/methodology#clustering">How patterns are matched</a> · <a href="/methodology#review">How review works</a>. To contest a pattern privately, use the <a href="/privacy#contest">private flag form</a>.</p>`;
-  return layout({ title: 'Patterns', path: '/patterns', body, demo: ctx.cfg.intakeMode === 'demo' });
+<p class="meta">${esc(RULES_VERSIONS_TEXT)} · Skeleton grammar ${esc(SKELETON_GRAMMAR_VERSION)}. <a href="/methodology#clustering">How patterns are matched</a> · <a href="/methodology#review">How review works</a>. To contest a pattern privately, use the <a href="/privacy#contest">private flag form</a>.</p>
+</div>`;
+  return layout({ title: 'Patterns', path: '/patterns', body, hero, demo: ctx.cfg.intakeMode === 'demo' });
 }
 
 export function patternDetailPage(ctx: PageCtx, p: Pattern | null): string {
@@ -571,7 +611,8 @@ export const DATA_NOTICE =
   'No warranty of accuracy. Area codes are claimed origin. A listing is not an allegation against any person or business. Reports are voluntary submissions and counts do not measure spam prevalence.';
 
 export function dataPage(ctx: PageCtx): string {
-  const body = `<h1>Data</h1>
+  const hero = { kicker: 'Public data, carefully', title: 'Data' };
+  const body = `<div class="prose">
 <section class="notice notice-info" aria-labelledby="scope-h">
 <h2 id="scope-h">No data release yet</h2>
 <p>This site has not released any data. There is no feed and no download, and there are no report-level records of any kind. When a release is approved, it will contain only the aggregate counts described below, and this page will show its date and version.</p>
@@ -601,8 +642,9 @@ export function dataPage(ctx: PageCtx): string {
 <p class="notice notice-warning">${esc(DATA_NOTICE)}</p>
 <h2>License</h2>
 <p>Approved aggregate releases will be dedicated to the public domain (CC0), only to the extent Reseed and submitters hold rights. Spam senders’ own wording is not ours to dedicate and is never released.</p>
-<p class="meta">Questions or corrections: <a href="mailto:${esc(ctx.cfg.abuseContact)}">${esc(ctx.cfg.abuseContact)}</a>. Please do not include original message text or phone numbers in routine inquiries.</p>`;
-  return layout({ title: 'Data', path: '/data', body, demo: ctx.cfg.intakeMode === 'demo' });
+<p class="meta">Questions or corrections: <a href="mailto:${esc(ctx.cfg.abuseContact)}">${esc(ctx.cfg.abuseContact)}</a>. Please do not include original message text or phone numbers in routine inquiries.</p>
+</div>`;
+  return layout({ title: 'Data', path: '/data', body, hero, demo: ctx.cfg.intakeMode === 'demo' });
 }
 
 export const AGGREGATE_SCHEMA = {
@@ -658,9 +700,13 @@ export function connectionDedupEnabled(c: PageCtx['cfg']): boolean {
 export function privacyPage(ctx: PageCtx, flagResult?: { ok: boolean; message: string }): string {
   const c = ctx.cfg;
   const dedupOn = connectionDedupEnabled(c);
+  const hero = {
+    kicker: 'Your data, your choice',
+    title: 'Privacy & threat model',
+    html: `<p class="lead">What this site keeps, what it publishes, and what it cannot protect you from.</p>`,
+  };
   const body = `<div class="prose">
-<h1>Privacy &amp; threat model</h1>
-<p class="lead">What this site keeps, what it publishes, and what it cannot protect you from.</p>
+<img class="process-graphic" src="/static/img/privacy-illustration.svg" alt="" width="660" height="350">
 
 <h2 id="screenshots">Screenshots</h2>
 <p>Screenshots are read on your device. If your browser has built-in text detection (the Shape Detection API), that is used first; otherwise open-source text-recognition software (Tesseract) runs inside your browser. The review screen says which one read your screenshot. Either way, the image is not uploaded. Only the text you review is sent, and only when you ask for the review screen. The image is not kept in a draft, a thumbnail, or any error report. Files are limited to ${c.maxScreenshotMb} MB and ${(c.maxScreenshotPixels / 1_000_000).toFixed(0)} megapixels.</p>
@@ -735,7 +781,7 @@ ${flagResult ? `<div class="notice ${flagResult.ok ? 'notice-success' : 'notice-
 <p>Privacy: <a href="mailto:${esc(c.privacyContact)}">${esc(c.privacyContact)}</a> · Security: <a href="mailto:${esc(c.securityContact)}">${esc(c.securityContact)}</a> · Abuse and takedown: <a href="mailto:${esc(c.abuseContact)}">${esc(c.abuseContact)}</a></p>
 <p class="meta">Effective ${esc(fmtDay(EFFECTIVE_DATE))}. Operated by Reseed LLC.</p>
 </div>`;
-  return layout({ title: 'Privacy & threat model', path: '/privacy', body, demo: c.intakeMode === 'demo' });
+  return layout({ title: 'Privacy & threat model', path: '/privacy', body, hero, demo: c.intakeMode === 'demo' });
 }
 
 // ---------------- Methodology ----------------
@@ -747,10 +793,13 @@ export function methodologyPage(ctx: PageCtx): string {
   const scrubbed = scrubMessage(WORKED_EXAMPLE, { city: 'Brookfield' });
   const template = 'template' in scrubbed ? scrubbed.template : '';
   const skel = extractSkeleton(template) ?? '(none)';
+  const hero = {
+    kicker: 'Open methodology',
+    title: 'Methodology',
+    html: `<p class="meta">Effective ${esc(fmtDay(EFFECTIVE_DATE))}, revised ${esc(fmtDay(REVIEW_GATE_DATE))}.</p>
+<p class="rules-version"><strong>${esc(RULES_VERSIONS_TEXT)}</strong> · Skeleton grammar ${esc(SKELETON_GRAMMAR_VERSION)} · Area-code data ${esc(AREA_CODE_VERSION)}</p>`,
+  };
   const body = `<div class="prose">
-<h1>Methodology</h1>
-<p class="meta">Effective ${esc(fmtDay(EFFECTIVE_DATE))}, revised ${esc(fmtDay(REVIEW_GATE_DATE))}.</p>
-<p class="rules-version"><strong>${esc(RULES_VERSIONS_TEXT)}</strong> · Skeleton grammar ${esc(SKELETON_GRAMMAR_VERSION)} · Area-code data ${esc(AREA_CODE_VERSION)}</p>
 
 <h2>Who the reports come from</h2>
 <p>Reports are voluntary submissions from people who chose to file them. They are not a sample of all spam, and counts do not measure how much spam is sent. Early data may come from very few reporters.</p>
@@ -815,16 +864,19 @@ ${SLOTS.map((s) => `<tr><td class="mono">${s}</td><td>${esc(s === 'CTA' ? CTA_DE
 <li>${esc(fmtDay(EFFECTIVE_DATE))}: grammar v1 and this page first published.</li>
 </ul>
 </div>`;
-  return layout({ title: 'Methodology', path: '/methodology', body, demo: ctx.cfg.intakeMode === 'demo' });
+  return layout({ title: 'Methodology', path: '/methodology', body, hero, demo: ctx.cfg.intakeMode === 'demo' });
 }
 
 // ---------------- Self-host & contribute ----------------
 
 export function projectPage(ctx: PageCtx): string {
   const c = ctx.cfg;
+  const hero = {
+    kicker: 'Open project',
+    title: 'Self-host & contribute',
+    html: `<p class="lead">Spam Patterns is a pilot tracking recurring spam texts. It is open-source software under the Apache License 2.0. The repository link will appear here once it is public.</p>`,
+  };
   const body = `<div class="prose">
-<h1>Self-host &amp; contribute</h1>
-<p class="lead">Spam Patterns is a pilot tracking recurring spam texts. It is open-source software under the Apache License 2.0. The repository link will appear here once it is public.</p>
 ${c.officialInstanceUrl ? `<p>The official instance is <a href="${esc(c.officialInstanceUrl)}">${esc(c.officialInstanceUrl)}</a>. Forks are not affiliated with it.</p>` : `<p>Forks and self-hosted copies are not affiliated with the official instance.</p>`}
 <h2>Install</h2>
 <p>One supported path: Docker Compose behind a TLS-terminating reverse proxy. Copy <span class="mono">.env.example</span> to <span class="mono">.env</span>, set <span class="mono">STM_HMAC_KEY</span> to the output of <span class="mono">openssl rand -hex 32</span>, then run <span class="mono">docker compose up -d</span>. See <span class="mono">docs/self-hosting.md</span>.</p>
@@ -845,7 +897,7 @@ ${c.officialInstanceUrl ? `<p>The official instance is <a href="${esc(c.official
 <h2>History</h2>
 <p class="provenance">Launched November 17, 2026 as Spam Text Map; renamed Spam Patterns on November 19, 2026.</p>
 </div>`;
-  return layout({ title: 'Self-host & contribute', path: '/project', body, demo: c.intakeMode === 'demo' });
+  return layout({ title: 'Self-host & contribute', path: '/project', body, hero, demo: c.intakeMode === 'demo' });
 }
 
 // ---------------- Junk mail guide (static public-service page) ----------------
@@ -855,9 +907,12 @@ export const DMACHOICE_FEE = '$8';
 export const JUNK_MAIL_CHECKED = '2026-11-19';
 
 export function junkMailPage(ctx: PageCtx): string {
+  const hero = {
+    kicker: 'Practical next steps',
+    title: 'How to cut down junk mail',
+    html: `<p class="lead">There is no single switch at the Postal Service that stops junk mail. These are the routes that actually work. Each one covers a different kind of mail, so most people use more than one.</p>`,
+  };
   const body = `<div class="prose">
-<h1>How to cut down junk mail</h1>
-<p class="lead">There is no single switch at the Postal Service that stops junk mail. These are the routes that actually work. Each one covers a different kind of mail, so most people use more than one.</p>
 
 <h2 id="prescreened">Prescreened credit and insurance offers</h2>
 <p>These are the “pre-approved” or “you’ve been selected” offers. The official opt-out is <strong>OptOutPrescreen.com</strong>, or call <strong class="nowrap">1-888-5-OPT-OUT</strong> (<span class="nowrap">1-888-567-8688</span>). It is run by the consumer credit bureaus Equifax, Experian, TransUnion and Innovis under the Fair Credit Reporting Act. It is free.</p>
@@ -894,6 +949,7 @@ export function junkMailPage(ctx: PageCtx): string {
     title: 'How to cut down junk mail',
     path: '/junk-mail',
     body,
+    hero,
     demo: ctx.cfg.intakeMode === 'demo',
     description: 'The opt-outs that actually reduce paper junk mail, what each one covers, and their limits.',
   });

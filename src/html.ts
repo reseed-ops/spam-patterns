@@ -14,6 +14,16 @@ export const THEME_COLOR = '#204A73';
 /** Page background for the installed app's splash screen (--canvas). */
 export const BACKGROUND_COLOR = '#F8FAFC';
 
+/** Optional page-hero band shown above the content (presentation only). */
+export interface PageHero {
+  /** Short uppercase kicker above the title. */
+  kicker: string;
+  /** Page title (becomes the page's h1). */
+  title: string;
+  /** Already-escaped HTML placed under the title (lead paragraph, dates). */
+  html?: string;
+}
+
 export interface LayoutOptions {
   title: string;
   path: string;
@@ -21,7 +31,16 @@ export interface LayoutOptions {
   demo: boolean;
   scripts?: string[];
   description?: string;
+  hero?: PageHero;
+  /** The body brings its own full-width sections and .wrap containers. */
+  fullBleed?: boolean;
 }
+
+/** Original line-art icons for cards (decorative; aria-hidden). */
+export const ICON = {
+  image: '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3.5" y="4.5" width="17" height="15" rx="3" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="9" cy="10" r="1.8" fill="currentColor"/><path d="m5 18 5-5 3 3 2.5-2.5L19.5 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg>',
+  type: '<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false"><path d="M5 5.5h14a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-8l-4.5 3v-3H5a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M7.5 10h9M7.5 13.5h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>',
+} as const;
 
 const NAV: Array<[string, string]> = [
   ['/', 'Overview'],
@@ -78,14 +97,26 @@ ${
     : ''
 }
 <main id="main" tabindex="-1">
-<div class="wrap">
+${
+  o.hero
+    ? `<div class="page-hero"><div class="wrap"><div class="page-hero-inner">
+<p class="eyebrow">${esc(o.hero.kicker)}</p>
+<h1>${esc(o.hero.title)}</h1>
+${o.hero.html ?? ''}
+</div></div></div>
+`
+    : ''
+}${o.fullBleed ? o.body : `<div class="wrap main-content">
 ${o.body}
-</div>
+</div>`}
 </main>
 <footer class="site-footer">
   <div class="wrap">
-    <nav aria-label="Footer">${FOOT.map((f) => `<a href="${f[0]}">${esc(f[1])}</a>`).join('')}</nav>
-    <p class="meta">Spam Patterns is a project of Reseed LLC. Reports are voluntary submissions. A listing is not an allegation against any person or business.</p>
+    <div class="footer-grid">
+      <a class="footer-brand" href="/"><img src="/static/img/logo.svg" alt="" width="28" height="28">Spam Patterns</a>
+      <nav aria-label="Footer">${FOOT.map((f) => `<a href="${f[0]}">${esc(f[1])}</a>`).join('')}</nav>
+    </div>
+    <p class="meta footer-legal">Spam Patterns is a project of Reseed LLC. Reports are voluntary submissions. A listing is not an allegation against any person or business.</p>
   </div>
 </footer>
 </body>

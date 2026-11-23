@@ -4,9 +4,10 @@
 // location finer than "this area code is assigned to this state". No
 // outlines, no pins, no zoom, no third-party requests.
 //
-// Below the width the grid needs (12 x 56 px tiles + 11 x 4 px gaps = 716 px
-// of panel content), CSS shows a compact state list instead. Both are in the
-// markup; a container query picks one, and the other is display:none.
+// The grid is fluid: container queries step the tiles down from 56 px (at
+// 716 px of panel content) to 22 px with 2 px gaps (at 286 px, which a 360 px
+// phone clears). Only below 286 px does CSS show the compact state list
+// instead. Both are in the markup; the hidden one is display:none.
 
 import { allAreaCodes, lookupAreaCode } from './areacodes.ts';
 import { esc } from './html.ts';

@@ -112,13 +112,49 @@ describe('map v2: tile grid', () => {
     assert.match(html, /<a class="tile bin1 gc5 gr8 selected" href="\/\?state=TX" aria-label="TX 1\. Texas: 1 report, R, selected" aria-current="true"><span class="tile-abbr">TX<\/span> <span class="tile-count">1<\/span><span class="sel-mark" aria-hidden="true">✓<\/span><\/a>/);
     assert.equal(count(html, /aria-current/g), 1);
   });
-  it('CSS: 4 px gaps, 56 px minimum tiles, 716 px threshold, 14/16 px tile type', () => {
-    assert.match(css, /@container mapbody \(min-width: 716px\) \{\s*\.tile-grid \{ display: grid; grid-template-columns: repeat\(12, minmax\(56px, 1fr\)\); grid-template-rows: repeat\(8, minmax\(56px, auto\)\); gap: 4px;/);
-    assert.match(css, /\.tile \{[^}]*min-width: 56px; min-height: 56px;/);
-    assert.match(css, /\.tile-abbr \{ font: 600 14px/);
-    assert.match(css, /\.tile-count \{ font: 700 16px[^}]*tabular-nums/);
+  // The grid is fluid in three container-width steps; each step's tiles and gaps fit its threshold.
+  const step = (w: number) => {
+    const at = css.indexOf(`@container mapbody (min-width: ${w}px) {`);
+    assert.ok(at > 0, `step ${w}px exists`);
+    return css.slice(at, css.indexOf('\n}', at));
+  };
+  it('CSS: phone step at 286 px: 22 px minimum tiles, 2 px gaps, 10 px tile type, a 24 px pitch', () => {
+    const s = step(286);
+    assert.match(s, /\.tile-grid \{ display: grid; grid-template-columns: repeat\(12, minmax\(22px, 1fr\)\); grid-template-rows: repeat\(8, minmax\(30px, auto\)\); gap: 2px;/);
+    assert.match(s, /\.tile \{ min-width: 22px; min-height: 30px;/);
+    assert.match(s, /\.tile-abbr \{ font: 600 10px/);
+    assert.match(s, /\.tile-count \{ font: 700 10px[^}]*tabular-nums/);
+    assert.equal(12 * 22 + 11 * 2, 286);
+    assert.ok(22 + 2 >= 24, 'tile pitch meets the WCAG 2.5.8 24 px spacing rule');
+    // A 360 px phone: 2 x 20 px page padding, 2 x 12 px panel padding (<= 400 px), 2 x 1 px border.
+    assert.match(css, /\.wrap \{ max-width: 1180px; margin: 0 auto; padding: 0 20px; \}/);
+    assert.match(css, /@media \(max-width: 400px\) \{[^\n]*\.panel \{ padding: 12px; \}/);
+    assert.ok(360 - 2 * 20 - 2 * 12 - 2 * 1 >= 286, 'a 360 px phone shows the grid');
+  });
+  it('CSS: middle step at 480 px: 36 px minimum tiles, 3 px gaps, 12/13 px tile type', () => {
+    const s = step(480);
+    assert.match(s, /\.tile-grid \{ grid-template-columns: repeat\(12, minmax\(36px, 1fr\)\); grid-template-rows: repeat\(8, minmax\(40px, auto\)\); gap: 3px; \}/);
+    assert.match(s, /\.tile \{ min-width: 36px; min-height: 40px;/);
+    assert.match(s, /\.tile-abbr \{ font: 600 12px/);
+    assert.match(s, /\.tile-count \{ font: 700 13px[^}]*tabular-nums/);
+    assert.ok(12 * 36 + 11 * 3 <= 480);
+  });
+  it('CSS: desktop step at 716 px keeps 56 px minimum tiles, 4 px gaps, 14/16 px tile type', () => {
+    const s = step(716);
+    assert.match(s, /\.tile-grid \{ grid-template-columns: repeat\(12, minmax\(56px, 1fr\)\); grid-template-rows: repeat\(8, minmax\(56px, auto\)\); gap: 4px; \}/);
+    assert.match(s, /\.tile \{ min-width: 56px; min-height: 56px; padding: 4px 6px;/);
+    assert.match(s, /\.tile-abbr \{ font: 600 14px/);
+    assert.match(s, /\.tile-count \{ font: 700 16px[^}]*tabular-nums/);
+    assert.match(s, /\.tile\.selected \{ box-shadow: inset 0 0 0 3px var\(--text\), inset 0 0 0 5px #fff; \}/);
     assert.match(css, /\.state-row \{[^}]*min-height: 48px;/);
     assert.equal(12 * 56 + 11 * 4, 716);
+  });
+  it('CSS: no fixed tile minimum outside the steps, and the steps come after the base tile rules', () => {
+    assert.match(css, /\.tile \{ position: relative; display: flex; flex-direction: column; justify-content: center; min-width: 0;/);
+    // Container queries add no specificity, so the steps must come later in the file to win.
+    const base = Math.max(css.indexOf('.tile { position: relative;'), css.indexOf('.tile.selected, .state-row.selected {'), css.indexOf('.sel-mark { position: absolute;'));
+    assert.ok(base > 0 && base < css.indexOf('@container mapbody (min-width: 286px)'));
+    assert.ok(css.indexOf('(min-width: 286px)') < css.indexOf('(min-width: 480px)') && css.indexOf('(min-width: 480px)') < css.indexOf('(min-width: 716px)'));
   });
 });
 
@@ -148,11 +184,11 @@ describe('map v2: phone state list', () => {
     for (const b of ['bin1', 'bin2', 'bin3', 'bin4']) assert.ok(html.includes(`swatch ${b}`));
     assert.match(html, /class="state-row selected" href="MD" aria-current="true">.*?<span class="visually-hidden">, R, selected<\/span><span class="sel-mark" aria-hidden="true">✓<\/span>/);
   });
-  it('the page carries both the grid and the list; CSS picks one by panel width', () => {
+  it('the page carries both the grid and the list; CSS shows the list only below a 286 px panel', () => {
     const html = page(SPARSE);
     assert.ok(html.includes('class="tile-grid"') && html.includes('class="state-list"'));
     assert.match(css, /\.tile-grid \{ display: none; \}/);
-    assert.match(css, /@container mapbody \(min-width: 716px\) \{[^@]*\.state-list \{ display: none; \}/);
+    assert.match(css, /@container mapbody \(min-width: 286px\) \{[^@]*\.state-list \{ display: none; \}/);
   });
 });
 
