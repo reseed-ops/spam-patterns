@@ -226,29 +226,45 @@ describe('logo, flow diagram, privacy line', () => {
     assert.equal(r.headers.get('content-type'), 'image/svg+xml');
   });
 
-  it('home has a How it works section with the diagram, an accessible name and the steps as text', async () => {
+  it('home has How it works directly under the hero: five text steps, then a report button', async () => {
     const { text } = await get(s.base, '/');
     assert.match(text, /<h2 id="how-h">How it works<\/h2>/);
-    assert.match(text, /<img role="img" src="\/static\/img\/flow-diagram\.svg"[^>]*alt="How Spam Patterns works[^"]+"[^>]*aria-describedby="flow-steps">/);
-    assert.match(text, /class="flow-scroll" tabindex="0" role="region"/);
-    assert.match(text, /Scroll sideways to see all five steps/);
-    const ol = text.slice(text.indexOf('<ol id="flow-steps">'), text.indexOf('</ol>', text.indexOf('<ol id="flow-steps">')));
-    assert.equal(ol.split('<li>').length - 1, 5);
-    // The text alternative matches what the SVG draws.
-    const svg = read('public/static/img/flow-diagram.svg');
-    const drawn = [...svg.matchAll(/<(?:text|tspan)[^>]*>([^<]+)</g)].map((m) => m[1]!.trim()).join(' ');
-    for (const [h, t] of FLOW_STEPS) {
-      assert.ok(drawn.includes(h), h);
-      for (const w of t.replace(/\.$/, '').split(' ')) assert.ok(drawn.includes(w), `${h}: ${w}`);
-    }
-    assert.ok(existsSync(root + 'public/static/img/flow-diagram.svg'));
-    assert.equal((await fetch(s.base + '/static/img/flow-diagram.svg')).headers.get('content-type'), 'image/svg+xml');
+    const i = text.indexOf('id="how-h"');
+    assert.ok(text.indexOf('</section>', text.indexOf('<section class="hero"')) < i, 'after the hero');
+    for (const later of ['id="scripts-h"', 'id="geo-h"']) assert.ok(i < text.indexOf(later), later);
+    const ol = text.slice(text.indexOf('<ol class="flow-steps" id="flow-steps">'), text.indexOf('</ol>', i));
+    assert.equal(ol.split('<li class="flow-step">').length - 1, 5);
+    for (const [h, t] of FLOW_STEPS) assert.ok(ol.includes(`<strong class="flow-title">${h}</strong> <span class="flow-text">${t}</span>`), h);
+    assert.match(text.slice(text.indexOf('</ol>', i)), /^<\/ol>\n<p class="how-cta"><a class="btn btn-primary" href="\/report">Report a spam text<\/a><\/p>/);
+    // One text list, no image diagram to duplicate it.
+    assert.ok(!text.includes('flow-diagram.svg') && !text.includes('flow-scroll'));
+    assert.ok(!existsSync(root + 'public/static/img/flow-diagram.svg'));
   });
 
-  it('the narrow-screen diagram scrolls rather than shrinking', () => {
+  it('hero: outcome headline, separate button, purpose line, both input paths, scrubbing and deletion', async () => {
+    const { text } = await get(s.base, '/');
+    const hero = text.slice(text.indexOf('<section class="hero"'), text.indexOf('</section>', text.indexOf('<section class="hero"')));
+    assert.match(hero, /<h1>Report a spam text to expose shared scripts, anonymously<\/h1>/);
+    assert.match(hero, /<a class="btn btn-primary" href="\/report">Report a spam text<\/a>/);
+    assert.match(hero, /Paste the text or use a screenshot\. Screenshots stay on your device, and names, numbers and links are scrubbed automatically before you approve\./);
+    assert.match(hero, /It does not block the sender or file a complaint with your carrier or regulators\./);
+    assert.match(hero, /Nothing is stored before you approve it, and you can <a href="\/delete">delete a report later<\/a>\./);
+  });
+
+  it('empty pilot: an illustrative scrubbed script, what eligible means, and that counts appear immediately', async () => {
+    const { text } = await get(s.base, '/');
+    const sec = text.slice(text.indexOf('id="scripts-h"'), text.indexOf('</section>', text.indexOf('id="scripts-h"')));
+    assert.match(sec, /<span class="example-label">Illustrative example<\/span>[^<]*made up, not a real report/);
+    for (const m of ['[recipient name removed]', '[phone number removed]', '[link removed]']) assert.ok(sec.includes(m), m);
+    assert.match(sec, /A report is <strong>eligible<\/strong> if it has not been deleted and is not a repeat/);
+    assert.match(sec, /Every counted report appears in the area-code counts below as soon as it is filed/);
+  });
+
+  it('the steps wrap rather than scroll sideways: stacked by default, a row of five on wide screens', () => {
     const css = read('public/static/css/app.css');
-    assert.match(css, /\.flow-scroll \{ overflow-x: auto;/);
-    assert.match(css, /\.flow-scroll img \{[^}]*min-width: 1100px;/);
+    assert.ok(!css.includes('flow-scroll') && !/min-width: 1100px/.test(css));
+    assert.match(css, /\.flow-steps \{[^}]*grid-template-columns: minmax\(0, 1fr\);/);
+    assert.match(css, /@media \(min-width: 960px\) \{\n  \.flow-steps \{ grid-template-columns: repeat\(5, minmax\(0, 1fr\)\); \}/);
   });
 
   it('/privacy says what the service worker stores', async () => {

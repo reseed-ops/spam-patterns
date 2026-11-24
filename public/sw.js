@@ -24,7 +24,6 @@ var PRECACHE = [
   '/static/js/ocr-extract.js',
   '/static/js/receipts.js',
   '/static/img/logo.svg',
-  '/static/img/flow-diagram.svg',
   '/static/icons/favicon-32.png',
   '/static/icons/apple-touch-icon.png',
   '/static/icons/icon-192.png',
