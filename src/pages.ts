@@ -344,6 +344,7 @@ ${paused}
 <h2>Upload a screenshot.</h2>
 <p>We read it once to find the sender number and message. We don’t store the image. You’ll review the scrubbed report before filing.</p>
 <p class="meta">The screenshot is read by software running in your browser. The image never leaves your device. Supported: PNG, JPEG, WebP, up to ${c.maxScreenshotMb} MB. <a href="/privacy#screenshots">How screenshot reading works</a></p>
+<p class="meta" id="share-hint">On Android, once the app is installed you can also share a screenshot to Spam Patterns straight from your photos or messages app.</p>
 <label class="btn btn-primary file-btn" for="shot">Upload a screenshot</label>
 <input class="visually-hidden" type="file" id="shot" accept="image/png,image/jpeg,image/webp">
 <p class="field-error" id="shot-error" role="alert" hidden></p>
@@ -790,6 +791,7 @@ export function privacyPage(ctx: PageCtx, flagResult?: { ok: boolean; message: s
 
 <h2 id="screenshots">Screenshots</h2>
 <p>Screenshots are read on your device. If your browser has built-in text detection (the Shape Detection API), that is used first; otherwise open-source text-recognition software (Tesseract) runs inside your browser. The review screen says which one read your screenshot. Either way, the image is not uploaded. Only the text you review is sent, and only when you ask for the review screen. The image is not kept in a draft, a thumbnail, or any error report. Files are limited to ${c.maxScreenshotMb} MB and ${(c.maxScreenshotPixels / 1_000_000).toFixed(0)} megapixels.</p>
+<p id="shared-screenshots">A screenshot you share to Spam Patterns from another app is handled on your device the same way as one you pick: the installed app keeps it in your browser only until the report page opens it, then deletes it, and it is not sent to the server.</p>
 <p>Because the image is processed on your device, there is no photo metadata (such as location data) for us to receive or remove.</p>
 
 <h2 id="scrubbing">Scrubbing</h2>

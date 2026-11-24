@@ -1,7 +1,10 @@
 // Report flow. No framework, no storage APIs: the draft lives in memory only
 // and is cleared after filing. The one thing kept after filing is the
 // deletion receipt code, saved on this device by receipts.js (browser storage,
-// never sent anywhere); this file does not touch storage itself. The screenshot never leaves this page: it is
+// never sent anywhere); this file does not touch storage itself, except to
+// pick up and delete a screenshot shared from Android's share sheet, which
+// the service worker keeps on this device until this page reads it (see
+// takeShared below). The screenshot never leaves this page: it is
 // read on this device, first by the browser's built-in text reader (the
 // Shape Detection API's TextDetector) where one exists, otherwise by
 // Tesseract.js running locally (self-hosted worker, core and language data,
@@ -355,9 +358,9 @@
     });
   }
 
-  shot.addEventListener('change', function () {
+  // One path for every screenshot: the file picker and the share sheet.
+  function takeImage(file) {
     $('shot-error').hidden = true;
-    var file = shot.files && shot.files[0];
     if (!file) return; // picker cancelled: stay here, no error
     if (TYPES.indexOf(file.type) === -1) { shot.value = ''; return shotError('This file type is not supported. Use PNG, JPEG or WebP, or enter the details manually.'); }
     if (file.size > MAX_MB * 1024 * 1024) { shot.value = ''; return shotError('This file is larger than ' + MAX_MB + ' MB. Choose a smaller screenshot, or enter the details manually.'); }
@@ -396,5 +399,27 @@
         shotError('Screenshot reading is temporarily unavailable. You can enter the details manually.');
       });
     });
-  });
+  }
+
+  shot.addEventListener('change', function () { takeImage(shot.files && shot.files[0]); });
+
+  // Android share target (v0.1.10): public/sw.js answered the share on this
+  // device and kept the image in Cache Storage. Read it once, delete it right
+  // away, then handle it exactly like a picked file. Nothing found: nothing
+  // happens, the page is as usual.
+  var SHARE_CACHE = 'sp-shared-image';
+  var SHARE_KEY = '/shared-image';
+  function takeShared() {
+    if (!/(?:^\?|&)shared=1(?:&|$)/.test(location.search) || !window.caches) return;
+    caches.open(SHARE_CACHE).then(function (cache) {
+      return cache.match(SHARE_KEY).then(function (hit) {
+        if (!hit) return null;
+        var drop = function () { return cache.delete(SHARE_KEY); };
+        return hit.blob().then(function (blob) {
+          return drop().then(function () { return blob; });
+        }, function () { return drop().then(function () { return null; }); });
+      });
+    }).then(function (blob) { if (blob) takeImage(blob); }, function () { /* no shared image: page as usual */ });
+  }
+  takeShared();
 })();

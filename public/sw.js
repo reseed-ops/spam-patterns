@@ -7,13 +7,22 @@
 // (/, /patterns, pattern pages), which are network-only with an offline
 // fallback. Nothing a visitor types is ever stored here.
 //
+// One exception, on the device only (v0.1.10): a screenshot shared to the
+// installed app from Android's share sheet arrives as a POST to
+// /share-target. This worker answers that POST itself, without any network
+// request, keeps the image in its own cache (SHARE_CACHE) just long enough
+// for /report to pick it up, and /report deletes it as soon as it reads it.
+//
 // VERSION must equal package.json "version" (test/pwa.test.ts checks it), so
 // every release gets a fresh cache and old caches are deleted on activate.
 'use strict';
 
-var VERSION = '0.1.9';
+var VERSION = '0.1.10';
 var CACHE = 'stm-v' + VERSION;
 var OFFLINE_URL = '/offline';
+// Not 'stm-'-prefixed, so a release's activate step leaves a pending share alone.
+var SHARE_CACHE = 'sp-shared-image';
+var SHARE_KEY = '/shared-image';
 
 // Installed up front: the app CSS/JS, the icons and logo, and the offline page.
 var PRECACHE = [
@@ -92,8 +101,29 @@ function cacheFirst(request) {
   });
 }
 
+// Android share target. Never calls fetch(): the image stays on the device.
+// Stores the shared file under SHARE_KEY with its own content type, then
+// sends the browser to /report?shared=1. Anything unreadable, or no file:
+// nothing stored, plain /report.
+function receiveShare(request) {
+  var plain = function () { return Response.redirect(new URL('/report', self.location.origin).href, 303); };
+  return request.formData().then(function (form) {
+    var file = form.get('image');
+    if (!file || typeof file === 'string' || !file.size) return plain();
+    var stored = new Response(file, { headers: { 'Content-Type': file.type || 'application/octet-stream' } });
+    return caches.open(SHARE_CACHE).then(function (cache) {
+      return cache.put(SHARE_KEY, stored);
+    }).then(function () {
+      return Response.redirect(new URL('/report?shared=1', self.location.origin).href, 303);
+    });
+  }).catch(plain);
+}
+
 function navigate(request, url) {
   var shell = SHELL_PAGES.indexOf(url.pathname) !== -1 && !url.search;
+  // /report?shared=1 may use the stored /report shell offline (its image is
+  // read on the device), but is never itself stored.
+  var shellFallback = shell || (url.pathname === '/report' && url.search === '?shared=1');
   return fetch(request).then(function (response) {
     if (shell && storable(response)) {
       var copy = response.clone();
@@ -102,7 +132,7 @@ function navigate(request, url) {
     return response;
   }, function () {
     return caches.open(CACHE).then(function (cache) {
-      return (shell ? cache.match(url.pathname) : Promise.resolve(null)).then(function (hit) {
+      return (shellFallback ? cache.match(url.pathname) : Promise.resolve(null)).then(function (hit) {
         return hit || cache.match(OFFLINE_URL);
       });
     });
@@ -111,8 +141,12 @@ function navigate(request, url) {
 
 self.addEventListener('fetch', function (event) {
   var request = event.request;
-  if (request.method !== 'GET') return; // POSTs always go straight to the network, never stored.
   var url = new URL(request.url);
+  if (request.method === 'POST' && url.origin === self.location.origin && url.pathname === '/share-target') {
+    event.respondWith(receiveShare(request));
+    return;
+  }
+  if (request.method !== 'GET') return; // Other POSTs always go straight to the network, never stored.
   if (url.origin !== self.location.origin) return;
   if (request.mode === 'navigate') {
     // Network-first; only SHELL_PAGES are ever stored, everything else just

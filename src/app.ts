@@ -97,6 +97,14 @@ export const MANIFEST = {
     { src: '/static/icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
     { src: '/static/icons/icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
   ],
+  // Android share sheet (v0.1.10). The service worker answers this POST on
+  // the device; the image is never sent to the server (see public/sw.js).
+  share_target: {
+    action: '/share-target',
+    method: 'POST',
+    enctype: 'multipart/form-data',
+    params: { files: [{ name: 'image', accept: ['image/*'] }] },
+  },
 };
 
 /**
@@ -300,6 +308,16 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
     const method = req.method ?? 'GET';
     const client = resolveClient(req, cfg.trustedProxies, cfg.clientIpHeader, cfg.upstreamCidrs);
     const ip = client.ip;
+
+    // Share-target safety net (v0.1.10). With the app installed, the service
+    // worker answers this POST on the device and it never gets here. If it
+    // does arrive (no active worker), the body is discarded unread: not
+    // parsed, stored, logged or forwarded; no report, no rate limit, no counter.
+    if (method === 'POST' && path === '/share-target') {
+      req.resume();
+      res.writeHead(303, { ...SECURITY_HEADERS, Location: '/report', 'Cache-Control': 'no-store', Connection: 'close' });
+      return void res.end();
+    }
 
     // Image or multipart bodies are never accepted anywhere: the screenshot
     // is processed in the browser and must not reach this server.
