@@ -14,7 +14,7 @@ import type { AreaCount } from '../src/patterns.ts';
 import { TEST_KEY, get, previewAndFile, startServer } from './helpers.ts';
 
 const ctx = { cfg: loadConfig({ STM_HMAC_KEY: TEST_KEY }), paused: false };
-const P = (o: Partial<OverviewParams> = {}): OverviewParams => ({ range: '90', view: 'both', state: null, ac: null, sort: 'count', ...o });
+const P = (o: Partial<OverviewParams> = {}): OverviewParams => ({ range: '90', view: 'map', state: null, ac: null, sort: 'count', ...o });
 const page = (counts: AreaCount[], o: Partial<OverviewParams> = {}) => overviewPage(ctx, P(o), counts, '2026-11-01');
 const css = readFileSync(new URL('../public/static/css/app.css', import.meta.url), 'utf8');
 
@@ -64,19 +64,19 @@ describe('map v2: summary line (derived from groupByState)', () => {
   });
   it('unmapped-only: no summary, the specified message, breakdown and Table link kept, no grid or legend', () => {
     assert.equal(stateSummary(UNMAPPED_ONLY), null);
-    for (const view of ['both', 'map'] as const) {
+    for (const view of ['map'] as const) {
       const html = page(UNMAPPED_ONLY, { view });
       assert.match(html, /No reports in this range are assigned to a state or DC\./);
       assert.match(html, /3 reports use area codes without a map position \(toll-free or territories\): <a href="[^"]*ac=800#detail-h">800<\/a>, <a href="[^"]*ac=787#detail-h">787<\/a>/);
       assert.ok(!html.includes('class="tile-grid"') && !html.includes('class="legend"') && !html.includes('map-summary'));
-      assert.match(html, view === 'both' ? /href="#table-view">Skip map to results/ : /href="\/\?view=table">View results table/);
+      assert.match(html, /href="#sources-h">Skip map to next section<\/a> · <a href="\/">View results table/);
     }
   });
 });
 
 describe('map v2: empty range', () => {
   it('renders the neutral empty message instead of the grid and legend', () => {
-    for (const view of ['both', 'map'] as const) {
+    for (const view of ['map'] as const) {
       const html = page([], { view });
       assert.match(html, /No reports were filed in this date range\./);
       for (const absent of ['class="tile-grid"', 'class="state-list"', 'class="legend"', 'map-summary', 'map-key', 'Legend.']) assert.ok(!html.includes(absent), `${view}: ${absent}`);
@@ -208,16 +208,24 @@ describe('map v2: legend', () => {
 });
 
 describe('map v2: view modes, order and skip links', () => {
-  it('Both: Table before Map in the DOM; the skip link is visible and its target exists', () => {
+  it('Table is the default view; Map is the only other tab and there is no Both view', () => {
+    const html = overviewPage(ctx, { ...P(), view: 'table' }, SPARSE, '2026-11-01');
+    assert.ok(html.includes('id="table-view"') && !html.includes('id="map-view"'));
+    assert.match(html, /<a href="\/"[^>]*aria-current="page">Table<\/a>/);
+    assert.match(html, /<a href="\/\?view=map">Map<\/a>/);
+    assert.ok(!/>Both<\/a>/.test(html) && !html.includes('view=both'));
+  });
+  it('Map: the visible skip link jumps forward past the map to the next section', () => {
     const html = page(SPARSE);
-    assert.ok(html.indexOf('id="table-view"') < html.indexOf('id="map-view"'));
-    assert.match(html, /<p class="map-links"><a class="skip-map" href="#table-view">Skip map to results<\/a><\/p>/);
+    assert.match(html, /<p class="map-links"><a class="skip-map" href="#sources-h">Skip map to next section<\/a>/);
+    assert.ok(html.indexOf('id="map-view"') < html.indexOf('id="sources-h"'));
+    assert.ok(!html.includes('href="#table-view"'));
     assert.ok(!/\.skip-map[^{]*\{[^}]*-9999px/.test(css), 'skip-map is not hidden off-screen');
     assert.ok(!/order: -1/.test(css), 'visual order matches DOM order');
   });
   it('every in-page link target exists in every view mode, data state, and selection', () => {
     for (const counts of [SPARSE, DENSE, UNMAPPED_ONLY, []]) {
-      for (const view of ['both', 'map', 'table'] as const) {
+      for (const view of ['map', 'table'] as const) {
         for (const sel of [{}, { state: 'MD' }, { ac: '410' }, { ac: '800' }]) {
           const html = page(counts, { view, ...sel });
           const have = ids(html);
@@ -233,25 +241,40 @@ describe('map v2: view modes, order and skip links', () => {
   });
   it('Map only: a visible "View results table" link keeps the range; no dangling #table-view', () => {
     const html = page(SPARSE, { view: 'map', range: '365' });
-    assert.match(html, /<p class="map-links"><a href="\/\?range=365&amp;view=table">View results table<\/a><\/p>/);
+    assert.match(html, /<a href="\/\?range=365">View results table<\/a><\/p>/);
     assert.ok(!html.includes('href="#table-view"'));
-    assert.match(html, /<a href="\/\?range=365&amp;view=table"[^>]*>Table<\/a>/);
-    assert.match(html, /<a href="\/\?range=365"[^>]*>Both<\/a>/);
+    assert.match(html, /<a href="\/\?range=365">Table<\/a>/);
+    assert.match(html, /<a href="\/\?range=365&amp;view=map" aria-current="page">Map<\/a>/);
   });
   it('Table only: no map panel', () => {
     const html = page(SPARSE, { view: 'table' });
     assert.ok(!html.includes('id="map-view"') && html.includes('id="table-view"'));
   });
-  it('stacked by default; two columns only when the map keeps its minimum width', () => {
-    assert.match(css, /\.views-both \{ display: grid; gap: 16px; align-items: start; \}/);
-    assert.match(css, /@container views \(min-width: 1126px\) \{ \.views-both \{ grid-template-columns: minmax\(360px, 1fr\) minmax\(750px, 1\.5fr\); \} \}/);
+  it('one view at a time: no side-by-side Both layout remains in the CSS', () => {
+    assert.ok(!css.includes('views-both'));
     assert.ok(!/3fr 2fr/.test(css));
+  });
+  it('the claimed-origin caveat appears once, at the top of the section, in every view and selection', () => {
+    for (const view of ['map', 'table'] as const) {
+      for (const sel of [{}, { state: 'MD' }, { ac: '410' }]) {
+        const html = page(SPARSE, { view, ...sel });
+        assert.equal(html.split(CLAIMED_ORIGIN_WARNING).length - 1, 1, `${view} ${JSON.stringify(sel)}`);
+        assert.match(html, /<h2 id="geo-h">Reported sender area codes<\/h2>\n<aside class="geo-warning"/);
+      }
+    }
+  });
+  it('the region column is "Area code state / region" and links to the methodology', () => {
+    const html = page(SPARSE, { view: 'table' });
+    assert.match(html, /<th scope="col" class="col-region"><a href="\/methodology">Area code state \/ region<\/a><\/th>/);
+    assert.ok(!html.includes('Numbering-plan reference region'));
   });
   it('selection links (tiles, list rows, table, unmapped codes) land on the detail heading and keep the range', () => {
     const html = page([...SPARSE, { areaCode: '800', count: 1 }], { range: '30' });
-    assert.match(html, /href="\/\?range=30&amp;state=MD#detail-h"/);
-    assert.match(html, /href="\/\?range=30&amp;ac=410#detail-h"/);
-    assert.match(html, /href="\/\?range=30&amp;ac=800#detail-h"/);
+    assert.match(html, /href="\/\?range=30&amp;view=map&amp;state=MD#detail-h"/);
+    assert.match(html, /href="\/\?range=30&amp;view=map&amp;ac=800#detail-h"/);
+    const t = page([...SPARSE, { areaCode: '800', count: 1 }], { range: '30', view: 'table' });
+    assert.match(t, /href="\/\?range=30&amp;ac=410#detail-h"/);
+    assert.match(t, /href="\/\?range=30&amp;ac=800#detail-h"/);
   });
 });
 
@@ -261,19 +284,20 @@ describe('map v2: state detail', () => {
     const html = page(counts, { state: 'TX', range: '30' });
     const d = html.slice(html.indexOf('<section class="detail panel"'), html.indexOf('</section>', html.indexOf('<section class="detail panel"')));
     assert.match(d, /<h3 id="detail-h" tabindex="-1">Texas<\/h3>/);
-    assert.ok(d.includes(CLAIMED_ORIGIN_WARNING));
+    assert.ok(html.indexOf(CLAIMED_ORIGIN_WARNING) < html.indexOf('id="detail-h"'), 'caveat sits above the detail');
     assert.match(d, /<span class="num big">3<\/span> reports across <span class="num">2<\/span> area codes · /);
-    assert.match(d, /href="\/\?range=30&amp;ac=979#detail-h">Area code 979<\/a> <span class="num">2<\/span>/);
-    assert.match(d, /<a href="\/\?range=30#geo-h">Clear selection<\/a>/);
+    assert.match(d, /href="\/\?range=30&amp;view=map&amp;ac=979#detail-h">Area code 979<\/a> <span class="num">2<\/span>/);
+    assert.match(d, /<a href="\/\?range=30&amp;view=map#geo-h">Clear selection<\/a>/);
     // Detail comes before the views, and the selected tile and row are marked.
-    assert.ok(html.indexOf('id="detail-h"') < html.indexOf('id="table-view"'));
+    assert.ok(html.indexOf('id="detail-h"') < html.indexOf('id="map-view"'));
     assert.match(html, /<a class="tile bin2 gc5 gr8 selected"/);
     assert.match(html, /<a class="state-row selected"/);
   });
-  it('the area-code detail also repeats the warning', () => {
+  it('the area-code detail keeps its own claimed-origin note under the renamed label', () => {
     const html = page(SPARSE, { ac: '410' });
     const d = html.slice(html.indexOf('<section class="detail panel"'));
-    assert.ok(d.indexOf(CLAIMED_ORIGIN_WARNING) < d.indexOf('</section>'));
+    assert.match(d, /<dt>Area code state \/ region<\/dt>/);
+    assert.ok(d.indexOf('not where the sender is') < d.indexOf('</section>'));
   });
 });
 
@@ -290,14 +314,17 @@ describe('map v2: over HTTP', () => {
     try {
       await previewAndFile(s.base, { number: '(410) 555-0150', message: 'Your toll account has an unpaid balance of $4.15. Pay today at toll-pay-center.top to avoid a fee.', category: 'other', city: '', source: 'manual' });
       await previewAndFile(s.base, { number: '(979) 555-0151', message: 'We buy houses for cash in any condition. Close in 7 days. Reply YES for a fair offer on your home.', category: 'home_buying_offer', city: '', source: 'manual' });
-      const r = await get(s.base, '/');
+      const r = await get(s.base, '/?view=map');
       assert.equal(r.status, 200);
       assert.match(r.text, /2 reports across 2 states/);
       assert.match(r.text, /<span class="sl-name">Maryland<\/span><span class="sl-sep" aria-hidden="true"> · <\/span><span class="sl-count num">1 report<\/span>/);
       assert.match(r.text, /<span class="sl-name">Texas<\/span>/);
       assert.ok(r.text.indexOf('>Maryland<') < r.text.indexOf('>Texas<'), 'tie broken by name');
-      const st = await get(s.base, '/?state=MD');
-      assert.match(st.text, /<h3 id="detail-h" tabindex="-1">Maryland<\/h3>\n<aside class="geo-warning"/);
+      const home = await get(s.base, '/');
+      assert.match(home.text, /id="table-view"/);
+      assert.ok(!home.text.includes('id="map-view"'), 'Table is the default view');
+      const st = await get(s.base, '/?view=map&state=MD');
+      assert.match(st.text, /<h3 id="detail-h" tabindex="-1">Maryland<\/h3>\n<p class="count-block">/);
       assert.match(st.text, /1<\/span> report across <span class="num">1<\/span> area code/);
     } finally {
       await s.close();

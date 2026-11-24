@@ -152,7 +152,8 @@ textarea { resize: vertical; }
 .hero-grid { display: grid; gap: 24px; align-items: center; }
 @media (min-width: 900px) { .hero-grid { grid-template-columns: .95fr 1.05fr; gap: 36px; } .hero { padding: 72px 0 40px; } }
 .hero h1 { margin: 20px 0; font-size: clamp(38px, 5vw, 62px); line-height: 1.06; letter-spacing: -.045em; }
-.hero .lead { max-width: 600px; margin-bottom: 24px; }
+.hero .lead { max-width: 600px; margin-bottom: 12px; }
+.hero-purpose { max-width: 600px; margin-bottom: 24px; font-size: 15px; line-height: 1.55; color: var(--text); border-left: 4px solid var(--teal); padding: 2px 0 2px 12px; }
 .hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; }
 .hero-actions .btn { margin: 0; }
 .hero-actions a:not(.btn) { font-weight: 700; display: inline-block; padding: 12px 0; }
@@ -161,7 +162,7 @@ textarea { resize: vertical; }
 .hero-art img { display: block; width: 100%; max-width: 640px; margin: 0 auto; }
 .tagline { display: inline-flex; align-items: center; gap: 9px; margin: 0; padding: 6px 14px; border: 1px solid #D3E2F7; border-radius: 999px; background: var(--tint-blue); color: #2C528F; font-size: 14px; font-weight: 700; }
 .tagline::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--teal); box-shadow: 0 0 0 4px rgba(16, 169, 148, .12); }
-.metrics-wrap { margin-top: 8px; margin-bottom: 48px; }
+.metrics-wrap { margin-top: 48px; margin-bottom: 48px; }
 .metrics { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--surface); border: 1px solid var(--divider); border-radius: 20px; box-shadow: var(--shadow); padding: 20px 8px; }
 .metric { text-align: center; padding: 4px 8px; border-right: 1px solid var(--divider); }
 .metric:last-child { border-right: 0; }
@@ -185,13 +186,7 @@ textarea { resize: vertical; }
 .tabs a:hover { color: var(--action-hover); }
 .tabs a[aria-current] { background: var(--surface); color: var(--action); box-shadow: 0 2px 7px rgba(39, 65, 100, .1); }
 .views-wrap { container: views / inline-size; }
-.views-both { display: grid; gap: 16px; align-items: start; }
-.views-both > * { min-width: 0; }
-/* Two columns only when the map panel keeps its 716 px desktop step
-   (716 + 2 x 16 padding + 2 x 1 border = 750) beside a 360 px table. The map
-   is fluid down to 286 px, but a side-by-side map would drop to a smaller
-   step. Within the 1180 px page (1124 px of content) this stays stacked. */
-@container views (min-width: 1126px) { .views-both { grid-template-columns: minmax(360px, 1fr) minmax(750px, 1.5fr); } }
+.views > * { min-width: 0; }
 .view-map, .view-table { padding: 16px; }
 @media (min-width: 640px) { .view-table { padding: 20px 22px; } }
 #map-h { margin-top: 0; }
@@ -307,18 +302,32 @@ a.tile.bin3:hover, a.tile.bin4:hover { color: var(--bin-text-dark); }
 .empty-box { display: grid; gap: 8px 28px; align-items: center; background: var(--surface); border: 1px solid var(--divider); border-radius: 22px; padding: 24px; margin: 16px 0; }
 .empty-box img { display: block; width: 100%; max-width: 300px; margin: 0 auto; }
 .empty-box .empty { padding: 0; margin: 0; }
+.empty-cta { margin: 0 0 12px; font-size: 17px; }
+.empty-box .btn { margin: 0; }
+.example-script { margin: 0 0 16px; }
+.example-script figcaption { font-size: 14px; line-height: 1.5; color: var(--text-2); margin: 0 0 8px; }
+.example-label { display: inline-block; margin-right: 8px; padding: 2px 10px; border-radius: 999px; border: 1px solid var(--outline); color: var(--text); font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.example-script .scrubbed { margin: 0; }
 @media (min-width: 720px) { .empty-box { grid-template-columns: 260px 1fr; padding: 28px 36px; } }
 .status-mark { display: inline-block; margin: 0 0 10px; padding: 5px 11px; border-radius: 10px; background: #F0EAFF; color: #5E4A9E; font-size: 12px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
 .process-graphic { display: block; width: 100%; max-width: 660px; border-radius: 22px; border: 1px solid var(--divider); margin: 0 0 8px; }
 .rules-version { font-size: 15px; }
 
-/* how it works (home): the diagram keeps its text legible and scrolls sideways on narrow screens */
+/* how it works (home): one list of five steps, stacked on phones and in a row on
+   wide screens. It wraps instead of scrolling sideways at every width. */
 .how { margin: 0; }
-.flow { margin: 0 0 12px; }
-.flow-scroll { overflow-x: auto; border: 1px solid var(--divider); border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
-.flow-scroll img { display: block; width: 100%; min-width: 1100px; max-width: 1240px; height: auto; margin: 0 auto; }
-.flow-hint { margin: 6px 0 0; }
-@media (min-width: 1132px) { .flow-hint { display: none; } }
+.flow-steps { list-style: none; padding: 0; margin: 0 0 20px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+.flow-step { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 14px; align-content: start; background: var(--surface); border: 1px solid var(--divider); border-radius: var(--radius); box-shadow: var(--shadow); padding: 16px 18px; }
+.flow-num { grid-row: span 2; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%; background: var(--tint-blue); color: var(--action); font-weight: 800; font-variant-numeric: tabular-nums; }
+.flow-title { font-size: 16px; line-height: 1.35; }
+.flow-text { color: var(--text-2); font-size: 15px; line-height: 1.5; }
+@media (min-width: 960px) {
+  .flow-steps { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+  .flow-step { grid-template-columns: minmax(0, 1fr); row-gap: 6px; padding: 20px 18px; }
+  .flow-num { grid-row: auto; margin-bottom: 6px; }
+}
+.how-cta { margin: 0 0 16px; }
+.how-cta .btn { margin: 0; }
 
 /* long-form pages */
 .prose h2 { padding-top: 8px; }

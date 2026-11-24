@@ -52,7 +52,12 @@ describe('review gate over HTTP', () => {
     const v = await publicViews(s, id);
     assert.ok(hidden(v));
     assert.match(v.home, /<h2 id="scripts-h">Recurring scripts<\/h2>/);
-    assert.match(v.home, /No recurring script has been published yet\. When 3 eligible reports match, the pattern goes to a maintainer for review/);
+    assert.match(v.home, /<strong>No patterns published yet\.<\/strong> File a spam text to help surface the first one\./);
+    assert.match(v.home, /When 3 eligible reports match, the pattern goes to a maintainer for review/);
+    // The empty state invites a report rather than a click into the empty index.
+    const scripts = v.home.slice(v.home.indexOf('id="scripts-h"'), v.home.indexOf('</section>', v.home.indexOf('id="scripts-h"')));
+    assert.ok(!scripts.includes('href="/patterns"'));
+    assert.match(scripts, /<a class="btn btn-primary" href="\/report">Report a spam text<\/a>/);
     assert.match(v.list, /No pattern has been published yet\./);
     assert.ok(!v.list.includes('Template match ·'), 'no pattern card, so no count of patterns either');
     assert.match(cli(s, 'pending').out, new RegExp(`${id}  PENDING`));
@@ -62,8 +67,9 @@ describe('review gate over HTTP', () => {
     for (const f of FORMULA_SET.slice(0, 3)) await fileHttp(s, f);
     const home = (await get(s.base, '/?range=all')).text;
     assert.match(home, /<span class="num big">3<\/span> reports filed/);
-    assert.match(home, /3 reports across 1 state/); // 469, 817, 972 are all Texas
-    assert.match(home, /<td class="num">1<\/td>/);
+    assert.match(home, /<td class="num">1<\/td>/); // the default Table view
+    const map = (await get(s.base, '/?range=all&view=map')).text;
+    assert.match(map, /3 reports across 1 state/); // 469, 817, 972 are all Texas
   });
 
   it('after CLI publish it appears on home and /patterns with its count; after reject it is hidden again', async () => {
@@ -76,7 +82,8 @@ describe('review gate over HTTP', () => {
     assert.ok(v.onHome && v.onList && v.detailOk);
     assert.match(v.home, new RegExp(`<a href="/patterns/${id}">[^<]+</a> <span class="meta">shared script pattern · <span class="num">3</span> reports</span>`));
     assert.match(v.home, /<a href="\/patterns">All published patterns<\/a>/);
-    assert.ok(!v.home.includes('No recurring script has been published yet'));
+    assert.ok(!v.home.includes('No patterns published yet'));
+    assert.ok(!v.home.includes('Illustrative example'));
     assert.match(v.list, /Template match · 3 reports/);
 
     const rej = cli(s, 'reject', id);
@@ -149,7 +156,7 @@ describe('review gate over HTTP', () => {
     assert.equal(computePatterns(s.app.db, s.app.keys).length, 0);
     const v = await publicViews(s, id);
     assert.ok(hidden(v));
-    assert.match(v.home, /No recurring script has been published yet/);
+    assert.match(v.home, /No patterns published yet/);
     assert.match(v.detail.text, /This pattern is not available/);
     assert.match(getReview(s.app.db, id)!.note!, /fell below the threshold/);
     assert.match(cli(s, 'pending').out, /^No pending patterns\./);

@@ -64,34 +64,49 @@ export function rangeDays(range: RangeKey, now = new Date()): { from: string; to
 
 export interface OverviewParams {
   range: RangeKey;
-  view: 'both' | 'map' | 'table';
+  view: 'map' | 'table';
   state: string | null;
   ac: string | null;
   sort: 'count' | 'code';
 }
 
+/** A made-up scrubbed script shown on the empty home page (never a real report). */
+export const ILLUSTRATIVE_SCRIPT = `Hi ${MASK.recipient}, this is ${MASK.sender} with a quick question about your property. We buy houses for cash in any condition. Reply YES or call ${MASK.phone}. Details: ${MASK.link}`;
+
 export function recurringScriptsSection(patterns: Pattern[]): string {
-  const list = patterns.length
-    ? `<ul class="script-list">${patterns
-        .map(
-          (x) =>
-            `<li><a href="/patterns/${esc(x.id)}">${esc(x.example ?? `Template match (${x.label})`)}</a> <span class="meta">${esc(x.label)} · <span class="num">${x.count}</span> ${x.count === 1 ? 'report' : 'reports'}</span></li>`,
-        )
-        .join('')}</ul>`
-    : `<div class="empty-box"><img src="/static/img/pattern-illustration.svg" alt="" width="560" height="240"><div>
-<p class="status-mark">Pilot in progress</p>
-<p class="empty">No recurring script has been published yet. ${esc(REVIEW_TRIGGER_TEXT)}</p>
-</div></div>`;
+  if (patterns.length) {
+    return `<section class="scripts" aria-labelledby="scripts-h">
+<p class="eyebrow">Reviewed before publication</p>
+<h2 id="scripts-h">Recurring scripts</h2>
+<p class="meta">Texts whose wording or script repeats across reports, such as lead-generation pitches. A shared script can be used by many unrelated senders and does not establish a common sender.</p>
+<ul class="script-list">${patterns
+      .map(
+        (x) =>
+          `<li><a href="/patterns/${esc(x.id)}">${esc(x.example ?? `Template match (${x.label})`)}</a> <span class="meta">${esc(x.label)} · <span class="num">${x.count}</span> ${x.count === 1 ? 'report' : 'reports'}</span></li>`,
+      )
+      .join('')}</ul>
+<p><a href="/patterns">All published patterns</a> · <a href="/methodology#review">How review works</a></p>
+</section>`;
+  }
+  // Empty pilot: invite a contribution instead of a click into an empty index.
   return `<section class="scripts" aria-labelledby="scripts-h">
 <p class="eyebrow">Reviewed before publication</p>
 <h2 id="scripts-h">Recurring scripts</h2>
 <p class="meta">Texts whose wording or script repeats across reports, such as lead-generation pitches. A shared script can be used by many unrelated senders and does not establish a common sender.</p>
-${list}
-<p><a href="/patterns">All published patterns</a> · <a href="/methodology#review">How review works</a></p>
+<div class="empty-box"><img src="/static/img/pattern-illustration.svg" alt="" width="560" height="240"><div>
+<p class="status-mark">Pilot in progress</p>
+<p class="empty-cta"><strong>No patterns published yet.</strong> File a spam text to help surface the first one.</p>
+<p><a class="btn btn-primary" href="/report">Report a spam text</a></p>
+</div></div>
+<figure class="example-script">
+<figcaption><span class="example-label">Illustrative example</span> What a published script looks like after scrubbing. This is made up, not a real report.</figcaption>
+<p class="scrubbed panel">${esc(ILLUSTRATIVE_SCRIPT)}</p>
+</figure>
+<p class="meta">${esc(REVIEW_TRIGGER_TEXT)} A report is <strong>eligible</strong> if it has not been deleted and is not a repeat of the same text from the same sender within a short window. Every counted report appears in the area-code counts below as soon as it is filed, before any pattern is published. <a href="/methodology#review">How review works</a>.</p>
 </section>`;
 }
 
-/** The five steps drawn in /static/img/flow-diagram.svg, as real text. Keep in sync with the SVG. */
+/** The five How it works steps (rendered as one responsive list on the home page). */
 export const FLOW_STEPS: Array<[string, string]> = [
   ['You get a spam text', 'Screenshot it or paste the text.'],
   ['Read on your device', 'The image never leaves your phone.'],
@@ -104,15 +119,10 @@ export function howItWorksSection(): string {
   return `<section class="how" aria-labelledby="how-h">
 <p class="eyebrow">Simple by design</p>
 <h2 id="how-h">How it works</h2>
-<figure class="flow">
-<div class="flow-scroll" tabindex="0" role="region" aria-label="How it works diagram">
-<img role="img" src="/static/img/flow-diagram.svg" width="1240" height="300" alt="How Spam Patterns works: five steps from receiving a spam text to published patterns" aria-describedby="flow-steps">
-</div>
-<p class="flow-hint meta" aria-hidden="true">Scroll sideways to see all five steps →</p>
-<figcaption class="visually-hidden">
-<ol id="flow-steps">${FLOW_STEPS.map(([h, t]) => `<li>${esc(h)}. ${esc(t)}</li>`).join('')}</ol>
-</figcaption>
-</figure>
+<ol class="flow-steps" id="flow-steps">${FLOW_STEPS.map(
+    ([h, t], i) => `<li class="flow-step"><span class="flow-num" aria-hidden="true">${i + 1}</span><strong class="flow-title">${esc(h)}</strong> <span class="flow-text">${esc(t)}</span></li>`,
+  ).join('')}</ol>
+<p class="how-cta"><a class="btn btn-primary" href="/report">Report a spam text</a></p>
 <p class="meta">Each step is described in full in the <a href="/methodology">methodology</a> (scrubbing, matching and review) and on the <a href="/privacy">privacy page</a> (what is stored).</p>
 </section>`;
 }
@@ -130,7 +140,7 @@ export function overviewPage(ctx: PageCtx, p: OverviewParams, counts: AreaCount[
     const m = { ...p, ...o };
     const sp = new URLSearchParams();
     if (m.range !== '90') sp.set('range', m.range);
-    if (m.view !== 'both') sp.set('view', m.view);
+    if (m.view !== 'table') sp.set('view', m.view);
     if (m.state) sp.set('state', m.state);
     if (m.ac) sp.set('ac', m.ac);
     if (m.sort !== 'count') sp.set('sort', m.sort);
@@ -152,9 +162,8 @@ export function overviewPage(ctx: PageCtx, p: OverviewParams, counts: AreaCount[
       const info = lookupAreaCode(p.ac);
       return `<section class="detail panel" aria-labelledby="detail-h">
 <h3 id="detail-h" tabindex="-1">Area code ${esc(p.ac)}</h3>
-${CLAIMED_ORIGIN_WARNING}
 <dl class="dl">
-<dt>Numbering-plan reference region</dt><dd>${esc(info?.region ?? 'Unknown')}</dd>
+<dt>Area code state / region</dt><dd>${esc(info?.region ?? 'Unknown')}</dd>
 <dt>Reports</dt><dd class="num">${c?.count ?? 0}</dd>
 <dt>Timeframe</dt><dd>${esc(rangeLabel)}</dd>
 </dl>
@@ -168,7 +177,6 @@ ${clear}
       const n = g.areaCodes.length;
       return `<section class="detail panel" aria-labelledby="detail-h">
 <h3 id="detail-h" tabindex="-1">${esc(g.name)}</h3>
-${CLAIMED_ORIGIN_WARNING}
 <p class="count-block"><span class="num big">${g.count}</span> ${reportsWord(g.count)} across <span class="num">${n}</span> area ${n === 1 ? 'code' : 'codes'} · ${esc(rangeLabel)}</p>
 <ul class="code-list">${g.areaCodes
         .map((a) => `<li><a href="${esc(sel({ ac: a.areaCode, state: null }))}">Area code ${esc(a.areaCode)}</a> <span class="num">${a.count}</span></li>`)
@@ -183,7 +191,6 @@ ${clear}
 
   const table = `<div class="panel view-table" id="table-view" tabindex="-1">
 <h3 class="visually-hidden">Table</h3>
-${CLAIMED_ORIGIN_WARNING}
 ${
   counts.length === 0
     ? empty
@@ -191,7 +198,7 @@ ${
 <caption>Reports by sender area code, ${esc(rangeLabel)}</caption>
 <thead><tr>
 <th scope="col" aria-sort="${p.sort === 'code' ? 'ascending' : 'none'}"><a href="${esc(q({ sort: 'code' }))}">Area code${p.sort === 'code' ? ' <span aria-hidden="true">▲</span>' : ''}</a></th>
-<th scope="col" class="col-region">Numbering-plan reference region</th>
+<th scope="col" class="col-region"><a href="/methodology">Area code state / region</a></th>
 <th scope="col" class="num" aria-sort="${p.sort === 'count' ? 'descending' : 'none'}"><a href="${esc(q({ sort: 'count' }))}">Reports${p.sort === 'count' ? ' <span aria-hidden="true">▼</span>' : ''}</a></th>
 </tr></thead>
 <tbody>${sorted
@@ -211,11 +218,8 @@ ${
         .map((u) => `<a href="${esc(sel({ ac: u.areaCode, state: null }))}">${esc(u.areaCode)}</a>`)
         .join(', ')}. They are included in the table.</p>`
     : '';
-  // The results table is either on this page (Both) or one link away (Map).
-  const toTable =
-    p.view === 'both'
-      ? `<p class="map-links"><a class="skip-map" href="#table-view">Skip map to results</a></p>`
-      : `<p class="map-links"><a href="${esc(q({ view: 'table' }))}">View results table</a></p>`;
+  // Skip past the map's many tile links to the next section; the table is one link away.
+  const toTable = `<p class="map-links"><a class="skip-map" href="#sources-h">Skip map to next section</a> · <a href="${esc(q({ view: 'table' }))}">View results table</a></p>`;
   const graphic =
     counts.length === 0
       ? empty
@@ -232,7 +236,6 @@ ${renderLegend()}`;
   const map = `<div class="panel view-map" id="map-view">
 <h3 id="map-h">Reports by state</h3>
 ${toTable}
-${CLAIMED_ORIGIN_WARNING}
 ${graphic}
 ${unmappedNote}
 </div>`;
@@ -240,7 +243,6 @@ ${unmappedNote}
   const tabs = `<nav class="tabs" aria-label="Choose a view">
 <a href="${esc(q({ view: 'table' }))}"${p.view === 'table' ? ' aria-current="page"' : ''}>Table</a>
 <a href="${esc(q({ view: 'map' }))}"${p.view === 'map' ? ' aria-current="page"' : ''}>Map</a>
-<a href="${esc(q({ view: 'both' }))}"${p.view === 'both' ? ' aria-current="page"' : ''}>Both</a>
 </nav>`;
 
   // Live figures for the selected range (never a hardcoded snapshot).
@@ -257,14 +259,18 @@ ${unmappedNote}
 <div class="wrap hero-grid">
 <div class="hero-copy">
 <p class="tagline">A pilot tracking recurring spam texts.</p>
-<h1>Report a spam text</h1>
-<p class="lead">File a spam text in under a minute. You review exactly what is saved before anything is filed. Screenshots are read on your device and never uploaded.</p>
+<h1>Report a spam text to expose shared scripts, anonymously</h1>
+<p class="lead">Paste the text or use a screenshot. Screenshots stay on your device, and names, numbers and links are scrubbed automatically before you approve. Nothing is stored before you approve it, and you can <a href="/delete">delete a report later</a>.</p>
+<p class="hero-purpose">Filing adds to a public record of recurring spam scripts. It does not block the sender or file a complaint with your carrier or regulators.</p>
 <p class="hero-actions"><a class="btn btn-primary" href="/report">Report a spam text</a> <a href="/privacy">How your report is protected</a></p>
-<ul class="hero-trust"><li>No account</li><li>Review before filing</li><li>Screenshots read on your device</li></ul>
+<ul class="hero-trust"><li>No account</li><li>Review before filing</li><li>Screenshots read on your device</li><li>Delete a report later</li></ul>
 </div>
 <div class="hero-art"><img src="/static/img/hero-illustration.svg" alt="" width="685" height="580"></div>
 </div>
 </section>
+<div class="band band-tint band-how"><div class="wrap">
+${howItWorksSection()}
+</div></div>
 <div class="wrap metrics-wrap">
 ${metrics}
 </div>
@@ -275,10 +281,11 @@ ${recurringScriptsSection(patterns)}
 <section class="geo" aria-labelledby="geo-h">
 <p class="eyebrow">Claimed origin only</p>
 <h2 id="geo-h">Reported sender area codes</h2>
+${CLAIMED_ORIGIN_WARNING}
 <form class="filters" method="get" action="/">
 <label for="range">Date range</label>
 <select id="range" name="range">${RANGES.map(([k, l]) => `<option value="${k}"${p.range === k ? ' selected' : ''}>${esc(l)}</option>`).join('')}</select>
-${p.view !== 'both' ? `<input type="hidden" name="view" value="${esc(p.view)}">` : ''}
+${p.view !== 'table' ? `<input type="hidden" name="view" value="${esc(p.view)}">` : ''}
 <button class="btn btn-secondary" type="submit">Apply</button>
 </form>
 <p class="count-block" aria-live="polite"><span class="num big">${total}</span> ${total === 1 ? 'report' : 'reports'} filed · ${esc(rangeLabel)}</p>
@@ -286,17 +293,13 @@ ${tabs}
 ${detail}
 <div class="views-wrap">
 <div class="views views-${p.view}">
-${p.view !== 'map' ? table : ''}
-${p.view !== 'table' ? map : ''}
+${p.view === 'map' ? map : table}
 </div>
 </div>
 <p class="meta">Counts are voluntary reports and do not measure how much spam is sent. <a href="/methodology">How counts work</a>.</p>
 </section>
 </div></div>
 <div class="band band-tint"><div class="wrap">
-${howItWorksSection()}
-</div></div>
-<div class="band"><div class="wrap">
 <section class="sources" aria-labelledby="sources-h">
 <h2 id="sources-h">Sources</h2>
 <ul class="meta">

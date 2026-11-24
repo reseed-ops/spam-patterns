@@ -320,7 +320,7 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
           const rangeQ = url.searchParams.get('range') ?? '90';
           const range: RangeKey = (RANGES.map((r) => r[0]) as string[]).includes(rangeQ) ? (rangeQ as RangeKey) : '90';
           const viewQ = url.searchParams.get('view');
-          const view: OverviewParams['view'] = viewQ === 'map' || viewQ === 'table' ? viewQ : 'both';
+          const view: OverviewParams['view'] = viewQ === 'map' ? 'map' : 'table';
           const st = url.searchParams.get('state');
           const ac = url.searchParams.get('ac');
           const p: OverviewParams = {
