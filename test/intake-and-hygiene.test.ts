@@ -8,7 +8,7 @@ import { PLACEHOLDER_KEY, loadConfig } from '../src/config.ts';
 import { countReports, get, postJson, previewAndFile, startServer, type TestServer } from './helpers.ts';
 
 const INPUT = { number: '(214) 555-0101', message: 'Free roof quote for your home this week?', category: 'roofing' };
-const PAGES = ['/', '/report', '/report/complete', '/delete', '/patterns', '/data', '/privacy', '/methodology', '/project'];
+const PAGES = ['/', '/report', '/report/complete', '/delete', '/patterns', '/data', '/privacy', '/methodology', '/project', '/junk-mail', '/opt-out'];
 
 describe('intake pause / read-only mode', () => {
   let s: TestServer;

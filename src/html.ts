@@ -87,6 +87,7 @@ const NAV: Array<[string, string]> = [
   ['/', 'Overview'],
   ['/patterns', 'Patterns'],
   ['/data', 'Data'],
+  ['/opt-out', 'Opt out'],
 ];
 
 const FOOT: Array<[string, string]> = [
