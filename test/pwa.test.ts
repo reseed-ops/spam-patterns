@@ -135,9 +135,15 @@ describe('PWA: manifest, service worker, icons', () => {
       // Footer: junk-mail link; no install hint or button (v0.1.8).
       assert.ok(text.includes('<a href="/junk-mail">Stop junk mail</a>'), p);
       assert.ok(text.includes('<a href="https://github.com/reseed-ops/spam-patterns">GitHub</a>'), `footer GitHub link on ${p}`);
+      assert.ok(text.includes('<a href="https://github.com/reseed-ops/spam-patterns">GitHub</a><a href="https://reseed.net">More Reseed apps</a></nav>'), `footer reseed.net link (last, after GitHub) on ${p}`);
       assert.ok(!text.includes('Add Spam Patterns to your home screen'), `install hint on ${p}`);
       assert.ok(!/install-btn|install-hint|Install Spam Patterns/.test(text), `install button on ${p}`);
     }
+  });
+
+  it('footer links back to reseed.net as a plain link', async () => {
+    const { text } = await get(s.base, '/');
+    assert.ok(text.includes('<a href="https://reseed.net">More Reseed apps</a>'));
   });
 
   it('/project links the public GitHub repo', async () => {
