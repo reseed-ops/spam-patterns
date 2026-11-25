@@ -21,7 +21,7 @@
 'use strict';
 
 var VERSION = '0.1.10';
-var CACHE_REV = 2; // 2: main nav restyled as tabs
+var CACHE_REV = 3; // 2: main nav restyled as tabs; 3: Menu removed, tabs always shown
 var CACHE = 'stm-v' + VERSION + '-r' + CACHE_REV;
 var OFFLINE_URL = '/offline';
 // Not 'stm-'-prefixed, so a release's activate step leaves a pending share alone.
