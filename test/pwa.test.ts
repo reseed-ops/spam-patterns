@@ -134,9 +134,16 @@ describe('PWA: manifest, service worker, icons', () => {
       assert.ok(!/<script(?![^>]*\bsrc=)[^>]*>/.test(text), `inline script on ${p}`);
       // Footer: junk-mail link; no install hint or button (v0.1.8).
       assert.ok(text.includes('<a href="/junk-mail">Stop junk mail</a>'), p);
+      assert.ok(text.includes('<a href="https://github.com/reseed-ops/spam-patterns">GitHub</a>'), `footer GitHub link on ${p}`);
       assert.ok(!text.includes('Add Spam Patterns to your home screen'), `install hint on ${p}`);
       assert.ok(!/install-btn|install-hint|Install Spam Patterns/.test(text), `install button on ${p}`);
     }
+  });
+
+  it('/project links the public GitHub repo', async () => {
+    const { text } = await get(s.base, '/project');
+    assert.ok(text.includes('<a href="https://github.com/reseed-ops/spam-patterns">The code is on GitHub.</a>'));
+    assert.ok(!text.includes('will appear here once it is public'));
   });
 
   it('no page pushes installation: no install button, hint or prompt call (v0.1.8)', async () => {
