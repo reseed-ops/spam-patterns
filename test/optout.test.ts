@@ -221,7 +221,7 @@ describe('/opt-out page', () => {
     assert.ok((await get(s.base, '/sitemap.xml')).text.includes('<loc>https://spampatterns.com/opt-out</loc>'));
     for (const p of ['/', '/patterns', '/junk-mail']) {
       const { text } = await get(s.base, p);
-      assert.ok(text.includes('<a href="/data">Data</a><a href="/opt-out">Opt out</a></nav>'), p);
+      assert.ok(text.includes('<a href="/opt-out">Opt out</a><a href="/data">Data</a></nav>'), p);
     }
     const { text } = await get(s.base, '/opt-out');
     assert.equal(text.match(/<a href="\/opt-out" aria-current="page">Opt out<\/a>/g)?.length, 2, 'desktop and mobile nav');

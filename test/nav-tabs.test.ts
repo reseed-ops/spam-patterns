@@ -8,7 +8,7 @@ import { readFileSync } from 'node:fs';
 import { after, before, describe, it } from 'node:test';
 import { get, startServer, type TestServer } from './helpers.ts';
 
-const LINKS = [['/', 'Overview'], ['/patterns', 'Patterns'], ['/data', 'Data'], ['/opt-out', 'Opt out']] as const;
+const LINKS = [['/', 'Overview'], ['/patterns', 'Patterns'], ['/opt-out', 'Opt out'], ['/data', 'Data']] as const;
 const css = readFileSync(new URL('../public/static/css/app.css', import.meta.url), 'utf8');
 
 function navInner(html: string, label: string): string {
