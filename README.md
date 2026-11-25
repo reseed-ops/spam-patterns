@@ -14,7 +14,7 @@ Spam Patterns takes anonymous reports of unsolicited text messages and groups th
 - **A map that knows its limits.** A server-rendered tile map (a state list on narrow screens) and a table carry equal weight. Both show the sender's claimed area code, and each has a warning beside it that area codes can be spoofed.
 - **Installable, with a narrow service worker.** The site is a PWA: it can be added to a home screen for one-tap filing. Its service worker (`public/sw.js`) stores only the app's own static files, the on-device OCR assets and the `/report` page shell, so repeat filers skip the multi-megabyte OCR download. It never stores POST responses, API or deletion endpoints, JSON, or pages with live counts.
 - **A junk-mail guide.** `/junk-mail` is a static public-service page listing the paper junk-mail opt-outs that work and their limits. It collects nothing.
-- **A people-search opt-out page.** `/opt-out` explains people-search sites and the limits of opting out, lists the checked opt-out routes for the major sites, and builds a removal-request email in the browser (a `mailto:` link opened in your own email app). Nothing typed there is sent to the server.
+- **A people-search opt-out page.** `/opt-out` explains people-search sites and the limits of opting out, lists the checked opt-out routes for the major sites, lists other checked opt-outs (Do Not Call, DMAchoice, Valpak coupon mail, NAI ad settings), and builds a removal-request email in the browser (a `mailto:` link opened in your own email app). Nothing typed there is sent to the server.
 - **Deletion.** Each report comes with a receipt code (160 bits). Only its hash is stored. Deleting a report removes it from counts and patterns right away.
 
 ## What it does not do
