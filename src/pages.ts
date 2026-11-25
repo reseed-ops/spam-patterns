@@ -1089,6 +1089,183 @@ export function junkMailPage(ctx: PageCtx): string {
   });
 }
 
+// ---------------- People-search opt-out (static page + in-browser email builder) ----------------
+
+/** Date the opt-out routes below were checked against each site and the CA data broker registry. */
+export const OPT_OUT_CHECKED = '2026-11-25';
+
+/** California DROP page, linked from cppa.ca.gov; checked on OPT_OUT_CHECKED. */
+export const DROP_URL = 'https://privacy.ca.gov/drop/';
+
+export interface OptOutSite {
+  id: string;
+  name: string;
+  /** Other brands the same request covers, as the site or its registry filing lists them. */
+  covers: string[];
+  /** Privacy address published on the site's own page or in its CA registry filing. */
+  email?: string;
+  /** Where the email address was found. */
+  emailSource?: string;
+  /** Opt-out page (answered 200 when checked). */
+  form?: string;
+  formLabel?: string;
+  /** One short line on what the site asks for. */
+  note: string;
+}
+
+/**
+ * Every URL here answered 200 to curl on OPT_OUT_CHECKED, and every email
+ * address was read on the site's own page or in the California data broker
+ * registry (cppa.ca.gov/data_broker_registry/registry.csv). Routes that
+ * could not be checked are left out on purpose; do not add guessed ones.
+ */
+export const OPT_OUT_SITES: OptOutSite[] = [
+  {
+    id: 'peopleconnect',
+    name: 'PeopleConnect',
+    covers: ['TruthFinder', 'Instant Checkmate', 'Intelius', 'USSearch'],
+    email: 'privacy@peopleconnect.us',
+    emailSource: 'listed on its Suppression Center page',
+    form: 'https://suppression.peopleconnect.us/',
+    formLabel: 'PeopleConnect Suppression Center',
+    note: 'The form starts with your email address and sends a verification link; one suppression covers all four sites.',
+  },
+  {
+    id: 'beenverified',
+    name: 'BeenVerified',
+    covers: ['PeopleLooker', 'PeopleSmart', 'NeighborWho', 'Ownerly'],
+    email: 'privacy@beenverified.com',
+    emailSource: 'listed in its privacy policy and its California registry filing',
+    form: 'https://www.beenverified.com/faq/privacy/',
+    formLabel: 'BeenVerified privacy policy (links to its opt-out form)',
+    note: 'BeenVerified verifies your identity before it acts on a request.',
+  },
+  {
+    id: 'spokeo',
+    name: 'Spokeo',
+    covers: [],
+    email: 'privacy@spokeo.com',
+    emailSource: 'listed on its opt-out page',
+    form: 'https://www.spokeo.com/optout',
+    formLabel: 'Spokeo opt-out',
+    note: 'The form asks for the URL of your listing and an email address, then sends a confirmation link. Each listing is opted out separately.',
+  },
+  {
+    id: 'whitepages',
+    name: 'Whitepages',
+    covers: [],
+    form: 'https://www.whitepages.com/suppression-requests',
+    formLabel: 'Whitepages opt-out',
+    note: 'The form asks for the URL of your listing, then verifies you with an automated phone call and a 4-digit code.',
+  },
+  {
+    id: 'mylife',
+    name: 'MyLife',
+    covers: [],
+    email: 'membersupport@mylife.com',
+    emailSource: 'listed in its privacy policy and its California registry filing',
+    note: 'MyLife verifies your identity before it acts, for example by confirming your email or home address.',
+  },
+];
+
+export const OPT_OUT_PRIVACY_LINE = 'Nothing you type here is sent to this site: your browser builds the email and hands it to your own email app.';
+
+function optOutSiteItem(s: OptOutSite): string {
+  const covers = s.covers.length ? `<p class="meta">Also covers ${esc(s.covers.join(', '))}.</p>` : '';
+  const rows = [
+    s.email ? `<dt>Email</dt><dd><a href="mailto:${esc(s.email)}">${esc(s.email)}</a> <span class="meta">(${esc(s.emailSource)})</span></dd>` : '',
+    s.form ? `<dt>Web form</dt><dd><a href="${esc(s.form)}">${esc(s.formLabel)}</a></dd>` : '',
+  ].join('');
+  return `<li id="site-${esc(s.id)}"><h3>${esc(s.name)}</h3>${covers}<dl class="dl">${rows}</dl><p class="meta">${esc(s.note)}</p></li>`;
+}
+
+export function optOutPage(ctx: PageCtx): string {
+  const hero = {
+    kicker: 'Practical next steps',
+    title: 'Opt out of people-search sites',
+    html: `<p class="lead">A lot of spam texts start on a people-search site: someone looks up a name and gets a phone number. This page helps you ask the biggest sites to take your listing down.</p>`,
+  };
+  const options = OPT_OUT_SITES.map(
+    (s) =>
+      `<option value="${esc(s.id)}" data-name="${esc(s.name)}"${s.email ? ` data-email="${esc(s.email)}"` : ''}${s.form ? ` data-form="${esc(s.form)}" data-form-label="${esc(s.formLabel)}"` : ''} data-note="${esc(s.note)}">${esc(s.name)}${s.email ? '' : ' (web form only)'}</option>`,
+  ).join('');
+  const body = `<div class="prose">
+
+<h2 id="what">What these sites are</h2>
+<p>People-search sites publish your name, past and current addresses, phone numbers, relatives and more, collected from public records and other sources. Anyone can look you up. Taking yourself off them leaves less of your information in circulation for scammers and spammers to use.</p>
+
+<h2 id="limits">The honest limits</h2>
+<ul>
+<li>Suppression hides your listing from name search. It does not delete the public records underneath.</li>
+<li>Listings come back when new data arrives. Check again every few months.</li>
+<li>Some sites ask you to prove who you are, with an email link or a phone call with a code. That is their process, not ours.</li>
+</ul>
+<p class="notice notice-info"><strong>Use a secondary email address.</strong> These sites send confirmation messages. A secondary address keeps them, and anything that follows, out of your main inbox.</p>
+<p><strong>In California:</strong> the state’s <a href="${esc(DROP_URL)}">Delete Request and Opt-out Platform (DROP)</a>, run by the California Privacy Protection Agency, lets you send one deletion request to every registered data broker (over 600) at once.</p>
+
+<h2 id="builder">Write the email</h2>
+<p><strong>${esc(OPT_OUT_PRIVACY_LINE)}</strong></p>
+<noscript><p class="notice notice-info">The email builder needs JavaScript. You can still use the addresses and forms in the list below.</p></noscript>
+<div id="optout-app" hidden>
+<div class="field">
+<label for="o-name">Your full name</label>
+<input id="o-name" type="text" autocomplete="name" maxlength="100" aria-describedby="e-o-name">
+<p class="field-error" id="e-o-name" hidden></p>
+</div>
+<div class="field">
+<label for="o-site">The site you want to contact</label>
+<select id="o-site">${options}</select>
+</div>
+<div class="field">
+<label for="o-url">The URL of your listing on that site <span class="optional">(optional)</span></label>
+<p class="help" id="h-o-url">Search for yourself on the site and copy the address of your listing page.</p>
+<input id="o-url" type="text" inputmode="url" autocomplete="off" maxlength="300" aria-describedby="h-o-url e-o-url">
+<p class="field-error" id="e-o-url" hidden></p>
+</div>
+<div class="field">
+<label for="o-reply">The email address you want the reply sent to</label>
+<input id="o-reply" type="text" inputmode="email" autocomplete="email" maxlength="120" aria-describedby="e-o-reply">
+<p class="field-error" id="e-o-reply" hidden></p>
+</div>
+<div id="o-build-wrap"><button class="btn btn-primary" type="button" id="o-build">Write my email</button></div>
+
+<div id="o-email" hidden>
+<h3>Your email</h3>
+<p class="meta">Read it before you send it. It opens in your email app; nothing is sent until you send it there.</p>
+<div class="panel">
+<dl class="dl"><dt>To</dt><dd id="o-to"></dd><dt>Subject</dt><dd id="o-subject"></dd></dl>
+<div class="scrubbed" id="o-body"></div>
+</div>
+<a class="btn btn-primary" id="o-open" href="#builder">Open in my email</a>
+<p class="meta" id="o-also" hidden></p>
+</div>
+
+<div id="o-formonly" class="notice notice-info" hidden>
+<p><strong><span id="o-fo-name"></span> takes opt-outs only through its web form.</strong></p>
+<p><a id="o-fo-link" href="#builder"></a></p>
+<p id="o-fo-note"></p>
+</div>
+</div>
+
+<h2 id="sites">The sites and their opt-out routes</h2>
+<ul class="script-list" id="site-list">
+${OPT_OUT_SITES.map(optOutSiteItem).join('\n')}
+</ul>
+<p class="meta">Other sites, including TruePeopleSearch, FastPeopleSearch and Radaris, blocked our automated checks, so we could not confirm their opt-out pages and do not list them here.</p>
+
+<p class="meta">This page collects no information and links only to the sites named. Routes checked ${esc(fmtDay(OPT_OUT_CHECKED))}; each site sets its own process and can change it. For spam texts, <a href="/report">file a report here</a> and forward the original to <strong>7726</strong>.</p>
+</div>`;
+  return layout({
+    title: 'Opt out of people-search sites',
+    path: '/opt-out',
+    body,
+    hero,
+    demo: ctx.cfg.intakeMode === 'demo',
+    scripts: ['/static/js/optout.js'],
+    description: 'How to get your listing off the major people-search sites, with an email builder that runs in your browser, and the honest limits of opting out.',
+  });
+}
+
 // ---------------- Offline fallback (served by the service worker) ----------------
 
 export function offlinePage(ctx: PageCtx): string {

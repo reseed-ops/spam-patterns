@@ -40,7 +40,7 @@ describe('public assets: no third-party scripts or analytics', () => {
     }
   });
   it('page templates only emit same-origin script tags from an explicit allow-list', () => {
-    const allowed = new Set(['/static/js/ocr-extract.js', '/static/js/pwa.js', '/static/js/receipts.js', '/static/js/report.js', '/static/vendor/tesseract/tesseract.min.js']);
+    const allowed = new Set(['/static/js/ocr-extract.js', '/static/js/optout.js', '/static/js/pwa.js', '/static/js/receipts.js', '/static/js/report.js', '/static/vendor/tesseract/tesseract.min.js']);
     for (const f of OWN.filter((f) => f.includes('/src/'))) {
       const t = readFileSync(f, 'utf8');
       for (const m of t.matchAll(/['"](\/static\/[^'"]+\.js)['"]/g)) assert.ok(allowed.has(m[1]!), `unexpected script ${m[1]} in ${relative(root, f)}`);

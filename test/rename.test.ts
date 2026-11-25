@@ -13,7 +13,7 @@ const TAGLINE = 'A pilot tracking recurring spam texts.';
 
 const PAGES = [
   '/', '/?view=table', '/?view=map', '/report', '/report/complete', '/delete', '/patterns', '/patterns/zzz-missing',
-  '/data', '/data/schema.json', '/privacy', '/methodology', '/project', '/junk-mail', '/offline',
+  '/data', '/data/schema.json', '/privacy', '/methodology', '/project', '/junk-mail', '/opt-out', '/offline',
   '/manifest.webmanifest', '/sw.js', '/robots.txt', '/healthz', '/no-such-page',
 ];
 
