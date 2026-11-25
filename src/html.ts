@@ -96,6 +96,7 @@ const FOOT: Array<[string, string]> = [
   ['/delete', 'Delete a report'],
   ['/project', 'Self-host & contribute'],
   ['https://github.com/reseed-ops/spam-patterns', 'GitHub'],
+  ['https://reseed.net', 'More Reseed apps'],
 ];
 
 function navLink([href, label]: [string, string], path: string): string {
