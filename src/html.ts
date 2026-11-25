@@ -95,6 +95,7 @@ const FOOT: Array<[string, string]> = [
   ['/methodology', 'Methodology'],
   ['/delete', 'Delete a report'],
   ['/project', 'Self-host & contribute'],
+  ['https://github.com/reseed-ops/spam-patterns', 'GitHub'],
 ];
 
 function navLink([href, label]: [string, string], path: string): string {

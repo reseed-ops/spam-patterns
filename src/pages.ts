@@ -1001,7 +1001,7 @@ export function projectPage(ctx: PageCtx): string {
   const hero = {
     kicker: 'Open project',
     title: 'Self-host & contribute',
-    html: `<p class="lead">Spam Patterns is a pilot tracking recurring spam texts. It is open-source software under the Apache License 2.0. The repository link will appear here once it is public.</p>`,
+    html: `<p class="lead">Spam Patterns is a pilot tracking recurring spam texts. It is open-source software under the Apache License 2.0. <a href="https://github.com/reseed-ops/spam-patterns">The code is on GitHub.</a></p>`,
   };
   const body = `<div class="prose">
 ${c.officialInstanceUrl ? `<p>The official instance is <a href="${esc(c.officialInstanceUrl)}">${esc(c.officialInstanceUrl)}</a>. Forks are not affiliated with it.</p>` : `<p>Forks and self-hosted copies are not affiliated with the official instance.</p>`}
