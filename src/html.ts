@@ -157,7 +157,7 @@ ${o.body}
       <a class="footer-brand" href="/"><img src="/static/img/logo.svg" alt="" width="28" height="28">Spam Patterns</a>
       <nav aria-label="Footer">${FOOT.map((f) => `<a href="${f[0]}">${esc(f[1])}</a>`).join('')}</nav>
     </div>
-    <p class="meta footer-legal">Spam Patterns is a project of Reseed LLC. Reports are voluntary submissions. A listing is not an allegation against any person or business.</p>
+    <p class="meta footer-legal">Spam Patterns is a project of Reseed LLC. Reports are voluntary submissions. A listing is not an allegation against any person or business. Counts visits and filed reports in total, nothing about you.</p>
   </div>
 </footer>
 </body>

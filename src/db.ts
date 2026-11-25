@@ -122,6 +122,13 @@ function migrate(db: DB): void {
       day         TEXT PRIMARY KEY,
       submissions INTEGER NOT NULL
     ) STRICT;
+    -- Aggregate page-view counter (GET /stats). One row per page path, with
+    -- its running total. Nothing about a visitor: no IP, user agent, query
+    -- string, timestamp or identifier. See countView().
+    CREATE TABLE IF NOT EXISTS page_views (
+      path  TEXT PRIMARY KEY,
+      views INTEGER NOT NULL
+    ) STRICT;
   `);
   db.prepare('INSERT OR IGNORE INTO meta(key, value) VALUES (?, ?)').run('schema_version', String(SCHEMA_VERSION));
 }
@@ -156,6 +163,34 @@ export function tx<T>(db: DB, fn: () => T): T {
     db.exec('ROLLBACK');
     throw e;
   }
+}
+
+/** Add one view to a page's aggregate total. The path is the only thing stored. */
+export function countView(db: DB, path: string): void {
+  db.prepare('INSERT INTO page_views(path, views) VALUES (?, 1) ON CONFLICT(path) DO UPDATE SET views = views + 1').run(path);
+}
+
+export interface Stats {
+  views: number;
+  completes: number;
+  pages: Record<string, number>;
+}
+
+/**
+ * Totals for GET /stats, in the same shape as the other Reseed sites.
+ * completes = counted reports currently on file (reports.counted = 1), the
+ * same figure the public counts use; a deleted report leaves it.
+ */
+export function readStats(db: DB): Stats {
+  const rows = db.prepare('SELECT path, views FROM page_views ORDER BY path').all() as Array<{ path: string; views: number }>;
+  const pages: Record<string, number> = {};
+  let views = 0;
+  for (const r of rows) {
+    pages[r.path] = Number(r.views);
+    views += Number(r.views);
+  }
+  const completes = Number((db.prepare('SELECT COUNT(*) AS n FROM reports WHERE counted = 1').get() as { n: number }).n);
+  return { views, completes, pages };
 }
 
 /** Expire internal sender tokens after the configured TTL. */

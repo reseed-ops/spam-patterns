@@ -3,6 +3,11 @@
 // Logging policy: no request logging. Bodies, receipt codes, IPs and query
 // strings are never written anywhere. Only startup lines and the class
 // name of unexpected errors go to stderr.
+//
+// Page counter (GET /stats): a GET that renders one of the public HTML pages
+// adds 1 to that page's aggregate total in the page_views table. Only the
+// page path is stored. No IP, user agent, query string, timestamp or
+// per-visitor anything; HEAD, errors, assets, /api/* and /stats are not counted.
 
 import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
 import type { IncomingMessage, ServerResponse } from 'node:http';
@@ -10,7 +15,7 @@ import { dirname, extname, join, normalize, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { intakePaused, type Config } from './config.ts';
 import { Keys, normalizeReceipt, sha256hex } from './crypto.ts';
-import { expireFilings, expireSenderTokens, openDb, type DB } from './db.ts';
+import { countView, expireFilings, expireSenderTokens, openDb, readStats, type DB } from './db.ts';
 import { MSG, deleteReport, fileFlag, fileReport, prepare } from './filing.ts';
 import { BACKGROUND_COLOR, SITE_ORIGIN, THEME_COLOR, esc } from './html.ts';
 import { journalAppend, journalReapply } from './journal.ts';
@@ -113,6 +118,9 @@ export const MANIFEST = {
  * No lastmod: pages render live data and have no single real modification date.
  */
 export const SITEMAP_PATHS = ['/', '/patterns', '/data', '/report', '/privacy', '/methodology', '/project', '/junk-mail'] as const;
+
+/** HTML pages whose GETs are counted (plus pattern detail pages that exist). */
+const COUNTED_PAGES: ReadonlySet<string> = new Set(SITEMAP_PATHS);
 
 export const ROBOTS_TXT = `User-agent: *\nDisallow: /api/\nDisallow: /delete\nSitemap: ${SITE_ORIGIN}/sitemap.xml\n`;
 
@@ -333,6 +341,8 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
     }
 
     if (method === 'GET' || method === 'HEAD') {
+      // Aggregate counter: path only, and only for a GET of a known page.
+      if (method === 'GET' && COUNTED_PAGES.has(path)) countView(db, path);
       switch (path) {
         case '/': {
           const rangeQ = url.searchParams.get('range') ?? '90';
@@ -388,12 +398,16 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
           return send(res, 200, 'text/plain; charset=utf-8', ROBOTS_TXT);
         case '/sitemap.xml':
           return send(res, 200, 'application/xml; charset=utf-8', SITEMAP_XML);
+        case '/stats':
+          return json(res, 200, readStats(db));
         case '/healthz':
           return json(res, 200, { ok: true, intake: intakePaused(env, pauseFile) ? 'paused' : 'open', mode: cfg.intakeMode });
       }
       const m = /^\/patterns\/([a-z0-9-]{4,40})$/.exec(path);
       if (m) {
         const p = publicPatterns(db, keys).find((x) => x.id === m[1]) ?? null;
+        // Only published patterns are counted, so made-up ids cannot add rows.
+        if (p && method === 'GET') countView(db, path);
         return html(res, p ? 200 : 404, patternDetailPage(ctx(), p));
       }
       throw new HttpError(404, 'Not found.');
