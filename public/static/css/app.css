@@ -6,7 +6,7 @@
   --canvas: #F8FAFC; --surface: #FFFFFF; --text: #102644; --text-2: #556A84;
   --divider: #DCE5F0; --outline: #6B7C96; --action: #2F5FD0; --action-hover: #254AA4;
   --focus: #155EEF; --err: #9F2020; --err-bg: #FFF1F1; --ok: #14533D; --ok-bg: #EAF6EF;
-  --warn: #713D00; --warn-bg: #FFF4DB; --map-bg: #F3F7FD;
+  --warn: #713D00; --warn-bg: #FFF4DB; --map-bg: #F3F7FD; --tab-bg: #E9F0FA;
   --bin0: #F1F5F9; --bin0-text: #475569; --bin1: #A9C5E2; --bin2: #6D98C5; --bin3: #3B6B9B; --bin4: #204A73;
   --bin-text-light: #172333; --bin-text-dark: #FFFFFF;
   --tint: #F1F6FD; --tint-blue: #EAF1FF; --tint-teal: #E3F8F3; --teal: #10A994; --teal-text: #07706A;
@@ -47,14 +47,22 @@ p { margin: 0 0 16px; }
 .wordmark { font-weight: 820; font-size: 20px; letter-spacing: -.04em; color: var(--text); text-decoration: none; margin-right: auto; display: inline-flex; align-items: center; gap: 10px; min-height: 48px; }
 .wordmark:hover { color: var(--text); }
 .wordmark .logo { width: 34px; height: 34px; flex: none; }
-.nav-desktop { display: none; gap: 28px; }
-.nav-desktop a, .nav-mobile a { color: var(--text-2); font-size: 15px; font-weight: 650; text-decoration: none; padding: 8px 2px; }
-.nav-desktop a:hover, .nav-mobile a:hover { color: var(--action-hover); }
-.nav-desktop a[aria-current], .nav-mobile a[aria-current] { color: var(--action); text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 8px; }
+/* main nav as tabs (desktop and mobile share .nav-tabs). The current page's
+   tab (aria-current="page") takes the page-hero tint and drops its bottom
+   border, so it opens into the content below; the others sit on --tab-bg. */
+.nav-tabs { display: flex; gap: 4px; }
+.nav-tabs a { flex: none; display: inline-flex; align-items: center; min-height: 44px; padding: 8px 16px; color: var(--text-2); background: var(--tab-bg); border: 1px solid var(--divider); border-bottom: 0; border-radius: 12px 12px 0 0; font-size: 15px; font-weight: 650; line-height: 1.4; text-decoration: none; white-space: nowrap; }
+.nav-tabs a:hover { color: var(--action-hover); background: var(--surface); }
+.nav-tabs a[aria-current="page"] { color: var(--action); background: var(--tint); box-shadow: inset 0 3px 0 var(--action); }
+.nav-tabs a:focus-visible { outline-offset: -3px; box-shadow: none; }
+.nav-tabs a[aria-current="page"]:focus-visible { box-shadow: inset 0 3px 0 var(--action); }
+.nav-desktop { display: none; align-self: flex-end; margin-bottom: -1px; box-shadow: inset 0 -1px 0 var(--divider); }
 .nav-mobile summary { cursor: pointer; padding: 10px 14px; min-height: 44px; font-weight: 650; border: 1px solid var(--divider); border-radius: 10px; background: var(--surface); }
-.nav-mobile nav { display: flex; flex-direction: column; padding: 8px 0; }
-.nav-mobile a { padding: 10px 4px; min-height: 44px; }
-@media (min-width: 768px) { .nav-desktop { display: flex; } .nav-mobile { display: none; } }
+/* Mobile: the open menu is a full-width tab strip under the header that
+   scrolls sideways inside itself when the four tabs do not fit. */
+.nav-mobile .nav-tabs { position: absolute; left: 0; right: 0; top: 100%; padding: 8px 20px 0; background: var(--surface); border-top: 1px solid var(--divider); box-shadow: inset 0 -1px 0 var(--divider); overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; }
+.nav-mobile .nav-tabs a { font-size: 14px; padding: 8px 14px; }
+@media (min-width: 900px) { .nav-desktop { display: flex; } .nav-mobile { display: none; } }
 .demo-banner { background: var(--navy); color: #D6E8FF; font-size: 13px; line-height: 20px; padding: 8px 0; text-align: center; }
 .demo-banner strong { color: #A3FFDF; }
 main { padding-bottom: 0; overflow-wrap: break-word; }

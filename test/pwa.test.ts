@@ -87,7 +87,9 @@ describe('PWA: manifest, service worker, icons', () => {
 
   it('the cache name carries the release version', () => {
     assert.match(SW, new RegExp(`var VERSION = '${pkg.version.replace(/\./g, '\\.')}';`));
-    assert.match(SW, /var CACHE = 'stm-v' \+ VERSION;/);
+    // Plus a revision for static-file changes within a release.
+    assert.match(SW, /var CACHE_REV = \d+;/);
+    assert.match(SW, /var CACHE = 'stm-v' \+ VERSION \+ '-r' \+ CACHE_REV;/);
     // Older versions' caches are deleted on activate.
     assert.match(SW, /k\.indexOf\('stm-'\) === 0 && k !== CACHE\) return caches\.delete\(k\)/);
   });

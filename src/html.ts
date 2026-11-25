@@ -130,9 +130,9 @@ ${scripts}
 <header class="site-header">
   <div class="wrap header-row">
     <a class="wordmark" href="/"><img class="logo" src="/static/img/logo.svg" alt="" width="32" height="32">Spam Patterns</a>
-    <nav class="nav-desktop" aria-label="Main">${nav}</nav>
+    <nav class="nav-desktop nav-tabs" aria-label="Main">${nav}</nav>
     <a class="btn btn-primary btn-report" href="/report">Report a spam text</a>
-    <details class="nav-mobile"><summary>Menu</summary><nav aria-label="Main (mobile)">${nav}</nav></details>
+    <details class="nav-mobile"><summary>Menu</summary><nav class="nav-tabs" aria-label="Main (mobile)">${nav}</nav></details>
   </div>
 </header>
 ${
