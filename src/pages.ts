@@ -1069,7 +1069,7 @@ export function junkMailPage(ctx: PageCtx): string {
 <h2 id="one-catalog">One catalog at a time</h2>
 <p><a href="https://www.catalogchoice.org/">Catalog Choice</a> is a free nonprofit service that sends opt-out requests to individual catalogs and mailers. Each request takes about 6 to 8 weeks.</p>
 
-<h2 id="limits">The honest limits</h2>
+<h2 id="limits">The limits of opting out</h2>
 <ul>
 <li>Mail addressed to “Current Resident” or “Postal Customer” (the Postal Service’s Every Door Direct Mail) has no registry opt-out. The only route is asking each sender directly.</li>
 <li>Bills, statements and political mail are not advertising, so these opt-outs do not cover them.</li>
@@ -1179,6 +1179,69 @@ function optOutSiteItem(s: OptOutSite): string {
   return `<li id="site-${esc(s.id)}"><h3>${esc(s.name)}</h3>${covers}<dl class="dl">${rows}</dl><p class="meta">${esc(s.note)}</p></li>`;
 }
 
+export interface OtherOptOut {
+  id: string;
+  name: string;
+  /** What the opt-out stops, in a few words. */
+  stops: string;
+  /** Opt-out page (answered 200 to curl when checked). */
+  url: string;
+  urlLabel: string;
+  /** Phone route, only where the service's own site publishes it. */
+  phone?: string;
+  /** One short note: what it does and does not do, any time limit or fee, as the service's own site states it. */
+  note: string;
+}
+
+/**
+ * Opt-outs beyond people-search sites. Not email routes, so they stay out of
+ * the email builder. Every URL answered 200 to curl on OPT_OUT_CHECKED and
+ * every fact in a note was read on the service's own site that day. Left out
+ * because they could not be checked: OptOutPrescreen.com and the DAA's
+ * optout.aboutads.info / youradchoices.com (both refuse automated requests),
+ * Money Mailer and Valassis/RedPlum (no consumer mail opt-out page found).
+ */
+export const OTHER_OPT_OUTS: OtherOptOut[] = [
+  {
+    id: 'donotcall',
+    name: 'National Do Not Call Registry',
+    stops: 'Telemarketing calls',
+    url: 'https://www.donotcall.gov/register.html',
+    urlLabel: 'Register a number at donotcall.gov',
+    phone: '1-888-382-1222',
+    note: 'Free, for home or mobile numbers. Most telemarketers should stop calling 31 days after you register; charities, political groups, debt collectors and surveys may still call.',
+  },
+  {
+    id: 'dmachoice',
+    name: 'DMAchoice',
+    stops: 'Unsolicited marketing mail',
+    url: 'https://www.dmachoice.org/register.php',
+    urlLabel: 'DMAchoice registration',
+    note: `Run by the ANA. A ${DMACHOICE_FEE} fee online ($9 by mail) for a 10-year registration. The site says it will not eliminate all promotional mail.`,
+  },
+  {
+    id: 'valpak',
+    name: 'Valpak',
+    stops: 'Valpak’s blue-envelope coupon mailings',
+    url: 'https://www.valpak.com/remove-address',
+    urlLabel: 'Valpak address removal',
+    note: 'Covers Valpak mailings only. Valpak says it can take several weeks for them to stop, because mailings are prepared weeks in advance.',
+  },
+  {
+    id: 'nai',
+    name: 'Network Advertising Initiative (NAI)',
+    stops: 'Some targeted online ads, one setting at a time',
+    url: 'https://thenai.org/how-to-opt-out/',
+    urlLabel: 'NAI: How to opt out',
+    note: 'There is no single switch: its old opt-out tool now redirects to this guide to the ad privacy settings in your browser, phone and TV, plus a Chrome extension that sends a Global Privacy Control signal.',
+  },
+];
+
+function otherOptOutItem(o: OtherOptOut): string {
+  const phone = o.phone ? `<dt>Phone</dt><dd><a href="tel:${esc(o.phone.replace(/-/g, ''))}" class="nowrap">${esc(o.phone)}</a></dd>` : '';
+  return `<li id="other-${esc(o.id)}"><h3>${esc(o.name)}</h3><dl class="dl"><dt>Stops</dt><dd>${esc(o.stops)}</dd><dt>Route</dt><dd><a href="${esc(o.url)}">${esc(o.urlLabel)}</a></dd>${phone}</dl><p class="meta">${esc(o.note)}</p></li>`;
+}
+
 export function optOutPage(ctx: PageCtx): string {
   const hero = {
     kicker: 'Practical next steps',
@@ -1194,7 +1257,7 @@ export function optOutPage(ctx: PageCtx): string {
 <h2 id="what">What these sites are</h2>
 <p>People-search sites publish your name, past and current addresses, phone numbers, relatives and more, collected from public records and other sources. Anyone can look you up. Taking yourself off them leaves less of your information in circulation for scammers and spammers to use.</p>
 
-<h2 id="limits">The honest limits</h2>
+<h2 id="limits">The limits of opting out</h2>
 <ul>
 <li>Suppression hides your listing from name search. It does not delete the public records underneath.</li>
 <li>Listings come back when new data arrives. Check again every few months.</li>
@@ -1253,6 +1316,13 @@ ${OPT_OUT_SITES.map(optOutSiteItem).join('\n')}
 </ul>
 <p class="meta">Other sites, including TruePeopleSearch, FastPeopleSearch and Radaris, blocked our automated checks, so we could not confirm their opt-out pages and do not list them here.</p>
 
+<h2 id="other">Other opt-outs</h2>
+<p>These cover calls, mail and ads rather than people-search listings. Each one takes a form or a phone call, not an email.</p>
+<ul class="script-list" id="other-list">
+${OTHER_OPT_OUTS.map(otherOptOutItem).join('\n')}
+</ul>
+<p class="meta">OptOutPrescreen.com (prescreened credit and insurance offers) and the Digital Advertising Alliance’s ad opt-out blocked our automated checks, so we do not link them here. The <a href="/junk-mail#prescreened">junk mail guide</a> describes OptOutPrescreen.</p>
+
 <p class="meta">This page collects no information and links only to the sites named. Routes checked ${esc(fmtDay(OPT_OUT_CHECKED))}; each site sets its own process and can change it. For spam texts, <a href="/report">file a report here</a> and forward the original to <strong>7726</strong>.</p>
 </div>`;
   return layout({
@@ -1262,7 +1332,7 @@ ${OPT_OUT_SITES.map(optOutSiteItem).join('\n')}
     hero,
     demo: ctx.cfg.intakeMode === 'demo',
     scripts: ['/static/js/optout.js'],
-    description: 'How to get your listing off the major people-search sites, with an email builder that runs in your browser, and the honest limits of opting out.',
+    description: 'How to get your listing off the major people-search sites, with an email builder that runs in your browser, and the limits of opting out.',
   });
 }
 
