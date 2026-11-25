@@ -14,7 +14,7 @@ import { join } from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import vm from 'node:vm';
 import { SITEMAP_PATHS, SITEMAP_XML } from '../src/app.ts';
-import { DROP_URL, OPT_OUT_PRIVACY_LINE, OPT_OUT_SITES } from '../src/pages.ts';
+import { DROP_URL, OPT_OUT_PRIVACY_LINE, OPT_OUT_SITES, OTHER_OPT_OUTS } from '../src/pages.ts';
 import { get, startServer, type TestServer } from './helpers.ts';
 
 interface Email { to: string; subject: string; body: string }
@@ -171,10 +171,48 @@ describe('/opt-out page', () => {
     const { text } = await get(s.base, '/opt-out');
     const main = text.slice(text.indexOf('<main'), text.indexOf('</main>'));
     const external = [...main.matchAll(/href="(https?:[^"]+)"/g)].map((m) => m[1]!);
-    const allowed = new Set([DROP_URL, ...OPT_OUT_SITES.flatMap((x) => (x.form ? [x.form] : []))]);
+    const allowed = new Set([DROP_URL, ...OPT_OUT_SITES.flatMap((x) => (x.form ? [x.form] : [])), ...OTHER_OPT_OUTS.map((o) => o.url)]);
     for (const h of external) assert.ok(allowed.has(h), h);
     // Not listed as live routes: sites whose opt-out pages could not be checked.
     assert.ok(!/href="[^"]*(radaris|veripages|truepeoplesearch|fastpeoplesearch)/i.test(main));
+  });
+
+  it('heading reads "The limits of opting out"; the "honest limits" wording is gone (page and description)', async () => {
+    const { text } = await get(s.base, '/opt-out');
+    assert.ok(text.includes('<h2 id="limits">The limits of opting out</h2>'));
+    assert.ok(!/honest limits/i.test(text), 'no "honest limits" anywhere on the page, including the meta description');
+    assert.match(text, /<meta name="description" content="[^"]*and the limits of opting out\."/);
+    const junk = (await get(s.base, '/junk-mail')).text;
+    assert.ok(junk.includes('<h2 id="limits">The limits of opting out</h2>'));
+    assert.ok(!/honest limits/i.test(junk));
+  });
+
+  it('renders "Other opt-outs" below the site list with each verified entry and its exact link', async () => {
+    const { text } = await get(s.base, '/opt-out');
+    const at = text.indexOf('<h2 id="other">Other opt-outs</h2>');
+    assert.ok(at > text.indexOf('id="site-list"') && at > text.indexOf('id="builder"'), 'after the builder and the site list');
+    const section = text.slice(at, text.indexOf('</ul>', at));
+    assert.deepEqual(OTHER_OPT_OUTS.map((o) => o.id), ['donotcall', 'dmachoice', 'valpak', 'nai']);
+    // The exact URLs that answered 200 to curl when checked; changing one means re-checking it.
+    assert.deepEqual(OTHER_OPT_OUTS.map((o) => o.url), [
+      'https://www.donotcall.gov/register.html',
+      'https://www.dmachoice.org/register.php',
+      'https://www.valpak.com/remove-address',
+      'https://thenai.org/how-to-opt-out/',
+    ]);
+    for (const o of OTHER_OPT_OUTS) {
+      assert.ok(section.includes(`<li id="other-${o.id}"><h3>${o.name}</h3>`), o.id);
+      assert.ok(section.includes(`<a href="${o.url}">${o.urlLabel}</a>`), o.id);
+      assert.ok(o.note.length < 260 && o.stops.length < 80, o.id);
+    }
+    assert.ok(section.includes('<a href="tel:18883821222" class="nowrap">1-888-382-1222</a>'));
+    assert.match(section, /charities, political groups, debt collectors and surveys may still call/);
+    assert.match(section, /\$8 fee online \(\$9 by mail\) for a 10-year registration/);
+    // Unverified routes are not linked anywhere on the page.
+    assert.ok(!/href="[^"]*(optoutprescreen|aboutads\.info|youradchoices|moneymailer|valassis|redplum)/i.test(text));
+    // Not email routes: the builder dropdown is unchanged.
+    for (const o of OTHER_OPT_OUTS) assert.ok(!text.includes(`<option value="${o.id}"`), o.id);
+    assert.equal(text.match(/<option value=/g)?.length, OPT_OUT_SITES.length);
   });
 
   it('is in the sitemap, in SITEMAP_PATHS (so /stats counts it) and in the main navigation', async () => {
@@ -266,6 +304,11 @@ describe('browser: /opt-out builder', { skip }, () => {
       assert.equal(await page.isVisible('#o-email'), false);
       assert.equal(await page.isVisible('#o-build'), false);
       assert.equal(await page.getAttribute('#o-fo-link', 'href'), formOnly.form);
+
+      // The "Other opt-outs" section renders and every entry is visible.
+      await page.locator('#other').scrollIntoViewIfNeeded();
+      assert.equal(await page.isVisible('#other'), true);
+      for (const o of OTHER_OPT_OUTS) assert.equal(await page.isVisible(`#other-${o.id} a[href="${o.url}"]`), true, o.id);
 
       // No horizontal overflow at this width.
       const overflow = await page.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth');
