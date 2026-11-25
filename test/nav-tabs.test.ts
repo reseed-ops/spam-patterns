@@ -1,7 +1,8 @@
 // Main navigation as tabs: the desktop and mobile navs carry .nav-tabs, list
 // the same four links in order, and mark only the current page with
-// aria-current="page" (the attribute the active-tab CSS keys on). The footer
-// nav stays plain links.
+// aria-current="page" (the attribute the active-tab CSS keys on). There is no
+// Menu button or toggle: below 900px the mobile nav is an always-visible strip
+// that scrolls sideways inside itself. The footer nav stays plain links.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { after, before, describe, it } from 'node:test';
@@ -35,8 +36,21 @@ describe('main nav tabs', () => {
         assert.equal(navInner(text, label), expected, label);
       }
       assert.ok(text.includes('<nav class="nav-desktop nav-tabs" aria-label="Main">'));
+      assert.ok(text.includes('<nav class="nav-mobile nav-tabs" aria-label="Main (mobile)">'));
       const header = text.slice(text.indexOf('<header'), text.indexOf('</header>'));
       assert.equal(header.match(/aria-current="page"/g)?.length, 2, 'one per nav, in the header');
+    });
+  }
+
+  for (const [current] of LINKS) {
+    it(`${current}: no Menu button, toggle or collapsible nav anywhere on the page`, async () => {
+      const { text } = await get(s.base, current);
+      assert.ok(!/<(details|summary)\b/i.test(text), 'no <details>/<summary>');
+      assert.ok(!/>\s*Menu\s*</.test(text), 'no element whose text is "Menu"');
+      assert.ok(!/aria-expanded|aria-controls|nav-toggle|menu-toggle/i.test(text), 'no toggle attributes or classes');
+      const header = text.slice(text.indexOf('<header'), text.indexOf('</header>'));
+      assert.ok(!/\bhidden\b/.test(header), 'nothing in the header is hidden');
+      assert.match(header, /<a class="btn btn-primary btn-report" href="\/report">Report a spam text<\/a>/);
     });
   }
 
@@ -45,12 +59,13 @@ describe('main nav tabs', () => {
     assert.match(text, /<nav aria-label="Footer"><a href="\/privacy">Privacy &amp; threat model<\/a>/);
   });
 
-  it('CSS: the active tab is styled from aria-current, tabs scroll inside the mobile strip, footer gets no tab rules', () => {
+  it('CSS: the active tab is styled from aria-current, tabs scroll inside the mobile strip, no menu rules, footer gets no tab rules', () => {
     assert.match(css, /\.nav-tabs a\[aria-current="page"\] \{[^}]*background: var\(--tint\)/);
     assert.match(css, /\.nav-tabs a \{[^}]*border-radius: 12px 12px 0 0/);
     assert.match(css, /\.nav-tabs a:hover \{/);
     assert.match(css, /\.nav-tabs a:focus-visible \{/);
-    assert.match(css, /\.nav-mobile \.nav-tabs \{[^}]*overflow-x: auto/);
+    assert.match(css, /\.nav-tabs\.nav-mobile \{[^}]*overflow-x: auto/);
+    assert.doesNotMatch(css, /\.nav-mobile \.nav-tabs|nav-mobile summary|nav-mobile\[open\]|position: absolute[^}]*top: 100%/);
     assert.ok(!/site-footer[^{]*nav-tabs|nav-tabs[^{]*site-footer/.test(css));
   });
 });
