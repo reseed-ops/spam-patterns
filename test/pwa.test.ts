@@ -15,7 +15,7 @@ const root = new URL('..', import.meta.url).pathname;
 const read = (p: string) => readFileSync(root + p, 'utf8');
 const pkg = JSON.parse(read('package.json')) as { version: string };
 const SW = read('public/sw.js');
-const PAGES = ['/', '/report', '/report/complete', '/patterns', '/data', '/privacy', '/methodology', '/project', '/delete', '/junk-mail', '/opt-out', '/offline'];
+const PAGES = ['/', '/report', '/report/complete', '/patterns', '/data', '/privacy', '/methodology', '/project', '/delete', '/junk-mail', '/opt-out', '/scams', '/offline'];
 
 /** Width and height from a PNG's IHDR chunk. */
 function pngSize(file: string): [number, number] {

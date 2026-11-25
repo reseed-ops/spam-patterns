@@ -93,6 +93,7 @@ const NAV: Array<[string, string]> = [
 const FOOT: Array<[string, string]> = [
   ['/privacy', 'Privacy & threat model'],
   ['/junk-mail', 'Stop junk mail'],
+  ['/scams', 'Scams'],
   ['/methodology', 'Methodology'],
   ['/delete', 'Delete a report'],
   ['/project', 'Self-host & contribute'],

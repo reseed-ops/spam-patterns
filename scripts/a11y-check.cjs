@@ -94,7 +94,7 @@ async function tabWalk(page, label, { fromPageLoad = false, max = 40 } = {}) {
   const p0 = await ctx0.newPage();
   await p0.goto(`${BASE}/patterns`);
   const patternHref = await p0.evaluate(() => { const a = document.querySelector('a[href^="/patterns/"]'); return a && a.getAttribute('href'); });
-  const PAGES = ['/', '/?view=table', '/?view=map', '/?state=TX', '/?view=map&state=TX', '/?ac=410', '/?range=30', '/?range=all', '/report', '/delete', '/patterns', ...(patternHref ? [patternHref] : []), '/patterns/unknown-id', '/data', '/privacy', '/methodology', '/project', '/junk-mail', '/opt-out', '/offline', '/report/complete'];
+  const PAGES = ['/', '/?view=table', '/?view=map', '/?state=TX', '/?view=map&state=TX', '/?ac=410', '/?range=30', '/?range=all', '/report', '/delete', '/patterns', ...(patternHref ? [patternHref] : []), '/patterns/unknown-id', '/data', '/privacy', '/methodology', '/project', '/junk-mail', '/opt-out', '/scams', '/offline', '/report/complete'];
 
   for (const url of PAGES) {
     await p0.goto(BASE + url);
