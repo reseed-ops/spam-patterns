@@ -86,8 +86,8 @@ export const ICON = {
 const NAV: Array<[string, string]> = [
   ['/', 'Overview'],
   ['/patterns', 'Patterns'],
-  ['/data', 'Data'],
   ['/opt-out', 'Opt out'],
+  ['/data', 'Data'],
 ];
 
 const FOOT: Array<[string, string]> = [
