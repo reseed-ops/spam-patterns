@@ -20,6 +20,26 @@
   var MARK_MS = 10 * 60 * 1000; // a deletion in flight is forgotten after 10 minutes
   var B32 = 'ABCDEFGHJKMNPQRSTVWXYZ0123456789';
 
+  // Interface text in Spanish and Vietnamese (the page's <html lang>); the
+  // English is the key. Dates follow the same language.
+  var L10N = {
+    'Filed {when}': { es: 'Enviado el {when}', vi: 'Đã gửi lúc {when}' },
+    'Delete this report': { es: 'Eliminar este reporte', vi: 'Xóa báo cáo này' },
+    'Delete the report filed {when}': { es: 'Eliminar el reporte enviado el {when}', vi: 'Xóa báo cáo đã gửi lúc {when}' },
+    'The codes were removed from this device. No report was deleted.': {
+      es: 'Los códigos se quitaron de este dispositivo. No se eliminó ningún reporte.',
+      vi: 'Các mã đã được xóa khỏi thiết bị này. Không có báo cáo nào bị xóa.',
+    },
+  };
+  var LOCALE = { en: 'en-US', es: 'es-US', vi: 'vi-VN' };
+  var LANG = (root.document && root.document.documentElement && root.document.documentElement.lang) || 'en';
+  if (!LOCALE[LANG]) LANG = 'en';
+  function t(s, vars) {
+    var e = LANG === 'en' ? null : L10N[s];
+    var out = e && e[LANG] ? e[LANG] : s;
+    return vars ? out.replace(/\{(\w+)\}/g, function (m, k) { return k in vars ? String(vars[k]) : m; }) : out;
+  }
+
   // Same normalization as the server's normalizeReceipt (src/crypto.ts).
   function normalize(input) {
     if (typeof input !== 'string' || input.length > 80) return null;
@@ -133,17 +153,17 @@
     try { s.removeItem(KEY); return true; } catch (e) { return false; }
   }
 
-  function fmt(t) {
+  function fmt(ms) {
     try {
-      return new Date(t).toLocaleString('en-US', { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
-    } catch (e) { return new Date(t).toISOString().slice(0, 10); }
+      return new Date(ms).toLocaleString(LOCALE[LANG], { year: 'numeric', month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    } catch (e) { return new Date(ms).toISOString().slice(0, 10); }
   }
 
   // ---------- /delete page ----------
   function submitDelete(doc, step, code) {
     var f = doc.createElement('form');
     f.method = 'post';
-    f.action = '/delete';
+    f.action = '/delete' + (LANG === 'en' ? '' : '?lang=' + LANG);
     f.setAttribute('autocomplete', 'off');
     f.hidden = true;
     [['step', step], ['code', code]].forEach(function (p) {
@@ -164,12 +184,12 @@
       var li = doc.createElement('li');
       var when = fmt(e.filedAt);
       var span = doc.createElement('span');
-      span.textContent = 'Filed ' + when;
+      span.textContent = t('Filed {when}', { when: when });
       var btn = doc.createElement('button');
       btn.type = 'button';
       btn.className = 'btn btn-secondary';
-      btn.textContent = 'Delete this report';
-      btn.setAttribute('aria-label', 'Delete the report filed ' + when);
+      btn.textContent = t('Delete this report');
+      btn.setAttribute('aria-label', t('Delete the report filed {when}', { when: when }));
       // The code is read from storage at click time and never put in the page.
       var filedAt = e.filedAt;
       btn.addEventListener('click', function () {
@@ -200,7 +220,7 @@
         forget();
         render(doc, sec, Date.now());
         var st = doc.getElementById('forget-status');
-        if (st) { st.textContent = 'The codes were removed from this device. No report was deleted.'; st.hidden = false; st.focus(); }
+        if (st) { st.textContent = t('The codes were removed from this device. No report was deleted.'); st.hidden = false; st.focus(); }
       });
     }
   }

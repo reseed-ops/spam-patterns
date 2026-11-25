@@ -21,7 +21,7 @@
 'use strict';
 
 var VERSION = '0.1.10';
-var CACHE_REV = 3; // 2: main nav restyled as tabs; 3: Menu removed, tabs always shown
+var CACHE_REV = 4; // 2: main nav restyled as tabs; 3: Menu removed, tabs always shown; 4: language switcher, translated scripts
 var CACHE = 'stm-v' + VERSION + '-r' + CACHE_REV;
 var OFFLINE_URL = '/offline';
 // Not 'stm-'-prefixed, so a release's activate step leaves a pending share alone.
@@ -32,6 +32,7 @@ var SHARE_KEY = '/shared-image';
 var PRECACHE = [
   OFFLINE_URL,
   '/static/css/app.css',
+  '/static/js/lang.js',
   '/static/js/pwa.js',
   '/static/js/report.js',
   '/static/js/ocr-extract.js',

@@ -18,6 +18,7 @@ import { Keys, normalizeReceipt, sha256hex } from './crypto.ts';
 import { countView, expireFilings, expireSenderTokens, openDb, readStats, type DB } from './db.ts';
 import { MSG, deleteReport, fileFlag, fileReport, prepare } from './filing.ts';
 import { BACKGROUND_COLOR, SITE_ORIGIN, THEME_COLOR, esc } from './html.ts';
+import { currentLang, parseLang, t, withLang } from './i18n.ts';
 import { journalAppend, journalReapply } from './journal.ts';
 import {
   AGGREGATE_SCHEMA,
@@ -212,6 +213,38 @@ function send(res: ServerResponse, status: number, type: string, body: string | 
 const html = (res: ServerResponse, status: number, body: string) => send(res, status, 'text/html; charset=utf-8', body);
 const json = (res: ServerResponse, status: number, body: unknown) =>
   send(res, status, 'application/json; charset=utf-8', JSON.stringify(body));
+
+/**
+ * API responses in the request's language (?lang= on the API call). Only the
+ * site's own messages are translated: message, field errors, scrub notes and
+ * the preview's labels. The scrubbed message, area code, prefix, region and
+ * city in a preview are the report's own data and pass through unchanged.
+ */
+export function localizeApiBody(body: unknown): unknown {
+  if (currentLang() === 'en' || !body || typeof body !== 'object') return body;
+  const b = { ...(body as Record<string, unknown>) };
+  if (typeof b.message === 'string') b.message = t(b.message);
+  if (b.errors && typeof b.errors === 'object') {
+    b.errors = Object.fromEntries(Object.entries(b.errors as Record<string, unknown>).map(([k, v]) => [k, typeof v === 'string' ? t(v) : v]));
+  }
+  const p = b.preview as Record<string, any> | undefined;
+  if (p && typeof p === 'object') {
+    b.preview = {
+      ...p,
+      notes: Array.isArray(p.notes) ? p.notes.map((n: unknown) => (typeof n === 'string' ? t(n) : n)) : p.notes,
+      kept: p.kept && typeof p.kept === 'object' ? { ...p.kept, category: typeof p.kept.category === 'string' ? t(p.kept.category) : p.kept.category } : p.kept,
+      // Labels are ours; a value is ours unless it is the report's area code or region.
+      publicFields: Array.isArray(p.publicFields)
+        ? p.publicFields.map((f: { label: string; value: string }) => ({
+            label: t(f.label),
+            value: f.value === p.kept?.areaCode || f.value === p.kept?.referenceRegion ? f.value : t(f.value),
+          }))
+        : p.publicFields,
+    };
+  }
+  return b;
+}
+const api = (res: ServerResponse, status: number, body: unknown) => json(res, status, localizeApiBody(body));
 
 // Pre-compressed siblings (`<file>.br`, `<file>.gz`) are written by
 // `npm run vendor`. Keep COMPRESSIBLE in sync with scripts/vendor-ocr.mjs.
@@ -423,15 +456,15 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
 
     switch (path) {
       case '/api/preview': {
-        if (intakePaused(env, pauseFile)) return json(res, 503, { status: 'paused', message: MSG.paused });
-        if (!previewLimiter.take(ip)) return json(res, 429, { status: 'rate_limited', message: MSG.rateLimited });
+        if (intakePaused(env, pauseFile)) return api(res, 503, { status: 'paused', message: MSG.paused });
+        if (!previewLimiter.take(ip)) return api(res, 429, { status: 'rate_limited', message: MSG.rateLimited });
         const body = await jsonBody(req);
         const r = prepare(keys, body);
-        if ('errors' in r) return json(res, 400, { status: 'invalid', errors: r.errors });
-        return json(res, 200, { status: 'ok', preview: r.preview });
+        if ('errors' in r) return api(res, 400, { status: 'invalid', errors: r.errors });
+        return api(res, 200, { status: 'ok', preview: r.preview });
       }
       case '/api/reports': {
-        if (intakePaused(env, pauseFile)) return json(res, 503, { status: 'paused', message: MSG.paused });
+        if (intakePaused(env, pauseFile)) return api(res, 503, { status: 'paused', message: MSG.paused });
         const body = await jsonBody(req);
         const out = fileReport(
           {
@@ -448,41 +481,41 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
         );
         // A new report can change a reviewed pattern's templates: back to review.
         if (out.http === 201) reconcileReviews(db, keys);
-        return json(res, out.http, out.body);
+        return api(res, out.http, out.body);
       }
       case '/api/delete': {
-        if (!deleteLimiter.take(ip)) return json(res, 429, { status: 'rate_limited', message: 'Too many attempts. Try again later.' });
+        if (!deleteLimiter.take(ip)) return api(res, 429, { status: 'rate_limited', message: 'Too many attempts. Try again later.' });
         const body = await jsonBody(req);
         const out = doDelete(body.code);
-        return json(res, out.http, out.body);
+        return api(res, out.http, out.body);
       }
       case '/api/flag': {
-        if (!flagLimiter.take(ip)) return json(res, 429, { status: 'rate_limited', message: 'Too many flags. Try again later.' });
+        if (!flagLimiter.take(ip)) return api(res, 429, { status: 'rate_limited', message: 'Too many flags. Try again later.' });
         const out = fileFlag(db, await jsonBody(req));
-        return json(res, out.http, out.body);
+        return api(res, out.http, out.body);
       }
       case '/delete': {
         const f = await formBody(req);
         if (!deleteLimiter.take(ip)) {
-          return html(res, 429, deletePage(ctx(), { kind: 'form', error: 'Too many attempts. Try again later.' }));
+          return html(res, 429, deletePage(ctx(), { kind: 'form', error: t('Too many attempts. Try again later.') }));
         }
         const code = normalizeReceipt(f.code);
         if (!code) {
-          return html(res, 400, deletePage(ctx(), { kind: 'form', error: 'Enter the 32-character receipt code you saved when you filed the report.' }));
+          return html(res, 400, deletePage(ctx(), { kind: 'form', error: t('Enter the 32-character receipt code you saved when you filed the report.') }));
         }
         if (f.step !== 'delete') return html(res, 200, deletePage(ctx(), { kind: 'confirm', code }));
         const out = doDelete(code);
-        if (out.body.status === 'invalid') return html(res, 400, deletePage(ctx(), { kind: 'form', error: out.body.message }));
-        return html(res, out.http, deletePage(ctx(), { kind: 'result', status: out.body.status, message: out.body.message }));
+        if (out.body.status === 'invalid') return html(res, 400, deletePage(ctx(), { kind: 'form', error: t(out.body.message) }));
+        return html(res, out.http, deletePage(ctx(), { kind: 'result', status: out.body.status, message: t(out.body.message) }));
       }
       case '/flag': {
         const f = await formBody(req);
-        if (!flagLimiter.take(ip)) return html(res, 429, privacyPage(ctx(), { ok: false, message: 'Too many flags. Try again later.' }));
+        if (!flagLimiter.take(ip)) return html(res, 429, privacyPage(ctx(), { ok: false, message: t('Too many flags. Try again later.') }));
         const out = fileFlag(db, f);
         const message =
           out.http === 200
-            ? String(out.body.message)
-            : Object.values((out.body.errors as Record<string, string>) ?? {}).join(' ') || 'Check the form.';
+            ? t(String(out.body.message))
+            : Object.values((out.body.errors as Record<string, string>) ?? {}).map((m) => t(m)).join(' ') || t('Check the form.');
         return html(res, out.http, privacyPage(ctx(), { ok: out.http === 200, message }));
       }
     }
@@ -490,19 +523,37 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
   }
 
   function handle(req: IncomingMessage, res: ServerResponse): void {
-    route(req, res).catch((e: unknown) => {
-      if (res.headersSent) {
-        res.destroy();
-        return;
-      }
-      if (e instanceof HttpError) {
-        const wantsJson = (req.url ?? '').startsWith('/api/');
-        if (wantsJson) return json(res, e.status, { status: 'error', message: e.message });
-        return html(res, e.status, simplePage(ctx(), 'Error', `<h1>${esc(e.status === 404 ? 'Page not found' : 'Request not accepted')}</h1><p>${esc(e.message)}</p><p><a href="/">Back to overview</a></p>`));
-      }
-      process.stderr.write(`internal error: ${e instanceof Error ? e.name : 'unknown'}\n`);
-      return json(res, 500, { status: 'error', message: 'Something went wrong. Nothing was changed. Try again.' });
-    });
+    // Interface language from ?lang= (pages, form posts and API calls alike).
+    let url: URL;
+    try {
+      url = new URL(req.url ?? '/', 'http://localhost');
+    } catch {
+      url = new URL('http://localhost/');
+    }
+    const path = url.pathname.replace(/\/+$/, '') || '/';
+    withLang(parseLang(url.searchParams.get('lang')), path, url.searchParams, () =>
+      route(req, res).catch((e: unknown) => {
+        if (res.headersSent) {
+          res.destroy();
+          return;
+        }
+        if (e instanceof HttpError) {
+          const wantsJson = (req.url ?? '').startsWith('/api/');
+          if (wantsJson) return json(res, e.status, { status: 'error', message: t(e.message) });
+          return html(
+            res,
+            e.status,
+            simplePage(
+              ctx(),
+              t('Error'),
+              `<h1>${esc(t(e.status === 404 ? 'Page not found' : 'Request not accepted'))}</h1><p>${esc(t(e.message))}</p><p><a href="/">${esc(t('Back to overview'))}</a></p>`,
+            ),
+          );
+        }
+        process.stderr.write(`internal error: ${e instanceof Error ? e.name : 'unknown'}\n`);
+        return json(res, 500, { status: 'error', message: t('Something went wrong. Nothing was changed. Try again.') });
+      }),
+    );
   }
 
   const close = () => {

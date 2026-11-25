@@ -142,7 +142,7 @@ describe('/opt-out page', () => {
     assert.ok(!/<form\b/i.test(main), 'no form element, so nothing can be submitted');
     assert.ok(!/<(input|select|textarea)\b[^>]*\bname=/i.test(main), 'no named fields');
     assert.ok(!/<script(?![^>]*\bsrc=)[^>]*>/i.test(text), 'no inline script');
-    assert.deepEqual([...text.matchAll(/<script src="([^"]+)"/g)].map((m) => m[1]), ['/static/js/pwa.js', '/static/js/optout.js']);
+    assert.deepEqual([...text.matchAll(/<script src="([^"]+)"/g)].map((m) => m[1]), ['/static/js/lang.js', '/static/js/pwa.js', '/static/js/optout.js']);
     assert.equal(headers.get('set-cookie'), null);
     const js = await get(s.base, '/static/js/optout.js');
     assert.equal(js.status, 200);

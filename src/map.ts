@@ -11,6 +11,7 @@
 
 import { allAreaCodes, lookupAreaCode } from './areacodes.ts';
 import { esc } from './html.ts';
+import { t } from './i18n.ts';
 import type { AreaCount } from './patterns.ts';
 
 // [state, column, row], 12 columns x 8 rows, 0-based.
@@ -53,6 +54,13 @@ export function binClass(n: number): string {
 }
 
 export const reportsWord = (n: number) => (n === 1 ? 'report' : 'reports');
+
+/** "3 reports" in the current language; `html` is the number as rendered (default: the number). */
+export function reportsCount(n: number, html: string = String(n)): string {
+  return t(n === 1 ? '{nReports} report' : '{nReports} reports', { nReports: html });
+}
+
+const selectedText = (selected: boolean) => (selected ? t(', selected') : '');
 
 export interface StateGroup {
   state: string;
@@ -97,9 +105,9 @@ export function stateSummary(counts: AreaCount[]): { reports: number; places: nu
   const where = states.has('DC')
     ? n === 0
       ? 'DC'
-      : `${n} ${n === 1 ? 'state' : 'states'} and DC`
-    : `${n} ${n === 1 ? 'state' : 'states'}`;
-  return { reports, places: states.size, text: `${reports} ${reportsWord(reports)} across ${where}` };
+      : t(n === 1 ? '{states} state and DC' : '{states} states and DC', { states: n })
+    : t(n === 1 ? '{states} state' : '{states} states', { states: n });
+  return { reports, places: states.size, text: t(reports === 1 ? '{total} report across {where}' : '{total} reports across {where}', { total: reports, where }) };
 }
 
 const CHECK = `<span class="sel-mark" aria-hidden="true">✓</span>`;
@@ -121,10 +129,12 @@ export function renderMap(counts: AreaCount[], opts: MapOpts): string {
     }
     const selected = opts.selectedState === st;
     // Starts with the visible tile text (WCAG 2.5.3 label in name), then the full sentence.
-    const label = `${st} ${g.count}. ${g.name}: ${g.count} ${reportsWord(g.count)}, ${opts.rangeLabel}${selected ? ', selected' : ''}`;
+    const label =
+      t(g.count === 1 ? '{abbr} {n}. {state}: {n} report, {range}' : '{abbr} {n}. {state}: {n} reports, {range}', { abbr: st, n: g.count, state: g.name, range: opts.rangeLabel }) +
+      selectedText(selected);
     return `<a class="tile ${binClass(g.count)} ${pos}${selected ? ' selected' : ''}" href="${esc(opts.hrefForState(st))}" aria-label="${esc(label)}"${selected ? ' aria-current="true"' : ''}><span class="tile-abbr">${esc(st)}</span> <span class="tile-count">${g.count}</span>${selected ? CHECK : ''}</a>`;
   }).join('\n');
-  return `<div class="tile-grid" role="group" aria-label="Tile map of US states and DC, one equal-size tile per state. States with reports are links.">
+  return `<div class="tile-grid" role="group" aria-label="${esc(t('Tile map of US states and DC, one equal-size tile per state. States with reports are links.'))}">
 ${tiles}
 </div>`;
 }
@@ -135,19 +145,19 @@ export function renderStateList(counts: AreaCount[], opts: MapOpts): string {
   const rows = sortedStates(states)
     .map((g) => {
       const selected = opts.selectedState === g.state;
-      return `<li><a class="state-row${selected ? ' selected' : ''}" href="${esc(opts.hrefForState(g.state))}"${selected ? ' aria-current="true"' : ''}><span class="swatch ${binClass(g.count)}" aria-hidden="true"></span><span class="sl-name">${esc(g.name)}</span><span class="sl-sep" aria-hidden="true"> · </span><span class="sl-count num">${g.count} ${reportsWord(g.count)}</span><span class="visually-hidden">, ${esc(opts.rangeLabel)}${selected ? ', selected' : ''}</span>${selected ? CHECK : ''}</a></li>`;
+      return `<li><a class="state-row${selected ? ' selected' : ''}" href="${esc(opts.hrefForState(g.state))}"${selected ? ' aria-current="true"' : ''}><span class="swatch ${binClass(g.count)}" aria-hidden="true"></span><span class="sl-name">${esc(g.name)}</span><span class="sl-sep" aria-hidden="true"> · </span><span class="sl-count num">${g.count} ${esc(t(reportsWord(g.count)))}</span><span class="visually-hidden">, ${esc(opts.rangeLabel)}${esc(selectedText(selected))}</span>${selected ? CHECK : ''}</a></li>`;
     })
     .join('');
-  return `<ul class="state-list" aria-label="States with reports, most reports first">${rows}</ul>`;
+  return `<ul class="state-list" aria-label="${esc(t('States with reports, most reports first'))}">${rows}</ul>`;
 }
 
 export function renderLegend(): string {
   const items = [
-    `<li><span class="swatch bin0" aria-hidden="true"></span>${esc(BIN_ZERO.label)}</li>`,
-    ...BINS.map((b, i) => `<li><span class="swatch bin${i + 1}" aria-hidden="true"></span>${esc(b.label)}</li>`),
+    `<li><span class="swatch bin0" aria-hidden="true"></span>${esc(t(BIN_ZERO.label))}</li>`,
+    ...BINS.map((b, i) => `<li><span class="swatch bin${i + 1}" aria-hidden="true"></span>${esc(t(b.label))}</li>`),
   ].join('');
   return `<div class="legend">
-<p class="meta"><strong>Legend.</strong> Each state or DC is one equal-size tile (a row in the list on narrow screens). Color shows the state’s total reports in this range, and the number is the exact count. Each state’s area codes are listed on its detail view.</p>
-<ul aria-label="Color key">${items}</ul>
+<p class="meta">${t('<strong>Legend.</strong> Each state or DC is one equal-size tile (a row in the list on narrow screens). Color shows the state’s total reports in this range, and the number is the exact count. Each state’s area codes are listed on its detail view.')}</p>
+<ul aria-label="${esc(t('Color key'))}">${items}</ul>
 </div>`;
 }

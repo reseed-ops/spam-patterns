@@ -12,7 +12,8 @@ function footerOf(html: string): string {
   return html.slice(html.indexOf('<nav aria-label="Footer">'), html.indexOf('</footer>'));
 }
 function mainNavsOf(html: string): string {
-  return html.slice(html.indexOf('<header'), html.indexOf('</header>'));
+  // The header minus the language switcher, whose flags link to this page.
+  return html.slice(html.indexOf('<header'), html.indexOf('</header>')).replace(/<nav class="lang-switch"[\s\S]*?<\/nav>/, '');
 }
 
 describe('/scams guide', () => {
@@ -65,7 +66,7 @@ describe('/scams guide', () => {
   it('has no inline script and loads no page script beyond pwa.js', async () => {
     const { text } = await get(s.base, '/scams');
     assert.ok(!/<script(?![^>]*\bsrc=)[^>]*>/.test(text), 'inline script');
-    assert.deepEqual([...text.matchAll(/<script src="([^"]+)"/g)].map((m) => m[1]), ['/static/js/pwa.js']);
+    assert.deepEqual([...text.matchAll(/<script src="([^"]+)"/g)].map((m) => m[1]), ['/static/js/lang.js', '/static/js/pwa.js']);
   });
 
   it('sets no cookie', async () => {
