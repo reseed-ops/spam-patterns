@@ -15,10 +15,14 @@
 //
 // VERSION must equal package.json "version" (test/pwa.test.ts checks it), so
 // every release gets a fresh cache and old caches are deleted on activate.
+// CACHE_REV is bumped when cached static files (e.g. app.css) change between
+// releases, so returning visitors still get the new files; reset it to 1 on
+// the next version bump.
 'use strict';
 
 var VERSION = '0.1.10';
-var CACHE = 'stm-v' + VERSION;
+var CACHE_REV = 2; // 2: main nav restyled as tabs
+var CACHE = 'stm-v' + VERSION + '-r' + CACHE_REV;
 var OFFLINE_URL = '/offline';
 // Not 'stm-'-prefixed, so a release's activate step leaves a pending share alone.
 var SHARE_CACHE = 'sp-shared-image';

@@ -34,6 +34,7 @@ const TEXT: Array<[string, string, string]> = [
   ['white', 'action', 'primary button'], ['white', 'action-hover', 'hovered primary button'], ['white', 'err', 'danger button'],
   ['err', 'err-bg', 'error notice'], ['err', 'surface', 'field errors'], ['ok', 'ok-bg', 'success notice'],
   ['warn', 'warn-bg', 'claimed-origin warning, demo banner'],
+  ['text-2', 'tab-bg', 'inactive main-nav tab'], ['action', 'tint', 'current main-nav tab'], ['action-hover', 'surface', 'hovered main-nav tab'],
   ['bin0-text', 'bin0', 'state abbreviation on a zero-report tile'],
   ['bin-text-light', 'bin1', 'tile text, 1 report'], ['bin-text-light', 'bin2', 'tile text, 2–4 reports'],
   ['bin-text-dark', 'bin3', 'tile text, 5–19 reports'], ['bin-text-dark', 'bin4', 'tile text, 20+ reports'],
@@ -43,6 +44,7 @@ const NON_TEXT: Array<[string, string, string]> = [
   ['focus', 'surface', 'focus ring'], ['focus', 'canvas', 'focus ring on canvas'],
   ['action', 'surface', 'secondary button border'], ['err', 'surface', 'invalid field border'], ['warn', 'warn-bg', 'warning border'],
   ['outline', 'white', 'outline of a tile with reports, legend swatch border'],
+  ['focus', 'tab-bg', 'focus ring inside an inactive nav tab'], ['focus', 'tint', 'focus ring inside the current nav tab'], ['action', 'tint', 'current nav tab top bar'],
   ['text', 'bin1', 'selected-tile inset border, light bin'], ['text', 'bin2', 'selected-tile inset border, light bin'],
   ['white', 'bin3', 'selected-tile inner ring, dark bin'], ['white', 'bin4', 'selected-tile inner ring, dark bin'],
 ];
