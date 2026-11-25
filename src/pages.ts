@@ -1266,6 +1266,84 @@ ${OPT_OUT_SITES.map(optOutSiteItem).join('\n')}
   });
 }
 
+// ---------------- Common scams, by medium (static public-service page) ----------------
+
+/** Section ids on /scams, one per medium (tests check each renders). */
+export const SCAM_MEDIUMS = ['text', 'email', 'phone', 'social', 'mail', 'qr'] as const;
+
+const SCAM_SELF_SERVE = 'Do not click the link or call the number in the message. Go to the official site or number yourself, typed in or taken from the back of your card or a statement.';
+
+export function scamsPage(ctx: PageCtx): string {
+  const hero = {
+    kicker: 'Practical next steps',
+    title: 'Common scams, by medium',
+    html: `<p class="lead">The same few tricks show up again and again: something urgent, a link or number to use right now, and a request for money, a code or a login. Here is what the common ones look like on each channel.</p>`,
+  };
+  const body = `<div class="prose">
+
+<h2 id="text">Text messages</h2>
+<ul>
+<li><strong>Package or delivery.</strong> “Your parcel is held” or “we could not deliver,” with a link to pay a small fee or update your address. Check tracking on the carrier’s own site, not through the link.</li>
+<li><strong>Bank or fraud alert.</strong> A text says there is suspicious activity and asks you to click a link or call a number. The link leads to a fake login page; the number reaches the scammer.</li>
+<li><strong>Unpaid toll.</strong> A text claims you owe a toll-road fee and threatens penalties unless you pay through a link. Check your toll account on the agency’s own site instead.</li>
+<li><strong>Job offer or wrong number.</strong> An unsolicited job offer with easy pay, or a friendly “wrong number” chat that turns into an investment or crypto tip. Both end with a request for money or personal details.</li>
+</ul>
+<p><strong>What to do:</strong> ${esc(SCAM_SELF_SERVE)} Forward the text to <strong>7726</strong> (SPAM) and <a href="/report">file a report here</a>.</p>
+
+<h2 id="email">Email</h2>
+<ul>
+<li><strong>Phishing.</strong> A fake invoice, an account warning or a password-reset email you did not ask for, with a link to a page that looks like the real login. Check the sender’s actual address and do not sign in from the link.</li>
+<li><strong>Refund or reimbursement.</strong> An email says you are owed a refund, or were charged for something and should call to cancel. The “agent” then asks for remote access, bank details or for you to send back an “overpayment.”</li>
+</ul>
+<p><strong>What to do:</strong> ${esc(SCAM_SELF_SERVE)} Use your email app’s report-phishing or spam button.</p>
+
+<h2 id="phone">Phone calls</h2>
+<ul>
+<li><strong>Bank or tech-support caller.</strong> Someone claiming to be your bank, a tech company or its fraud team asks you to read back a code sent to your phone, or to install software so they can “fix” something. Those codes and that access let them into your accounts.</li>
+<li><strong>Robocall “press 1.”</strong> A recorded message tells you to press a number to speak to someone or be removed from a list. Hang up without pressing anything; pressing a number can lead to more calls.</li>
+<li><strong>Family emergency.</strong> A caller says a grandchild or relative is in trouble and needs money now, often asking you to keep it secret. Hang up and call that person, or another relative, on a number you already know.</li>
+</ul>
+<p><strong>What to do:</strong> Hang up. Call back on the official number, not one the caller gave you. Never share a one-time code over the phone.</p>
+
+<h2 id="social">Social media and messaging apps</h2>
+<ul>
+<li><strong>Romance or investment.</strong> A new online friend or match builds trust over weeks, then needs money or wants you on an investment platform they recommend. Anyone you have not met in person who asks for money or crypto is a red flag.</li>
+<li><strong>Fake marketplace listing.</strong> A great deal on an item or rental, with pressure to pay a deposit before you see it, often by gift card, wire or payment app. Meet in person and see the item before paying.</li>
+<li><strong>Hacked friend’s account.</strong> A message from a friend asks for money or for a code that was “sent to your phone by mistake.” Contact the friend another way before doing anything.</li>
+<li><strong>Giveaway or celebrity endorsement.</strong> A post or ad promises a prize or uses a famous name to promote an investment, then asks for a fee, your login or crypto. Real giveaways do not ask you to pay.</li>
+</ul>
+<p><strong>What to do:</strong> ${esc(SCAM_SELF_SERVE)} Report the account or post in the app.</p>
+
+<h2 id="mail">Paper mail</h2>
+<ul>
+<li><strong>Fake check.</strong> A check arrives with instructions to deposit it and send part of the money back or on to someone else. The check can bounce days later, and you owe the bank the full amount.</li>
+<li><strong>Sweepstakes or lottery win.</strong> A letter says you won but must pay a fee or taxes up front to collect. Legitimate sweepstakes do not make you pay to receive a prize.</li>
+<li><strong>Government impersonation.</strong> A letter that looks official demands payment or personal details, sometimes by gift card, wire or crypto. Look up the agency’s number yourself and call to confirm.</li>
+</ul>
+<p><strong>What to do:</strong> Do not call the number or visit the site printed on the letter. Look up the agency or company yourself. For ordinary junk mail, see <a href="/junk-mail">how to cut down junk mail</a>.</p>
+
+<h2 id="qr">QR codes and links</h2>
+<ul>
+<li><strong>Parking meters and signs.</strong> A sticker with a QR code placed over the real one leads to a fake payment page. Pay through the city’s official app or the meter itself.</li>
+<li><strong>QR codes in mail or email.</strong> A code that opens a login or payment page. A code hides the web address until you open it. Treat it like any unexpected link.</li>
+</ul>
+<p><strong>What to do:</strong> Before entering anything, check the web address your phone shows. When in doubt, close it and go to the official site yourself.</p>
+
+<h2 id="after">If you already responded</h2>
+<p>Contact your bank or card company using the number on your card, change any password you entered, and report it to the <a href="https://reportfraud.ftc.gov/">FTC</a>. If scammers seem to know your address or relatives’ names, people-search sites are a common source; see <a href="/opt-out">how to opt out of them</a>.</p>
+
+<p class="meta">This page collects no information. For spam texts, <a href="/report">file a report here</a> and forward the original to <strong>7726</strong>.</p>
+</div>`;
+  return layout({
+    title: 'Common scams, by medium',
+    path: '/scams',
+    body,
+    hero,
+    demo: ctx.cfg.intakeMode === 'demo',
+    description: 'What common scams look like by text, email, phone, social media, paper mail and QR code, and what to do about each.',
+  });
+}
+
 // ---------------- Offline fallback (served by the service worker) ----------------
 
 export function offlinePage(ctx: PageCtx): string {

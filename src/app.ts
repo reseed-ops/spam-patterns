@@ -36,6 +36,7 @@ import {
   rangeDays,
   reportCompletePage,
   reportPage,
+  scamsPage,
   simplePage,
   type OverviewParams,
   type PageCtx,
@@ -118,7 +119,7 @@ export const MANIFEST = {
  * (disallowed in robots.txt), /api/*, /report/complete and /offline.
  * No lastmod: pages render live data and have no single real modification date.
  */
-export const SITEMAP_PATHS = ['/', '/patterns', '/data', '/report', '/privacy', '/methodology', '/project', '/junk-mail', '/opt-out'] as const;
+export const SITEMAP_PATHS = ['/', '/patterns', '/data', '/report', '/privacy', '/methodology', '/project', '/junk-mail', '/opt-out', '/scams'] as const;
 
 /** HTML pages whose GETs are counted (plus pattern detail pages that exist). */
 const COUNTED_PAGES: ReadonlySet<string> = new Set(SITEMAP_PATHS);
@@ -386,6 +387,8 @@ export function createApp(cfg: Config, opts: AppOptions = {}): App {
           return html(res, 200, junkMailPage(ctx()));
         case '/opt-out':
           return html(res, 200, optOutPage(ctx()));
+        case '/scams':
+          return html(res, 200, scamsPage(ctx()));
         case '/offline':
           return html(res, 200, offlinePage(ctx()));
         case '/manifest.webmanifest':
