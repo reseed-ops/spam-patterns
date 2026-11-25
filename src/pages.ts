@@ -817,6 +817,7 @@ export function privacyPage(ctx: PageCtx, flagResult?: { ok: boolean; message: s
 <tr><td>Deletion receipt</td><td>Only a scrambled version</td><td>No</td></tr>
 </tbody></table>
 <p>There are no accounts, cookies, analytics, tracking pixels, or third-party scripts.</p>
+<p id="visit-count">The server keeps one running total of views for each page (which page, nothing about you) and the number of counted reports on file, published at <a href="/stats">/stats</a>. It stores no IP address, browser details, query string, visit time or identifier, and no script on the page is involved.</p>
 <p id="offline-files">The site’s service worker stores copies of the app’s own files (styles, scripts, icons, the report page and the on-device text-recognition files) on your device only, so repeat visits load faster. It stores no report data. You can remove it by clearing this site’s data in your browser settings.</p>
 <p>This table describes what this app keeps. The hosting provider runs its own network and HTTP logging, separately from the app. The official instance is hosted on Railway, whose HTTP logs record the IP address each request came from (<a href="https://docs.railway.com/observability/logs">Railway’s log documentation</a>). How long Railway keeps them is set by Railway, not by this site: see <a href="https://railway.com/legal/privacy">Railway’s privacy policy</a>.</p>
 
