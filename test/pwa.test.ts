@@ -195,7 +195,7 @@ describe('/junk-mail guide', () => {
     assert.match(text, /6 weeks to 3 months/);
     assert.ok(!/<form/i.test(text), 'no form');
     const scripts = [...text.matchAll(/<script src="([^"]+)"/g)].map((m) => m[1]);
-    assert.deepEqual(scripts, ['/static/js/pwa.js']);
+    assert.deepEqual(scripts, ['/static/js/lang.js', '/static/js/pwa.js']);
   });
 
   it('links only to the named services (checked at build time) and internal pages that resolve', async () => {

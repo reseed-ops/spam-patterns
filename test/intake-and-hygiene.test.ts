@@ -138,6 +138,9 @@ describe('web hygiene', () => {
         const tag = m[0];
         const url = /(?:src|href)="([^"]*)"/.exec(tag)?.[1] ?? '';
         if (m[1]!.toLowerCase() === 'script') assert.ok(url.startsWith('/static/'), `${p}: ${tag}`);
+        // hreflang alternates name this page's language versions on the
+        // canonical origin; browsers load nothing from them.
+        if (/^<link rel="alternate" hreflang="[\w-]+" href="https:\/\/spampatterns\.com\//.test(tag)) continue;
         if (url) assert.ok(url.startsWith('/') && !url.startsWith('//'), `${p}: external ${tag}`);
       }
       assert.ok(!/<script(?![^>]*\bsrc=)[^>]*>/i.test(html), `${p}: inline script`);

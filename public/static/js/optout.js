@@ -5,8 +5,36 @@
 //
 // The pure functions (buildEmail, mailtoHref, validate) are exposed as
 // window.STMOptOut so test/optout.test.ts can load this file directly.
+//
+// Messages shown on the page follow the page language (<html lang>). The
+// email itself (SUBJECT and buildEmail) stays in English on purpose: it goes
+// to US companies that process these requests in English.
 (function (root) {
   'use strict';
+
+  var L10N = {
+    'Enter your full name.': { es: 'Escriba su nombre completo.', vi: 'Hãy nhập họ và tên đầy đủ của bạn.' },
+    'Keep your name under 100 characters.': { es: 'Su nombre debe tener menos de 100 caracteres.', vi: 'Tên của bạn phải ít hơn 100 ký tự.' },
+    'Paste the full address of your listing, starting with https://, or leave this blank.': {
+      es: 'Pegue la dirección completa de su ficha, que empiece con https://, o deje este campo en blanco.',
+      vi: 'Hãy dán địa chỉ đầy đủ của trang hồ sơ, bắt đầu bằng https://, hoặc để trống ô này.',
+    },
+    'Enter the email address you want the reply sent to.': {
+      es: 'Escriba la dirección de correo electrónico a la que quiere recibir la respuesta.',
+      vi: 'Hãy nhập địa chỉ email bạn muốn nhận thư trả lời.',
+    },
+    'Enter an email address like name@example.com.': {
+      es: 'Escriba una dirección de correo electrónico como name@example.com.',
+      vi: 'Hãy nhập địa chỉ email có dạng name@example.com.',
+    },
+    'Prefer a web form? ': { es: '¿Prefiere un formulario web? ', vi: 'Bạn muốn dùng biểu mẫu web? ' },
+  };
+  var LANG = (typeof document !== 'undefined' && document.documentElement && document.documentElement.lang) || 'en';
+
+  function t(s) {
+    var e = L10N[s];
+    return (e && e[LANG]) || s;
+  }
 
   var SUBJECT = 'Request to suppress/remove my personal information';
 
@@ -28,11 +56,11 @@
     var name = clean(input.name);
     var url = clean(input.url);
     var reply = clean(input.reply);
-    if (!name) e.name = 'Enter your full name.';
-    else if (name.length > 100) e.name = 'Keep your name under 100 characters.';
-    if (url && !isListingUrl(url)) e.url = 'Paste the full address of your listing, starting with https://, or leave this blank.';
-    if (!reply) e.reply = 'Enter the email address you want the reply sent to.';
-    else if (!isEmail(reply)) e.reply = 'Enter an email address like name@example.com.';
+    if (!name) e.name = t('Enter your full name.');
+    else if (name.length > 100) e.name = t('Keep your name under 100 characters.');
+    if (url && !isListingUrl(url)) e.url = t('Paste the full address of your listing, starting with https://, or leave this blank.');
+    if (!reply) e.reply = t('Enter the email address you want the reply sent to.');
+    else if (!isEmail(reply)) e.reply = t('Enter an email address like name@example.com.');
     return e;
   }
 
@@ -131,7 +159,7 @@
     also.hidden = !s.form;
     also.textContent = '';
     if (s.form) {
-      also.appendChild(document.createTextNode('Prefer a web form? '));
+      also.appendChild(document.createTextNode(t('Prefer a web form? ')));
       var l = document.createElement('a');
       l.href = s.form;
       l.textContent = s.formLabel;

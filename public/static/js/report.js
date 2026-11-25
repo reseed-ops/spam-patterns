@@ -15,6 +15,108 @@
   var app = document.getElementById('report-app');
   if (!app) return;
 
+  // Interface text in Spanish and Vietnamese (the page's <html lang>); the
+  // English is the key. Server messages come back translated through ?lang=.
+  var L10N = {
+    'Read on this device. Reader: your browser’s built-in text detection (TextDetector).': {
+      es: 'Leído en este dispositivo. Lector: la detección de texto integrada de su navegador (TextDetector).',
+      vi: 'Đã đọc trên thiết bị này. Trình đọc: tính năng nhận dạng chữ có sẵn trong trình duyệt của bạn (TextDetector).',
+    },
+    'Read on this device. Reader: Tesseract (in-browser OCR).': {
+      es: 'Leído en este dispositivo. Lector: Tesseract (OCR en el navegador).',
+      vi: 'Đã đọc trên thiết bị này. Trình đọc: Tesseract (OCR trong trình duyệt).',
+    },
+    'Check the highlighted fields:': { es: 'Revise los campos marcados:', vi: 'Hãy kiểm tra các trường được đánh dấu:' },
+    'We could not prepare the review. Try again.': {
+      es: 'No pudimos preparar la revisión. Inténtelo de nuevo.',
+      vi: 'Chúng tôi không thể chuẩn bị bước xem lại. Hãy thử lại.',
+    },
+    'We could not reach the site to prepare your review. Check your connection and try again.': {
+      es: 'No pudimos conectarnos con el sitio para preparar su revisión. Revise su conexión e inténtelo de nuevo.',
+      vi: 'Không thể kết nối đến trang để chuẩn bị bước xem lại. Hãy kiểm tra kết nối và thử lại.',
+    },
+    'Area code': { es: 'Código de área', vi: 'Mã vùng' },
+    'Prefix (next 3 digits)': { es: 'Prefijo (los 3 dígitos siguientes)', vi: 'Tiền tố (3 chữ số tiếp theo)' },
+    'Keyed hash of the full number': { es: 'Hash con clave del número completo', vi: 'Mã băm có khóa của số đầy đủ' },
+    'Kept internally, never shown': { es: 'Se guarda internamente, nunca se muestra', vi: 'Chỉ lưu nội bộ, không bao giờ hiển thị' },
+    'Category': { es: 'Categoría', vi: 'Danh mục' },
+    'City named in the message': { es: 'Ciudad mencionada en el mensaje', vi: 'Thành phố được nêu trong tin nhắn' },
+    'None': { es: 'Ninguna', vi: 'Không có' },
+    'Enter the sender number shown in the text.': {
+      es: 'Escriba el número del remitente que aparece en el mensaje.',
+      vi: 'Nhập số của người gửi hiển thị trong tin nhắn.',
+    },
+    'Enter the message text.': { es: 'Escriba el texto del mensaje.', vi: 'Nhập nội dung tin nhắn.' },
+    'Try again': { es: 'Intentar de nuevo', vi: 'Thử lại' },
+    'File this report': { es: 'Enviar este reporte', vi: 'Gửi báo cáo này' },
+    'Reporting is paused on this site right now. Nothing was saved.': {
+      es: 'Los reportes están en pausa en este sitio por ahora. No se guardó nada.',
+      vi: 'Hiện trang này đang tạm ngừng nhận báo cáo. Không có gì được lưu.',
+    },
+    'Filing report…': { es: 'Enviando el reporte…', vi: 'Đang gửi báo cáo…' },
+    'The report was not filed. Check the details and try again.': {
+      es: 'El reporte no se envió. Revise los datos e inténtelo de nuevo.',
+      vi: 'Báo cáo chưa được gửi. Hãy kiểm tra thông tin và thử lại.',
+    },
+    'We couldn’t confirm whether your report was filed. Try again to check.': {
+      es: 'No pudimos confirmar si su reporte se envió. Vuelva a intentarlo para comprobarlo.',
+      vi: 'Chúng tôi không thể xác nhận báo cáo của bạn đã được gửi hay chưa. Hãy thử lại để kiểm tra.',
+    },
+    'Code copied.': { es: 'Código copiado.', vi: 'Đã sao chép mã.' },
+    'Copy failed. Select the code and copy it manually.': {
+      es: 'No se pudo copiar. Seleccione el código y cópielo a mano.',
+      vi: 'Sao chép không thành công. Hãy chọn mã và sao chép thủ công.',
+    },
+    'Select the code and copy it manually.': { es: 'Seleccione el código y cópielo a mano.', vi: 'Hãy chọn mã và sao chép thủ công.' },
+    'Reading on your device: {status}…': { es: 'Leyendo en su dispositivo: {status}…', vi: 'Đang đọc trên thiết bị của bạn: {status}…' },
+    'Reading on your device. This can take a few seconds.': {
+      es: 'Leyendo en su dispositivo. Esto puede tardar unos segundos.',
+      vi: 'Đang đọc trên thiết bị của bạn. Việc này có thể mất vài giây.',
+    },
+    // Tesseract's own progress statuses (shown after "Reading on your device:").
+    'loading tesseract core': { es: 'cargando el motor de Tesseract', vi: 'đang tải lõi Tesseract' },
+    'initializing tesseract': { es: 'iniciando Tesseract', vi: 'đang khởi động Tesseract' },
+    'initialized tesseract': { es: 'Tesseract iniciado', vi: 'đã khởi động Tesseract' },
+    'loading language traineddata': { es: 'cargando los datos del idioma', vi: 'đang tải dữ liệu ngôn ngữ' },
+    'loaded language traineddata': { es: 'datos del idioma cargados', vi: 'đã tải dữ liệu ngôn ngữ' },
+    'initializing api': { es: 'iniciando la API', vi: 'đang khởi tạo API' },
+    'initialized api': { es: 'API iniciada', vi: 'đã khởi tạo API' },
+    'recognizing text': { es: 'reconociendo el texto', vi: 'đang nhận dạng chữ' },
+    'This file type is not supported. Use PNG, JPEG or WebP, or enter the details manually.': {
+      es: 'Este tipo de archivo no es compatible. Use PNG, JPEG o WebP, o escriba los datos a mano.',
+      vi: 'Loại tệp này không được hỗ trợ. Hãy dùng PNG, JPEG hoặc WebP, hoặc nhập thông tin thủ công.',
+    },
+    'This file is larger than {mb} MB. Choose a smaller screenshot, or enter the details manually.': {
+      es: 'Este archivo pesa más de {mb} MB. Elija una captura de pantalla más pequeña o escriba los datos a mano.',
+      vi: 'Tệp này lớn hơn {mb} MB. Hãy chọn ảnh chụp màn hình nhỏ hơn, hoặc nhập thông tin thủ công.',
+    },
+    'This image is too large to read (over {mp} megapixels). Choose a smaller screenshot, or enter the details manually.': {
+      es: 'Esta imagen es demasiado grande para leerla (más de {mp} megapíxeles). Elija una captura de pantalla más pequeña o escriba los datos a mano.',
+      vi: 'Ảnh này quá lớn để đọc (trên {mp} megapixel). Hãy chọn ảnh chụp màn hình nhỏ hơn, hoặc nhập thông tin thủ công.',
+    },
+    'We couldn’t read this screenshot. Choose another image or enter the details manually.': {
+      es: 'No pudimos leer esta captura de pantalla. Elija otra imagen o escriba los datos a mano.',
+      vi: 'Chúng tôi không đọc được ảnh chụp màn hình này. Hãy chọn ảnh khác hoặc nhập thông tin thủ công.',
+    },
+    'We found the message but couldn’t find the sender number. Enter it to continue.': {
+      es: 'Encontramos el mensaje, pero no el número del remitente. Escríbalo para continuar.',
+      vi: 'Chúng tôi tìm thấy tin nhắn nhưng không tìm thấy số của người gửi. Hãy nhập số để tiếp tục.',
+    },
+    'Screenshot reading is temporarily unavailable. You can enter the details manually.': {
+      es: 'La lectura de capturas de pantalla no está disponible por el momento. Puede escribir los datos a mano.',
+      vi: 'Tính năng đọc ảnh chụp màn hình tạm thời không khả dụng. Bạn có thể nhập thông tin thủ công.',
+    },
+  };
+  var LANG = (document.documentElement && document.documentElement.lang) || 'en';
+  if (LANG !== 'es' && LANG !== 'vi') LANG = 'en';
+  function t(s, vars) {
+    var e = LANG === 'en' ? null : L10N[s];
+    var out = e && e[LANG] ? e[LANG] : s;
+    return vars ? out.replace(/\{(\w+)\}/g, function (m, k) { return k in vars ? String(vars[k]) : m; }) : out;
+  }
+  // Same-site URL in the page language (API calls and history entries).
+  function withLang(path) { return LANG === 'en' ? path : path + (path.indexOf('?') === -1 ? '?' : '&') + 'lang=' + LANG; }
+
   var MAX_MB = Number(app.getAttribute('data-max-mb')) || 8;
   var MAX_PIXELS = Number(app.getAttribute('data-max-pixels')) || 16000000;
   var TYPES = ['image/png', 'image/jpeg', 'image/webp'];
@@ -57,8 +159,8 @@
 
   function post(path, body) {
     var ctl = new AbortController();
-    var t = setTimeout(function () { ctl.abort(); }, 20000);
-    return fetch(path, {
+    var timer = setTimeout(function () { ctl.abort(); }, 20000);
+    return fetch(withLang(path), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -66,16 +168,16 @@
       credentials: 'omit',
       cache: 'no-store',
     }).then(function (r) {
-      clearTimeout(t);
+      clearTimeout(timer);
       return r.json().then(function (j) { return { status: r.status, body: j }; });
-    }, function (e) { clearTimeout(t); throw e; });
+    }, function (e) { clearTimeout(timer); throw e; });
   }
 
   // ---------- navigation ----------
   app.addEventListener('click', function (e) {
-    var t = e.target.closest ? e.target.closest('[data-go]') : null;
-    if (!t) return;
-    var step = t.getAttribute('data-go');
+    var go = e.target.closest ? e.target.closest('[data-go]') : null;
+    if (!go) return;
+    var step = go.getAttribute('data-go');
     if (step === 'details') fillForm();
     if (step === 'start') { draft = emptyDraft(); clearOcr(); }
     show(step);
@@ -84,12 +186,12 @@
   // Small muted note naming the on-device reader, so field reports are
   // diagnosable. Never sent to the server.
   function engineNote() {
-    var t = draft.source === 'screenshot' ? ENGINE_NOTE[draft.engine] || '' : '';
+    var note = draft.source === 'screenshot' && ENGINE_NOTE[draft.engine] ? t(ENGINE_NOTE[draft.engine]) : '';
     ['d-engine', 'r-engine'].forEach(function (id) {
       var el = $(id);
       if (!el) return;
-      el.textContent = t;
-      el.hidden = !t;
+      el.textContent = note;
+      el.hidden = !note;
     });
   }
 
@@ -123,7 +225,7 @@
     var sum = $('details-summary');
     sum.textContent = '';
     var p = document.createElement('p');
-    p.textContent = 'Check the highlighted fields:';
+    p.textContent = t('Check the highlighted fields:');
     sum.appendChild(p);
     var ul = document.createElement('ul');
     Object.keys(errors).forEach(function (k) {
@@ -150,10 +252,10 @@
       if (r.status === 200) { setPreview(r.body.preview); show('review'); return; }
       if (r.status === 400 && r.body.errors) { fillForm(); show('details'); showErrors(r.body.errors); return; }
       fillForm(); show('details');
-      showErrors({ message: r.body.message || 'We could not prepare the review. Try again.' });
+      showErrors({ message: r.body.message || t('We could not prepare the review. Try again.') });
     }, function () {
       fillForm(); show('details');
-      showErrors({ message: 'We could not reach the site to prepare your review. Check your connection and try again.' });
+      showErrors({ message: t('We could not reach the site to prepare your review. Check your connection and try again.') });
     });
   }
 
@@ -174,11 +276,11 @@
     var notes = $('r-notes'); notes.textContent = '';
     p.notes.forEach(function (n) { var li = document.createElement('li'); li.textContent = n; notes.appendChild(li); });
     dl($('r-kept'), [
-      ['Area code', p.kept.areaCode],
-      ['Prefix (next 3 digits)', p.kept.prefix],
-      ['Keyed hash of the full number', 'Kept internally, never shown'],
-      ['Category', p.kept.category],
-      ['City named in the message', p.kept.city || 'None'],
+      [t('Area code'), p.kept.areaCode],
+      [t('Prefix (next 3 digits)'), p.kept.prefix],
+      [t('Keyed hash of the full number'), t('Kept internally, never shown')],
+      [t('Category'), p.kept.category],
+      [t('City named in the message'), p.kept.city || t('None')],
     ]);
     dl($('r-public'), p.publicFields.map(function (f) { return [f.label, f.value]; }));
     $('file-error').hidden = true;
@@ -190,8 +292,8 @@
     readForm();
     clearErrors();
     var errs = {};
-    if (!draft.number.trim()) errs.number = 'Enter the sender number shown in the text.';
-    if (!draft.message.trim()) errs.message = 'Enter the message text.';
+    if (!draft.number.trim()) errs.number = t('Enter the sender number shown in the text.');
+    if (!draft.message.trim()) errs.message = t('Enter the message text.');
     if (Object.keys(errs).length) { showErrors(errs); return; }
     requestPreview();
   });
@@ -210,34 +312,34 @@
     el.textContent = text;
     el.hidden = false;
     el.focus();
-    $('file-btn').textContent = retry ? 'Try again' : 'File this report';
+    $('file-btn').textContent = retry ? t('Try again') : t('File this report');
   }
 
   $('file-btn').addEventListener('click', function () {
     if (filing || !preview) return;
     if (app.getAttribute('data-paused') === '1') {
-      fileError('Reporting is paused on this site right now. Nothing was saved.', false);
+      fileError(t('Reporting is paused on this site right now. Nothing was saved.'), false);
       return;
     }
     filing = true;
     if (!idemKey) idemKey = newKey();
     var btn = $('file-btn');
-    btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.textContent = 'Filing report…';
+    btn.disabled = true; btn.setAttribute('aria-busy', 'true'); btn.textContent = t('Filing report…');
     post('/api/reports', {
       number: draft.number, message: draft.message, category: draft.category, city: draft.city,
       removals: draft.removals, source: draft.source, previewHash: preview.previewHash, idempotencyKey: idemKey,
     }).then(function (r) {
-      filing = false; btn.disabled = false; btn.removeAttribute('aria-busy'); btn.textContent = 'File this report';
+      filing = false; btn.disabled = false; btn.removeAttribute('aria-busy'); btn.textContent = t('File this report');
       if (r.status === 201 || r.status === 200) return done(r.body);
       if (r.status === 409 && r.body.status === 'preview_changed') {
         setPreview(r.body.preview);
         var n = $('review-changed'); n.textContent = r.body.message; n.hidden = false; n.focus();
         return;
       }
-      fileError(r.body.message || 'The report was not filed. Check the details and try again.', false);
+      fileError(r.body.message || t('The report was not filed. Check the details and try again.'), false);
     }, function () {
       filing = false; btn.disabled = false; btn.removeAttribute('aria-busy');
-      fileError('We couldn’t confirm whether your report was filed. Try again to check.', true);
+      fileError(t('We couldn’t confirm whether your report was filed. Try again to check.'), true);
     });
   });
 
@@ -250,18 +352,18 @@
     draft = emptyDraft(); preview = null; idemKey = null;
     fillForm();
     show('done');
-    try { history.pushState(null, '', '/report/complete'); } catch (e) { /* ignore */ }
+    try { history.pushState(null, '', withLang('/report/complete')); } catch (e) { /* ignore */ }
   }
 
   $('copy-receipt').addEventListener('click', function () {
     var code = $('receipt').textContent;
-    var ok = function () { $('copy-status').textContent = 'Code copied.'; };
+    var ok = function () { $('copy-status').textContent = t('Code copied.'); };
     if (navigator.clipboard && navigator.clipboard.writeText) {
       navigator.clipboard.writeText(code).then(ok, function () {
-        $('copy-status').textContent = 'Copy failed. Select the code and copy it manually.';
+        $('copy-status').textContent = t('Copy failed. Select the code and copy it manually.');
       });
     } else {
-      $('copy-status').textContent = 'Select the code and copy it manually.';
+      $('copy-status').textContent = t('Select the code and copy it manually.');
     }
   });
 
@@ -324,6 +426,13 @@
     });
   }
 
+  // Tesseract's progress line. Its statuses are English; in another language
+  // an unknown one falls back to the generic line rather than show English.
+  function readingStatus(status) {
+    if (LANG !== 'en' && !(L10N[status] && L10N[status][LANG])) return t('Reading on your device. This can take a few seconds.');
+    return t('Reading on your device: {status}…', { status: t(status) });
+  }
+
   // Fallback reader: Tesseract.js, whose assets are fetched only now.
   function readWithTesseract(file, gen) {
     return loadTesseract().then(function (T) {
@@ -334,7 +443,7 @@
         workerBlobURL: false,
         cacheMethod: 'none',
         logger: function (m) {
-          if (gen === ocrGen && m && m.status) $('reading-status').textContent = 'Reading on your device: ' + m.status + '…';
+          if (gen === ocrGen && m && m.status) $('reading-status').textContent = readingStatus(m.status);
         },
       });
     }).then(function (w) {
@@ -362,13 +471,13 @@
   function takeImage(file) {
     $('shot-error').hidden = true;
     if (!file) return; // picker cancelled: stay here, no error
-    if (TYPES.indexOf(file.type) === -1) { shot.value = ''; return shotError('This file type is not supported. Use PNG, JPEG or WebP, or enter the details manually.'); }
-    if (file.size > MAX_MB * 1024 * 1024) { shot.value = ''; return shotError('This file is larger than ' + MAX_MB + ' MB. Choose a smaller screenshot, or enter the details manually.'); }
+    if (TYPES.indexOf(file.type) === -1) { shot.value = ''; return shotError(t('This file type is not supported. Use PNG, JPEG or WebP, or enter the details manually.')); }
+    if (file.size > MAX_MB * 1024 * 1024) { shot.value = ''; return shotError(t('This file is larger than {mb} MB. Choose a smaller screenshot, or enter the details manually.', { mb: MAX_MB })); }
     var gen = ++ocrGen;
     imageSizeOk(file).then(function (ok) {
       if (gen !== ocrGen) return;
-      if (ok === false) { shot.value = ''; return shotError('This image is too large to read (over ' + Math.round(MAX_PIXELS / 1e6) + ' megapixels). Choose a smaller screenshot, or enter the details manually.'); }
-      if (ok === null) { shot.value = ''; return shotError('We couldn’t read this screenshot. Choose another image or enter the details manually.'); }
+      if (ok === false) { shot.value = ''; return shotError(t('This image is too large to read (over {mp} megapixels). Choose a smaller screenshot, or enter the details manually.', { mp: Math.round(MAX_PIXELS / 1e6) })); }
+      if (ok === null) { shot.value = ''; return shotError(t('We couldn’t read this screenshot. Choose another image or enter the details manually.')); }
       show('reading');
       return readImage(file, gen).then(function (read) {
         shot.value = ''; file = null; // drop our only reference to the image
@@ -376,7 +485,7 @@
         var parts = splitOcr(read.text);
         if (parts.message.replace(/\W/g, '').length < 8) {
           show('start');
-          return shotError('We couldn’t read this screenshot. Choose another image or enter the details manually.');
+          return shotError(t('We couldn’t read this screenshot. Choose another image or enter the details manually.'));
         }
         draft = emptyDraft();
         draft.source = 'screenshot';
@@ -386,7 +495,7 @@
         if (!parts.number) {
           fillForm(); show('details');
           var info = $('details-info');
-          info.textContent = 'We found the message but couldn’t find the sender number. Enter it to continue.';
+          info.textContent = t('We found the message but couldn’t find the sender number. Enter it to continue.');
           info.hidden = false;
           $('f-number').focus();
           return;
@@ -396,7 +505,7 @@
         if (gen !== ocrGen) return;
         clearOcr();
         show('start');
-        shotError('Screenshot reading is temporarily unavailable. You can enter the details manually.');
+        shotError(t('Screenshot reading is temporarily unavailable. You can enter the details manually.'));
       });
     });
   }
