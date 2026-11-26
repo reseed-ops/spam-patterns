@@ -1509,6 +1509,156 @@ export const MORE_OPT_OUTS: GuideEntry[] = [
   },
 ];
 
+/**
+ * More data brokers, after the five in OPT_OUT_SITES. Web forms only, so
+ * information only: never in the email builder. Every URL answered 200 on
+ * OPT_OUT_CHECKED and every step was read on the broker's own page that day
+ * (ZoomInfo: the request form's own host refuses automated requests, so the
+ * link is its privacy page, which explains the request and links to it).
+ * Left out because they could not be checked: TruePeopleSearch,
+ * FastPeopleSearch, FamilyTreeNow, USPhoneBook, ZabaSearch, Radaris, Nuwber
+ * and PeopleFinders (all answer automated requests with a captcha or block
+ * page) and PeekYou (its domain now shows a court notice, no search or
+ * opt-out). Do not add guessed routes.
+ */
+export const MORE_BROKERS: GuideEntry[] = [
+  {
+    id: 'checkpeople',
+    name: 'CheckPeople',
+    text: 'Its Suppression Center starts with your email address and sends a verification link; from there you manage your listing on the people-search sites CheckPeople owns.',
+    links: [{ url: 'https://checkpeople.com/opt-out', label: 'CheckPeople Suppression Center' }],
+  },
+  {
+    id: 'thatsthem',
+    name: 'ThatsThem',
+    text: 'The opt-out form asks for your full name, street address, city, state, ZIP code, email and phone. ThatsThem says requests are usually processed within 72 hours and it emails you when done.',
+    links: [{ url: 'https://thatsthem.com/optout', label: 'ThatsThem opt-out' }],
+  },
+  {
+    id: 'pipl',
+    name: 'Pipl',
+    text: 'The removal form asks for your full name, email address and a short message, and lets you ask for deletion. Pipl may email you to verify the request.',
+    links: [{ url: 'https://pipl.com/personal-information-removal-request', label: 'Pipl: Request removal of your personal information' }],
+  },
+  {
+    id: 'acxiom',
+    name: 'Acxiom',
+    text: 'A marketing data broker rather than a search site. Its opt-out page takes requests from anyone in the US to stop the sale of their data, and points to requests to see or delete it.',
+    links: [{ url: 'https://www.acxiom.com/optout/', label: 'Acxiom opt-out requests' }],
+  },
+  {
+    id: 'lexisnexis',
+    name: 'LexisNexis Risk Solutions',
+    text: 'Its opt-out page covers direct marketing lists, prescreened credit and insurance offers, and an opt-out for people whose personal safety is under threat.',
+    links: [{ url: 'https://consumer.risk.lexisnexis.com/opt', label: 'LexisNexis: Request an opt-out' }],
+  },
+];
+
+/** Work-contact databases: for people whose work email or job is listed. Same checks as MORE_BROKERS. */
+export const WORK_BROKERS: GuideEntry[] = [
+  {
+    id: 'zoominfo',
+    name: 'ZoomInfo',
+    text: 'Use the Request Removal link on its privacy page. Once processed, your profile is no longer available in ZoomInfo’s products.',
+    links: [{ url: 'https://www.zoominfo.com/trust-center/your-privacy', label: 'ZoomInfo: Your privacy (links to its removal request)' }],
+  },
+  {
+    id: 'lusha',
+    name: 'Lusha',
+    text: 'Lusha’s privacy notice links to this page to remove your data. After you opt out, it keeps you on a suppression list.',
+    links: [{ url: 'https://www.lusha.com/privacy-center/request-removal/', label: 'Lusha: Request removal' }],
+  },
+  {
+    id: 'apollo',
+    name: 'Apollo',
+    text: 'Enter your work email address on its removal page. Apollo removes your profile and keeps only that address, to honor the opt-out.',
+    links: [{ url: 'https://www.apollo.io/privacy-policy/remove', label: 'Apollo: Remove your information' }],
+  },
+];
+
+/**
+ * Keep the data from coming back. Information only. Every URL answered 200
+ * on OPT_OUT_CHECKED and every fact was read on the linked page that day
+ * (free plans: DuckDuckGo help, Relay and SimpleLogin pricing, Privacy.com
+ * pricing, Permission Slip's Free column). Left out because they could not
+ * be checked: Facebook and Instagram (Meta refuses automated requests) and
+ * X (a captcha page), so their settings are not linked.
+ */
+export const KEEP_OFF: GuideEntry[] = [
+  {
+    id: 'mask-email',
+    name: 'Mask your email address',
+    text: 'Give sign-ups a free forwarding address instead of your real one, so your real address does not spread to new lists. DuckDuckGo Email Protection makes unlimited addresses; Firefox Relay’s free plan gives you 5 and SimpleLogin’s gives you 10.',
+    links: [
+      { url: 'https://duckduckgo.com/duckduckgo-help-pages/email-protection/what-is-duckduckgo-email-protection', label: 'DuckDuckGo Email Protection' },
+      { url: 'https://relay.firefox.com/', label: 'Firefox Relay' },
+      { url: 'https://simplelogin.io/pricing/', label: 'SimpleLogin plans' },
+    ],
+  },
+  {
+    id: 'mask-phone',
+    name: 'Mask your phone number',
+    text: 'Google Voice gives you a second phone number for calls and texts; in the US you choose it, and almost all calls to the US and Canada are free. Give it to loyalty cards, deliveries and sign-ups instead of your own.',
+    links: [{ url: 'https://support.google.com/voice/answer/115061', label: 'Google Voice Help: Set up Google Voice' }],
+  },
+  {
+    id: 'mask-card',
+    name: 'Mask your card number',
+    text: 'Privacy.com’s free plan makes up to 12 virtual card numbers a month, each locked to one shop or used once. Many banks offer their own virtual card numbers too; look in your bank’s app.',
+    links: [{ url: 'https://www.privacy.com/pricing', label: 'Privacy.com plans' }],
+  },
+  {
+    id: 'close-accounts',
+    name: 'Close old accounts',
+    text: 'Deleting an account is the only way to stop that company holding your data. JustDeleteMe has direct links to delete your account at hundreds of sites, and says how hard each one is.',
+    links: [{ url: 'https://justdeleteme.xyz/', label: 'JustDeleteMe' }],
+  },
+  {
+    id: 'breaches',
+    name: 'Check for breaches',
+    text: 'Have I Been Pwned is free: enter your email address to see which data breaches it was in. Change the password at each site it names, and delete the accounts you no longer use.',
+    links: [{ url: 'https://haveibeenpwned.com/', label: 'Have I Been Pwned' }],
+  },
+  {
+    id: 'social',
+    name: 'Lock down social accounts',
+    text: 'Make your accounts private, turn off being found by search engines where there is a setting for it, and hide or delete old public posts. LinkedIn’s Visibility settings control who can see your profile, and TikTok’s help explains choosing between a private and a public account.',
+    links: [
+      { url: 'https://www.linkedin.com/help/linkedin/answer/a1337839', label: 'LinkedIn Help: Manage your account and privacy settings' },
+      { url: 'https://support.tiktok.com/en/account-and-privacy/account-privacy-settings', label: 'TikTok Support: Account privacy settings' },
+    ],
+  },
+  {
+    id: 'permission-slip',
+    name: 'Permission Slip',
+    text: 'A free app, now part of DeleteMe, that sends do-not-sell and delete requests to the companies you pick and tracks each one. Its paid Plus plan adds automatic broker opt-outs; the free plan is enough to send the requests yourself.',
+    links: [{ url: 'https://joindeleteme.com/permission-slip/', label: 'Permission Slip' }],
+  },
+  {
+    id: 'address-confidentiality',
+    name: 'Address confidentiality programs',
+    text: 'If you are at risk from stalking or domestic violence, many states run a program so you do not have to give out your home address. Check your state’s program; the Safety Net Project keeps a table of them (last updated March 2023).',
+    links: [{ url: 'https://www.techsafety.org/address-confidentiality-programs', label: 'Safety Net Project: Address Confidentiality Programs' }],
+  },
+];
+
+/** Name of the reminder file built in the browser by optout.js. */
+export const RECHECK_FILENAME = 'spam-patterns-recheck.ics';
+
+function keepOffSection(): string {
+  return `<h2 id="keep-off">${t('Stop it coming back')}</h2>
+<p>${t('Paid removal services charge for doing this over and over: they find listings, file opt-outs, and check again every few months because listings come back. These free steps keep less of your data flowing back in.')}</p>
+<p class="notice notice-info">${t('Paid services cannot delete public records, court records or property records either, and neither can this page. Suppression hides a listing; it does not delete the record.')}</p>
+<ul class="script-list" id="keep-off-list">
+${KEEP_OFF.map((e) => guideEntryItem('keep', e)).join('\n')}
+</ul>
+<p class="meta">${t('Facebook, Instagram and X blocked our automated checks, so we do not link their privacy settings here.')}</p>
+<h3 id="recheck">${t('Check again in three months')}</h3>
+<p>${t('Listings come back when new data arrives. Come back to this page in three months and go through the list again.')}</p>
+<p><a class="btn btn-secondary" id="recheck-ics" href="#recheck" download="${RECHECK_FILENAME}" hidden>${t('Add a reminder to my calendar')}</a></p>
+<p class="meta" id="recheck-note" hidden>${t('The calendar file is made in your browser from today’s date. Nothing is sent to this site or stored.')}</p>`;
+}
+
 function guideEntryItem(prefix: string, e: GuideEntry): string {
   const links = e.links.map((l) => `<a href="${esc(l.url)}">${esc(t(l.label))}</a>`).join('<br>');
   const email = e.email ? t('<dt>Email</dt><dd>{link}</dd>', { link: `<a href="mailto:${esc(e.email)}">${esc(e.email)}</a>` }) : '';
@@ -1583,6 +1733,8 @@ export function aiOptOutPrompt(): string {
       t(s.note),
     ]);
   }
+  out.push('', t('More data brokers'));
+  for (const e of [...MORE_BROKERS, ...WORK_BROKERS]) item(e.name, e.links.map((l) => t('Web form: {url}', { url: l.url })));
   out.push('', t('Other opt-outs'));
   for (const o of OTHER_OPT_OUTS) {
     item(`${o.name}: ${t(o.stops)}`, [o.url, o.phone ? t('Phone: {phone}', { phone: o.phone }) : '', otherOptOutNote(o)]);
@@ -1679,7 +1831,17 @@ ${aiOptOutSection()}
 <ul class="script-list" id="site-list">
 ${OPT_OUT_SITES.map(optOutSiteItem).join('\n')}
 </ul>
-<p class="meta">${t('Other sites, including TruePeopleSearch, FastPeopleSearch and Radaris, blocked our automated checks, so we could not confirm their opt-out pages and do not list them here.')}</p>
+
+<h2 id="brokers">${t('More data brokers')}</h2>
+<p>${t('Paid removal services cover hundreds of data brokers. These are the next ones to do yourself, each through its own web form, so they are not in the email builder.')}</p>
+<ul class="script-list" id="broker-list">
+${MORE_BROKERS.map((e) => guideEntryItem('broker', e)).join('\n')}
+</ul>
+<p>${t('<strong>If your work email or job is listed:</strong> these work-contact databases sell business profiles.')}</p>
+<ul class="script-list" id="work-broker-list">
+${WORK_BROKERS.map((e) => guideEntryItem('broker', e)).join('\n')}
+</ul>
+<p class="meta">${t('TruePeopleSearch, FastPeopleSearch, FamilyTreeNow, USPhoneBook, ZabaSearch, Radaris, Nuwber and PeopleFinders blocked our automated checks, so we could not confirm their opt-out pages and do not list them here. PeekYou no longer runs a search: its site now shows a court notice.')}</p>
 
 <h2 id="other">${t('Other opt-outs')}</h2>
 <p>${t('These cover calls, mail and ads rather than people-search listings. Each one takes a form or a phone call, not an email.')}</p>
@@ -1700,6 +1862,8 @@ ${GOOGLE_OPT_OUTS.map((e) => guideEntryItem('google', e)).join('\n')}
 ${MORE_OPT_OUTS.map((e) => guideEntryItem('more', e)).join('\n')}
 </ul>
 <p class="meta">${t('LG and Roku TV settings, Meta (Facebook) ad settings and Bing’s removal request could not be checked automatically, so we do not list them here.')}</p>
+
+${keepOffSection()}
 
 <p class="meta">${t('This page collects no information and links only to the sites named. Routes checked {date}; each site sets its own process and can change it. For spam texts, <a href="/report">file a report here</a> and forward the original to <strong>7726</strong>.', { date: esc(fmtDay(OPT_OUT_CHECKED)) })}</p>
 </div>`;

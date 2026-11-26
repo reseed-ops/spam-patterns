@@ -173,9 +173,161 @@ export const DICT_GUIDES: Dict = {
     es: 'Los sitios y sus vías para darse de baja',
     vi: 'Các trang và cách gỡ tên trên từng trang',
   },
-  'Other sites, including TruePeopleSearch, FastPeopleSearch and Radaris, blocked our automated checks, so we could not confirm their opt-out pages and do not list them here.': {
-    es: 'Otros sitios, como TruePeopleSearch, FastPeopleSearch y Radaris, bloquearon nuestras verificaciones automáticas, así que no pudimos confirmar sus páginas para darse de baja y no los incluimos aquí.',
-    vi: 'Các trang khác, gồm TruePeopleSearch, FastPeopleSearch và Radaris, đã chặn việc kiểm tra tự động của chúng tôi, nên chúng tôi không thể xác nhận trang gỡ tên của họ và không liệt kê ở đây.',
+
+  // ---- /opt-out: More data brokers (MORE_BROKERS, WORK_BROKERS in pages.ts) ----
+  'More data brokers': { es: 'Más corredores de datos', vi: 'Thêm các công ty môi giới dữ liệu' },
+  'Paid removal services cover hundreds of data brokers. These are the next ones to do yourself, each through its own web form, so they are not in the email builder.': {
+    es: 'Los servicios de eliminación de pago cubren cientos de corredores de datos. Estos son los siguientes que puede hacer usted mismo, cada uno con su propio formulario web, por eso no están en el generador de correos.',
+    vi: 'Các dịch vụ gỡ thông tin trả phí làm việc với hàng trăm công ty môi giới dữ liệu. Đây là những công ty tiếp theo bạn có thể tự làm, mỗi nơi qua biểu mẫu web riêng, nên chúng không có trong công cụ soạn email.',
+  },
+  '<strong>If your work email or job is listed:</strong> these work-contact databases sell business profiles.': {
+    es: '<strong>Si aparecen su correo del trabajo o su empleo:</strong> estas bases de datos de contactos laborales venden perfiles profesionales.',
+    vi: '<strong>Nếu email công việc hoặc chức danh của bạn bị đăng:</strong> các cơ sở dữ liệu liên hệ công việc này bán hồ sơ nghề nghiệp.',
+  },
+  'TruePeopleSearch, FastPeopleSearch, FamilyTreeNow, USPhoneBook, ZabaSearch, Radaris, Nuwber and PeopleFinders blocked our automated checks, so we could not confirm their opt-out pages and do not list them here. PeekYou no longer runs a search: its site now shows a court notice.': {
+    es: 'TruePeopleSearch, FastPeopleSearch, FamilyTreeNow, USPhoneBook, ZabaSearch, Radaris, Nuwber y PeopleFinders bloquearon nuestras verificaciones automáticas, así que no pudimos confirmar sus páginas para darse de baja y no los incluimos aquí. PeekYou ya no ofrece búsquedas: su sitio ahora muestra un aviso judicial.',
+    vi: 'TruePeopleSearch, FastPeopleSearch, FamilyTreeNow, USPhoneBook, ZabaSearch, Radaris, Nuwber và PeopleFinders đã chặn việc kiểm tra tự động của chúng tôi, nên chúng tôi không thể xác nhận trang gỡ tên của họ và không liệt kê ở đây. PeekYou không còn cung cấp tra cứu: trang của họ giờ chỉ hiển thị một thông báo của tòa án.',
+  },
+  CheckPeople: { es: 'CheckPeople', vi: 'CheckPeople' },
+  'Its Suppression Center starts with your email address and sends a verification link; from there you manage your listing on the people-search sites CheckPeople owns.': {
+    es: 'Su Suppression Center empieza con su dirección de correo electrónico y le envía un enlace de verificación; desde ahí administra su ficha en los sitios de búsqueda de personas que son de CheckPeople.',
+    vi: 'Suppression Center của họ bắt đầu bằng địa chỉ email của bạn và gửi một đường liên kết xác minh; từ đó bạn quản lý trang hồ sơ của mình trên các trang tra cứu mà CheckPeople sở hữu.',
+  },
+  'CheckPeople Suppression Center': {
+    es: 'Centro de supresión de CheckPeople (Suppression Center)',
+    vi: 'Trung tâm ẩn thông tin của CheckPeople (Suppression Center)',
+  },
+  ThatsThem: { es: 'ThatsThem', vi: 'ThatsThem' },
+  'The opt-out form asks for your full name, street address, city, state, ZIP code, email and phone. ThatsThem says requests are usually processed within 72 hours and it emails you when done.': {
+    es: 'El formulario pide su nombre completo, dirección, ciudad, estado, código postal, correo electrónico y teléfono. ThatsThem dice que suele procesar las solicitudes en 72 horas y le avisa por correo electrónico cuando termina.',
+    vi: 'Biểu mẫu yêu cầu họ tên đầy đủ, địa chỉ nhà, thành phố, tiểu bang, mã ZIP, email và số điện thoại. ThatsThem cho biết yêu cầu thường được xử lý trong vòng 72 giờ và họ sẽ gửi email cho bạn khi xong.',
+  },
+  'ThatsThem opt-out': { es: 'Darse de baja de ThatsThem', vi: 'Gỡ tên khỏi ThatsThem' },
+  Pipl: { es: 'Pipl', vi: 'Pipl' },
+  'The removal form asks for your full name, email address and a short message, and lets you ask for deletion. Pipl may email you to verify the request.': {
+    es: 'El formulario pide su nombre completo, su correo electrónico y un mensaje breve, y le permite pedir que borren sus datos. Pipl puede escribirle por correo electrónico para verificar la solicitud.',
+    vi: 'Biểu mẫu yêu cầu họ tên đầy đủ, địa chỉ email và một tin nhắn ngắn, và cho phép bạn yêu cầu xóa dữ liệu. Pipl có thể gửi email cho bạn để xác minh yêu cầu.',
+  },
+  'Pipl: Request removal of your personal information': {
+    es: 'Pipl: solicitar que eliminen su información personal',
+    vi: 'Pipl: yêu cầu gỡ thông tin cá nhân của bạn',
+  },
+  Acxiom: { es: 'Acxiom', vi: 'Acxiom' },
+  'A marketing data broker rather than a search site. Its opt-out page takes requests from anyone in the US to stop the sale of their data, and points to requests to see or delete it.': {
+    es: 'Es un corredor de datos de mercadeo, no un sitio de búsqueda. Su página acepta solicitudes de cualquier persona en EE. UU. para que deje de vender sus datos, e indica cómo pedir verlos o borrarlos.',
+    vi: 'Đây là công ty môi giới dữ liệu tiếp thị, không phải trang tra cứu. Trang từ chối của họ nhận yêu cầu ngừng bán dữ liệu từ bất kỳ ai ở Mỹ, và chỉ cách yêu cầu xem hoặc xóa dữ liệu đó.',
+  },
+  'Acxiom opt-out requests': { es: 'Solicitudes para darse de baja de Acxiom', vi: 'Yêu cầu từ chối của Acxiom' },
+  'LexisNexis Risk Solutions': { es: 'LexisNexis Risk Solutions', vi: 'LexisNexis Risk Solutions' },
+  'Its opt-out page covers direct marketing lists, prescreened credit and insurance offers, and an opt-out for people whose personal safety is under threat.': {
+    es: 'Su página cubre las listas de mercadeo directo, las ofertas preaprobadas de crédito y seguros, y una opción para personas cuya seguridad personal está en riesgo.',
+    vi: 'Trang từ chối của họ bao gồm danh sách tiếp thị trực tiếp, các lời mời tín dụng và bảo hiểm được sàng lọc trước, và một lựa chọn cho những người mà an toàn cá nhân đang bị đe dọa.',
+  },
+  'LexisNexis: Request an opt-out': { es: 'LexisNexis: solicitar la baja', vi: 'LexisNexis: yêu cầu từ chối' },
+  ZoomInfo: { es: 'ZoomInfo', vi: 'ZoomInfo' },
+  'Use the Request Removal link on its privacy page. Once processed, your profile is no longer available in ZoomInfo’s products.': {
+    es: 'Use el enlace “Request Removal” de su página de privacidad. Una vez procesada la solicitud, su perfil deja de estar disponible en los productos de ZoomInfo.',
+    vi: 'Dùng đường liên kết “Request Removal” trên trang quyền riêng tư của họ. Sau khi được xử lý, hồ sơ của bạn không còn có trong các sản phẩm của ZoomInfo.',
+  },
+  'ZoomInfo: Your privacy (links to its removal request)': {
+    es: 'ZoomInfo: su privacidad (enlaza a la solicitud de eliminación)',
+    vi: 'ZoomInfo: quyền riêng tư của bạn (có liên kết đến yêu cầu gỡ)',
+  },
+  Lusha: { es: 'Lusha', vi: 'Lusha' },
+  'Lusha’s privacy notice links to this page to remove your data. After you opt out, it keeps you on a suppression list.': {
+    es: 'El aviso de privacidad de Lusha enlaza a esta página para eliminar sus datos. Después de darse de baja, lo mantiene en una lista de supresión.',
+    vi: 'Thông báo quyền riêng tư của Lusha dẫn đến trang này để gỡ dữ liệu của bạn. Sau khi bạn từ chối, họ giữ bạn trong một danh sách loại trừ.',
+  },
+  'Lusha: Request removal': { es: 'Lusha: solicitar la eliminación', vi: 'Lusha: yêu cầu gỡ' },
+  Apollo: { es: 'Apollo', vi: 'Apollo' },
+  'Enter your work email address on its removal page. Apollo removes your profile and keeps only that address, to honor the opt-out.': {
+    es: 'Escriba su correo electrónico del trabajo en su página de eliminación. Apollo elimina su perfil y solo guarda esa dirección, para respetar la baja.',
+    vi: 'Nhập địa chỉ email công việc của bạn trên trang gỡ của họ. Apollo gỡ hồ sơ của bạn và chỉ giữ lại địa chỉ đó để tôn trọng yêu cầu từ chối.',
+  },
+  'Apollo: Remove your information': { es: 'Apollo: eliminar su información', vi: 'Apollo: gỡ thông tin của bạn' },
+
+  // ---- /opt-out: Stop it coming back (KEEP_OFF in pages.ts) ----
+  'Stop it coming back': { es: 'Evite que vuelva a aparecer', vi: 'Ngăn thông tin quay lại' },
+  'Paid removal services charge for doing this over and over: they find listings, file opt-outs, and check again every few months because listings come back. These free steps keep less of your data flowing back in.': {
+    es: 'Los servicios de eliminación de pago cobran por hacer esto una y otra vez: buscan las fichas, piden la baja y vuelven a revisar cada pocos meses porque las fichas reaparecen. Estos pasos gratuitos hacen que vuelvan a circular menos datos suyos.',
+    vi: 'Các dịch vụ gỡ thông tin trả phí thu tiền để làm việc này lặp đi lặp lại: tìm hồ sơ, gửi yêu cầu gỡ, và kiểm tra lại vài tháng một lần vì hồ sơ sẽ xuất hiện lại. Những bước miễn phí này giúp ít dữ liệu của bạn quay lại hơn.',
+  },
+  'Paid services cannot delete public records, court records or property records either, and neither can this page. Suppression hides a listing; it does not delete the record.': {
+    es: 'Los servicios de pago tampoco pueden borrar registros públicos, judiciales ni de propiedad, y esta página tampoco. La supresión oculta una ficha; no borra el registro.',
+    vi: 'Các dịch vụ trả phí cũng không thể xóa hồ sơ công khai, hồ sơ tòa án hay hồ sơ nhà đất, và trang này cũng vậy. Việc ẩn chỉ giấu trang hồ sơ; nó không xóa hồ sơ gốc.',
+  },
+  'Mask your email address': { es: 'Oculte su dirección de correo electrónico', vi: 'Che địa chỉ email của bạn' },
+  'Give sign-ups a free forwarding address instead of your real one, so your real address does not spread to new lists. DuckDuckGo Email Protection makes unlimited addresses; Firefox Relay’s free plan gives you 5 and SimpleLogin’s gives you 10.': {
+    es: 'Al registrarse en algo, dé una dirección de reenvío gratuita en lugar de la verdadera, para que su dirección real no llegue a nuevas listas. DuckDuckGo Email Protection crea direcciones ilimitadas; el plan gratuito de Firefox Relay le da 5 y el de SimpleLogin le da 10.',
+    vi: 'Khi đăng ký, hãy dùng một địa chỉ chuyển tiếp miễn phí thay cho địa chỉ thật, để địa chỉ thật của bạn không lan sang các danh sách mới. DuckDuckGo Email Protection tạo địa chỉ không giới hạn; gói miễn phí của Firefox Relay cho bạn 5 địa chỉ và của SimpleLogin cho 10.',
+  },
+  'DuckDuckGo Email Protection': { es: 'DuckDuckGo Email Protection', vi: 'DuckDuckGo Email Protection' },
+  'Firefox Relay': { es: 'Firefox Relay', vi: 'Firefox Relay' },
+  'SimpleLogin plans': { es: 'Planes de SimpleLogin', vi: 'Các gói của SimpleLogin' },
+  'Mask your phone number': { es: 'Oculte su número de teléfono', vi: 'Che số điện thoại của bạn' },
+  'Google Voice gives you a second phone number for calls and texts; in the US you choose it, and almost all calls to the US and Canada are free. Give it to loyalty cards, deliveries and sign-ups instead of your own.': {
+    es: 'Google Voice le da un segundo número de teléfono para llamadas y mensajes; en EE. UU. usted lo elige, y casi todas las llamadas a EE. UU. y Canadá son gratis. Úselo en tarjetas de fidelidad, entregas y registros en lugar del suyo.',
+    vi: 'Google Voice cho bạn một số điện thoại thứ hai để gọi và nhắn tin; ở Mỹ bạn được tự chọn số, và hầu hết các cuộc gọi đến Mỹ và Canada đều miễn phí. Hãy dùng số này cho thẻ thành viên, giao hàng và đăng ký thay cho số của bạn.',
+  },
+  'Google Voice Help: Set up Google Voice': { es: 'Ayuda de Google Voice: configurar Google Voice', vi: 'Trợ giúp Google Voice: thiết lập Google Voice' },
+  'Mask your card number': { es: 'Oculte el número de su tarjeta', vi: 'Che số thẻ của bạn' },
+  'Privacy.com’s free plan makes up to 12 virtual card numbers a month, each locked to one shop or used once. Many banks offer their own virtual card numbers too; look in your bank’s app.': {
+    es: 'El plan gratuito de Privacy.com crea hasta 12 números de tarjeta virtual al mes, cada uno limitado a una tienda o de un solo uso. Muchos bancos también ofrecen sus propios números de tarjeta virtual; busque en la app de su banco.',
+    vi: 'Gói miễn phí của Privacy.com tạo tối đa 12 số thẻ ảo mỗi tháng, mỗi thẻ chỉ dùng cho một cửa hàng hoặc dùng một lần. Nhiều ngân hàng cũng có số thẻ ảo riêng; hãy xem trong ứng dụng ngân hàng của bạn.',
+  },
+  'Privacy.com plans': { es: 'Planes de Privacy.com', vi: 'Các gói của Privacy.com' },
+  'Close old accounts': { es: 'Cierre las cuentas viejas', vi: 'Đóng các tài khoản cũ' },
+  'Deleting an account is the only way to stop that company holding your data. JustDeleteMe has direct links to delete your account at hundreds of sites, and says how hard each one is.': {
+    es: 'Borrar una cuenta es la única manera de que esa empresa deje de guardar sus datos. JustDeleteMe tiene enlaces directos para borrar su cuenta en cientos de sitios, e indica lo difícil que es en cada uno.',
+    vi: 'Xóa tài khoản là cách duy nhất để công ty đó không còn giữ dữ liệu của bạn. JustDeleteMe có đường liên kết trực tiếp để xóa tài khoản trên hàng trăm trang, và cho biết mỗi trang khó đến mức nào.',
+  },
+  JustDeleteMe: { es: 'JustDeleteMe', vi: 'JustDeleteMe' },
+  'Check for breaches': { es: 'Revise si hubo filtraciones', vi: 'Kiểm tra các vụ rò rỉ dữ liệu' },
+  'Have I Been Pwned is free: enter your email address to see which data breaches it was in. Change the password at each site it names, and delete the accounts you no longer use.': {
+    es: 'Have I Been Pwned es gratis: escriba su dirección de correo electrónico para ver en qué filtraciones de datos apareció. Cambie la contraseña en cada sitio que mencione y borre las cuentas que ya no usa.',
+    vi: 'Have I Been Pwned miễn phí: nhập địa chỉ email của bạn để xem nó đã nằm trong những vụ rò rỉ dữ liệu nào. Đổi mật khẩu ở từng trang được nêu tên, và xóa các tài khoản bạn không còn dùng.',
+  },
+  'Have I Been Pwned': { es: 'Have I Been Pwned', vi: 'Kiểm tra trên Have I Been Pwned' },
+  'Lock down social accounts': { es: 'Proteja sus redes sociales', vi: 'Khóa chặt tài khoản mạng xã hội' },
+  'Make your accounts private, turn off being found by search engines where there is a setting for it, and hide or delete old public posts. LinkedIn’s Visibility settings control who can see your profile, and TikTok’s help explains choosing between a private and a public account.': {
+    es: 'Ponga sus cuentas en privado, desactive que los buscadores lo encuentren donde exista esa opción, y oculte o borre publicaciones públicas antiguas. Los ajustes de visibilidad (Visibility) de LinkedIn controlan quién puede ver su perfil, y la ayuda de TikTok explica cómo elegir entre una cuenta privada y una pública.',
+    vi: 'Đặt tài khoản ở chế độ riêng tư, tắt tùy chọn cho công cụ tìm kiếm tìm thấy bạn nếu có, và ẩn hoặc xóa các bài đăng công khai cũ. Phần cài đặt Hiển thị (Visibility) của LinkedIn kiểm soát ai có thể xem hồ sơ của bạn, và trang trợ giúp của TikTok giải thích cách chọn giữa tài khoản riêng tư và công khai.',
+  },
+  'LinkedIn Help: Manage your account and privacy settings': {
+    es: 'Ayuda de LinkedIn: administrar la configuración de cuenta y privacidad',
+    vi: 'Trợ giúp LinkedIn: quản lý cài đặt tài khoản và quyền riêng tư',
+  },
+  'TikTok Support: Account privacy settings': {
+    es: 'Soporte de TikTok: configuración de privacidad de la cuenta',
+    vi: 'Hỗ trợ TikTok: cài đặt quyền riêng tư của tài khoản',
+  },
+  'Permission Slip': { es: 'Permission Slip', vi: 'Permission Slip' },
+  'A free app, now part of DeleteMe, that sends do-not-sell and delete requests to the companies you pick and tracks each one. Its paid Plus plan adds automatic broker opt-outs; the free plan is enough to send the requests yourself.': {
+    es: 'Una app gratuita, que ahora forma parte de DeleteMe, que envía solicitudes de no vender y de borrar sus datos a las empresas que usted elija y sigue cada una. Su plan de pago Plus agrega bajas automáticas en corredores de datos; el plan gratuito basta para enviar las solicitudes usted mismo.',
+    vi: 'Một ứng dụng miễn phí, nay thuộc DeleteMe, gửi yêu cầu không bán và xóa dữ liệu đến các công ty bạn chọn và theo dõi từng yêu cầu. Gói Plus trả phí có thêm tính năng tự động từ chối với các công ty môi giới; gói miễn phí đủ để bạn tự gửi yêu cầu.',
+  },
+  'Address confidentiality programs': { es: 'Programas de confidencialidad de domicilio', vi: 'Chương trình bảo mật địa chỉ' },
+  'If you are at risk from stalking or domestic violence, many states run a program so you do not have to give out your home address. Check your state’s program; the Safety Net Project keeps a table of them (last updated March 2023).': {
+    es: 'Si corre peligro por acoso o violencia doméstica, muchos estados tienen un programa para que no tenga que dar la dirección de su casa. Consulte el programa de su estado; el Safety Net Project mantiene una tabla con todos ellos (actualizada por última vez en marzo de 2023).',
+    vi: 'Nếu bạn gặp nguy hiểm vì bị theo dõi, quấy rối hoặc bạo lực gia đình, nhiều tiểu bang có chương trình để bạn không phải cung cấp địa chỉ nhà. Hãy tìm chương trình của tiểu bang bạn; Safety Net Project có một bảng liệt kê các chương trình này (cập nhật lần cuối tháng 3 năm 2023).',
+  },
+  'Safety Net Project: Address Confidentiality Programs': {
+    es: 'Safety Net Project: programas de confidencialidad de domicilio',
+    vi: 'Safety Net Project: các chương trình bảo mật địa chỉ',
+  },
+  'Facebook, Instagram and X blocked our automated checks, so we do not link their privacy settings here.': {
+    es: 'Facebook, Instagram y X bloquearon nuestras verificaciones automáticas, así que no enlazamos aquí su configuración de privacidad.',
+    vi: 'Facebook, Instagram và X đã chặn việc kiểm tra tự động của chúng tôi, nên chúng tôi không đưa liên kết đến phần cài đặt quyền riêng tư của họ ở đây.',
+  },
+  'Check again in three months': { es: 'Vuelva a revisar en tres meses', vi: 'Kiểm tra lại sau ba tháng' },
+  'Listings come back when new data arrives. Come back to this page in three months and go through the list again.': {
+    es: 'Las fichas vuelven a aparecer cuando llegan datos nuevos. Regrese a esta página en tres meses y repase la lista otra vez.',
+    vi: 'Hồ sơ sẽ xuất hiện lại khi có dữ liệu mới. Hãy quay lại trang này sau ba tháng và làm lại danh sách.',
+  },
+  'Add a reminder to my calendar': { es: 'Agregar un recordatorio a mi calendario', vi: 'Thêm lời nhắc vào lịch của tôi' },
+  'The calendar file is made in your browser from today’s date. Nothing is sent to this site or stored.': {
+    es: 'El archivo de calendario se crea en su navegador a partir de la fecha de hoy. No se envía nada a este sitio ni se guarda nada.',
+    vi: 'Tệp lịch được tạo ngay trong trình duyệt của bạn dựa trên ngày hôm nay. Không có gì được gửi đến trang này hay được lưu lại.',
   },
   'Other opt-outs': { es: 'Otras formas de darse de baja', vi: 'Các cách gỡ tên khác' },
   'These cover calls, mail and ads rather than people-search listings. Each one takes a form or a phone call, not an email.': {
@@ -673,6 +825,8 @@ export const KEEP_GUIDES: string[] = [
   'Suppression Center',
   // Product and setting names on /opt-out, as each company labels them in English.
   'Results about you',
+  'Have I Been Pwned',
+  'Request Removal',
   // The English email format inside the AI assistant prompt on /opt-out
   // (AI_EMAIL_TEMPLATE; the emails go to US companies, so they stay English).
   'Request to suppress/remove my personal information',

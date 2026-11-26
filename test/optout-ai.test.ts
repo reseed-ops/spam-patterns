@@ -9,7 +9,7 @@ import { after, before, describe, it } from 'node:test';
 import vm from 'node:vm';
 import { DICT } from '../src/i18n/index.ts';
 import { withLang } from '../src/i18n.ts';
-import { AI_EMAIL_FIELDS, AI_EMAIL_TEMPLATE, GOOGLE_OPT_OUTS, MORE_OPT_OUTS, OPT_OUT_SITES, OTHER_OPT_OUTS, aiOptOutPrompt } from '../src/pages.ts';
+import { AI_EMAIL_FIELDS, AI_EMAIL_TEMPLATE, GOOGLE_OPT_OUTS, MORE_BROKERS, MORE_OPT_OUTS, OPT_OUT_SITES, OTHER_OPT_OUTS, WORK_BROKERS, aiOptOutPrompt } from '../src/pages.ts';
 import { get, startServer, type TestServer } from './helpers.ts';
 
 const SRC = readFileSync(new URL('../public/static/js/optout.js', import.meta.url), 'utf8');
@@ -81,6 +81,12 @@ describe('/opt-out: Ask an AI assistant to do it for you', () => {
       if (site.form) assert.ok(p.includes(`Web form: ${site.form}`), site.form);
       for (const c of site.covers) assert.ok(p.includes(c), c);
     }
+    for (const e of [...MORE_BROKERS, ...WORK_BROKERS]) {
+      const i = p.indexOf(`. ${e.name}\n`);
+      assert.ok(i > at, `${e.id} in order`);
+      at = i;
+      for (const l of e.links) assert.ok(p.includes(`Web form: ${l.url}`), l.url);
+    }
     for (const o of OTHER_OPT_OUTS) {
       const i = p.indexOf(`. ${o.name}: ${o.stops}`);
       assert.ok(i > at, `${o.name} in order`);
@@ -100,7 +106,7 @@ describe('/opt-out: Ask an AI assistant to do it for you', () => {
       'https://spampatterns.com/opt-out',
       ...OPT_OUT_SITES.flatMap((x) => (x.form ? [x.form] : [])),
       ...OTHER_OPT_OUTS.map((o) => o.url),
-      ...[...GOOGLE_OPT_OUTS, ...MORE_OPT_OUTS].flatMap((e) => e.links.map((l) => l.url)),
+      ...[...MORE_BROKERS, ...WORK_BROKERS, ...GOOGLE_OPT_OUTS, ...MORE_OPT_OUTS].flatMap((e) => e.links.map((l) => l.url)),
     ]);
     for (const u of p.match(/https?:\/\/\S+/g) ?? []) assert.ok(known.has(u.replace(/[).,]+$/, '')), u);
   });
