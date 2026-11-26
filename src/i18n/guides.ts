@@ -450,6 +450,84 @@ export const DICT_GUIDES: Dict = {
     vi: 'Hỗ trợ Strava: chỉnh hiển thị bản đồ',
   },
 
+  // ---- /opt-out: Ask an AI assistant to do it for you (section and the prompt, aiOptOutPrompt) ----
+  // The prompt speaks as the visitor ("me") to the assistant (tú / bạn).
+  'Ask an AI assistant to do it for you': {
+    es: 'Pídale a un asistente de IA que lo haga por usted',
+    vi: 'Nhờ trợ lý AI làm thay bạn',
+  },
+  'Opting out by hand takes a while. You can copy the prompt below, paste it into a chat with your AI assistant (Muse, ChatGPT, Claude or another one), answer its questions, and let it work through the list.': {
+    es: 'Darse de baja a mano lleva tiempo. Puede copiar las instrucciones de abajo, pegarlas en un chat con su asistente de IA (Muse, ChatGPT, Claude u otro), responder a sus preguntas y dejar que avance por la lista.',
+    vi: 'Tự gỡ tên bằng tay mất khá nhiều thời gian. Bạn có thể sao chép lời nhắc bên dưới, dán vào một cuộc trò chuyện với trợ lý AI của bạn (Muse, ChatGPT, Claude hoặc trợ lý khác), trả lời các câu hỏi của nó, rồi để nó lần lượt làm hết danh sách.',
+  },
+  'Some steps stay with you: anything that needs your own click, an email confirmation, a phone verification, a CAPTCHA or a password. The prompt tells the assistant to hand those back to you with clear instructions, and to show you every email before it sends it.': {
+    es: 'Algunos pasos le tocan a usted: todo lo que necesite su propio clic, una confirmación por correo electrónico, una verificación por teléfono, un CAPTCHA o una contraseña. Las instrucciones le piden al asistente que le devuelva esos pasos con indicaciones claras y que le muestre cada correo antes de enviarlo.',
+    vi: 'Một số bước vẫn phải do bạn tự làm: mọi việc cần chính bạn bấm, xác nhận qua email, xác minh qua điện thoại, giải CAPTCHA hoặc nhập mật khẩu. Lời nhắc yêu cầu trợ lý giao lại những bước đó cho bạn kèm hướng dẫn rõ ràng, và cho bạn xem từng email trước khi gửi.',
+  },
+  'Copy the prompt': { es: 'Copiar las instrucciones', vi: 'Sao chép lời nhắc' },
+  'Prompt for your AI assistant': { es: 'Instrucciones para su asistente de IA', vi: 'Lời nhắc cho trợ lý AI của bạn' },
+  'Please help me opt out of people-search sites and other places that collect and share my personal data. The list below comes from {url} (routes checked {date}). If you can open web pages, read that page for the full details.': {
+    es: 'Ayúdame a darme de baja de los sitios de búsqueda de personas y de otros lugares que recopilan y comparten mis datos personales. La lista de abajo viene de {url} (vías revisadas el {date}). Si puedes abrir páginas web, lee esa página para ver todos los detalles.',
+    vi: 'Hãy giúp tôi gỡ tên khỏi các trang tra cứu thông tin cá nhân và những nơi khác thu thập và chia sẻ dữ liệu cá nhân của tôi. Danh sách dưới đây lấy từ {url} (các cách gỡ được kiểm tra ngày {date}). Nếu bạn mở được trang web, hãy đọc trang đó để biết đầy đủ chi tiết.',
+  },
+  'BEFORE YOU START': { es: 'ANTES DE EMPEZAR', vi: 'TRƯỚC KHI BẮT ĐẦU' },
+  'Ask me for my full legal name and for the email address replies should go to.': {
+    es: 'Pregúntame mi nombre legal completo y la dirección de correo electrónico a la que deben llegar las respuestas.',
+    vi: 'Hãy hỏi tôi họ tên đầy đủ theo giấy tờ và địa chỉ email để nhận thư trả lời.',
+  },
+  'Ask whether I already know the URL of my listing on any of these sites, or offer to search for it. Show me each listing you find and use it only after I confirm it is mine.': {
+    es: 'Pregúntame si ya conozco la URL de mi ficha en alguno de estos sitios, u ofrécete a buscarla. Muéstrame cada ficha que encuentres y úsala solo después de que yo confirme que es mía.',
+    vi: 'Hãy hỏi tôi đã biết URL trang hồ sơ của tôi trên trang nào trong số này chưa, hoặc đề nghị tìm giúp. Cho tôi xem từng trang hồ sơ bạn tìm thấy và chỉ dùng sau khi tôi xác nhận đó đúng là của tôi.',
+  },
+  RULES: { es: 'REGLAS', vi: 'QUY TẮC' },
+  'Never invent personal details. Never guess an email address or a listing URL: use only the addresses and links in this list, or ones I give you.': {
+    es: 'Nunca inventes datos personales. Nunca adivines una dirección de correo electrónico ni la URL de una ficha: usa solo las direcciones y los enlaces de esta lista, o los que yo te dé.',
+    vi: 'Không bao giờ bịa thông tin cá nhân. Không bao giờ đoán địa chỉ email hay URL trang hồ sơ: chỉ dùng các địa chỉ và đường liên kết trong danh sách này, hoặc những gì tôi đưa cho bạn.',
+  },
+  'Never pay for anything, never start a trial or a subscription, and never delete an account. If a route asks for money, stop and tell me.': {
+    es: 'Nunca pagues nada, nunca empieces una prueba ni una suscripción y nunca elimines una cuenta. Si alguna vía pide dinero, detente y avísame.',
+    vi: 'Không bao giờ trả tiền cho bất cứ thứ gì, không đăng ký dùng thử hay gói thuê bao, và không bao giờ xóa tài khoản. Nếu cách gỡ nào đòi tiền, hãy dừng lại và báo tôi.',
+  },
+  'Draft every email from the format below and keep the email itself in English. Show me each email before you send it, and send nothing until I say yes.': {
+    es: 'Redacta cada correo con el formato de abajo y deja el correo mismo en inglés. Muéstrame cada correo antes de enviarlo y no envíes nada hasta que yo diga que sí.',
+    vi: 'Soạn mọi email theo mẫu bên dưới và giữ nguyên nội dung email bằng tiếng Anh. Cho tôi xem từng email trước khi gửi, và không gửi gì cho đến khi tôi đồng ý.',
+  },
+  'Steps that need my own click, an email confirmation, a phone verification, a CAPTCHA or a password stay with me. Hand them back to me with the exact step and the link.': {
+    es: 'Los pasos que necesiten mi propio clic, una confirmación por correo electrónico, una verificación por teléfono, un CAPTCHA o una contraseña me tocan a mí. Devuélvemelos con el paso exacto y el enlace.',
+    vi: 'Những bước cần chính tôi bấm, xác nhận qua email, xác minh qua điện thoại, giải CAPTCHA hoặc nhập mật khẩu thì để tôi làm. Hãy giao lại cho tôi kèm bước cụ thể và đường liên kết.',
+  },
+  'Never tell me an opt-out worked when the request is only sent and waiting.': {
+    es: 'Nunca me digas que una baja funcionó cuando la solicitud solo está enviada y en espera.',
+    vi: 'Không bao giờ nói với tôi là đã gỡ tên thành công khi yêu cầu mới chỉ được gửi đi và đang chờ.',
+  },
+  'HOW TO WORK': { es: 'CÓMO TRABAJAR', vi: 'CÁCH LÀM' },
+  'Go through the list in order. For each item, report one of: done; sent and waiting; needs me (with the exact step and link); could not be done (with the reason).': {
+    es: 'Recorre la lista en orden. Para cada punto, informa una de estas opciones: hecho; enviado y en espera; me necesita (con el paso exacto y el enlace); no se pudo hacer (con el motivo).',
+    vi: 'Làm lần lượt theo thứ tự danh sách. Với mỗi mục, báo một trong các kết quả: đã xong; đã gửi, đang chờ; cần tôi làm (kèm bước cụ thể và đường liên kết); không làm được (kèm lý do).',
+  },
+  'If you cannot send email or open web pages yourself, give me the finished email or the exact steps for each item instead.': {
+    es: 'Si no puedes enviar correos ni abrir páginas web por tu cuenta, dame en su lugar el correo terminado o los pasos exactos para cada punto.',
+    vi: 'Nếu bạn không tự gửi email hay mở trang web được, hãy đưa tôi email đã soạn xong hoặc các bước cụ thể cho từng mục.',
+  },
+  'At the end, give me a short checklist: what is done, what is waiting, and what I still have to do myself.': {
+    es: 'Al final, dame una lista breve: qué está hecho, qué está en espera y qué me queda por hacer a mí.',
+    vi: 'Cuối cùng, hãy cho tôi một danh sách kiểm tra ngắn: việc gì đã xong, việc gì đang chờ, và việc gì tôi vẫn phải tự làm.',
+  },
+  'EMAIL FORMAT (KEEP IT IN ENGLISH)': { es: 'FORMATO DEL CORREO (DÉJALO EN INGLÉS)', vi: 'MẪU EMAIL (GIỮ NGUYÊN TIẾNG ANH)' },
+  'Leave out the “My listing” line when there is no listing URL.': {
+    es: 'Quita la línea “My listing” cuando no haya URL de la ficha.',
+    vi: 'Bỏ dòng “My listing” khi không có URL trang hồ sơ.',
+  },
+  'This format is for the people-search sites. For any other email in the list, write a short, plain request in English and show it to me first.': {
+    es: 'Este formato es para los sitios de búsqueda de personas. Para cualquier otro correo de la lista, escribe una solicitud breve y sencilla en inglés y muéstramela primero.',
+    vi: 'Mẫu này dành cho các trang tra cứu thông tin cá nhân. Với email nào khác trong danh sách, hãy viết một yêu cầu ngắn gọn, đơn giản bằng tiếng Anh và cho tôi xem trước.',
+  },
+  'THE LIST': { es: 'LA LISTA', vi: 'DANH SÁCH' },
+  'People-search sites': { es: 'Sitios de búsqueda de personas', vi: 'Các trang tra cứu thông tin cá nhân' },
+  'Email: {email}': { es: 'Correo: {email}', vi: 'Email: {email}' },
+  'Web form: {url}': { es: 'Formulario web: {url}', vi: 'Biểu mẫu web: {url}' },
+  'Phone: {phone}': { es: 'Teléfono: {phone}', vi: 'Điện thoại: {phone}' },
+
   // ---- /scams ----
   'Common scams, by medium': { es: 'Estafas comunes, por medio', vi: 'Các kiểu lừa đảo phổ biến, theo kênh' },
   'The same few tricks show up again and again: something urgent, a link or number to use right now, and a request for money, a code or a login. Here is what the common ones look like on each channel.': {
@@ -595,6 +673,16 @@ export const KEEP_GUIDES: string[] = [
   'Suppression Center',
   // Product and setting names on /opt-out, as each company labels them in English.
   'Results about you',
+  // The English email format inside the AI assistant prompt on /opt-out
+  // (AI_EMAIL_TEMPLATE; the emails go to US companies, so they stay English).
+  'Request to suppress/remove my personal information',
+  'Please suppress or remove my personal information from name search on',
+  'Please confirm when this is done by replying to',
+  'My name is',
+  'My listing',
+  'Thank you',
+  'Subject',
+  'Hello',
   // Literal labels printed on mail.
   'Current Resident',
   'Postal Customer',

@@ -21,7 +21,7 @@
 'use strict';
 
 var VERSION = '0.1.10';
-var CACHE_REV = 4; // 2: main nav restyled as tabs; 3: Menu removed, tabs always shown; 4: language switcher, translated scripts
+var CACHE_REV = 5; // 2: main nav restyled as tabs; 3: Menu removed, tabs always shown; 4: language switcher, translated scripts; 5: AI assistant prompt on /opt-out
 var CACHE = 'stm-v' + VERSION + '-r' + CACHE_REV;
 var OFFLINE_URL = '/offline';
 // Not 'stm-'-prefixed, so a release's activate step leaves a pending share alone.

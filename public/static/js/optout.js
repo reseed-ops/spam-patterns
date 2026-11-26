@@ -6,6 +6,8 @@
 // The pure functions (buildEmail, mailtoHref, validate) are exposed as
 // window.STMOptOut so test/optout.test.ts can load this file directly.
 //
+// It also wires the copy button of the AI assistant prompt on the same page.
+//
 // Messages shown on the page follow the page language (<html lang>). The
 // email itself (SUBJECT and buildEmail) stays in English on purpose: it goes
 // to US companies that process these requests in English.
@@ -28,6 +30,18 @@
       vi: 'Hãy nhập địa chỉ email có dạng name@example.com.',
     },
     'Prefer a web form? ': { es: '¿Prefiere un formulario web? ', vi: 'Bạn muốn dùng biểu mẫu web? ' },
+    'Prompt copied. Paste it into a chat with your assistant.': {
+      es: 'Instrucciones copiadas. Péguelas en un chat con su asistente.',
+      vi: 'Đã sao chép lời nhắc. Hãy dán vào một cuộc trò chuyện với trợ lý của bạn.',
+    },
+    'Copy failed. The prompt is selected; copy it by hand.': {
+      es: 'No se pudo copiar. Las instrucciones quedaron seleccionadas; cópielas a mano.',
+      vi: 'Không sao chép được. Lời nhắc đã được chọn sẵn; hãy tự sao chép.',
+    },
+    'The prompt is selected; copy it by hand.': {
+      es: 'Las instrucciones quedaron seleccionadas; cópielas a mano.',
+      vi: 'Lời nhắc đã được chọn sẵn; hãy tự sao chép.',
+    },
   };
   var LANG = (typeof document !== 'undefined' && document.documentElement && document.documentElement.lang) || 'en';
 
@@ -86,8 +100,42 @@
 
   root.STMOptOut = { SUBJECT: SUBJECT, buildEmail: buildEmail, mailtoHref: mailtoHref, validate: validate };
 
-  // ---- Page wiring (only where the builder exists) ----
   if (typeof document === 'undefined') return;
+
+  // ---- Copy button for the AI assistant prompt (only where it exists) ----
+  // Copies the text of the <pre> as it is; without the Clipboard API it
+  // selects the text so the visitor can copy it by hand.
+  var copyBtn = document.getElementById('ai-copy');
+  var promptEl = document.getElementById('ai-prompt');
+  var copyStatus = document.getElementById('ai-copy-status');
+  if (copyBtn && promptEl && copyStatus) {
+    copyBtn.hidden = false;
+    var selectPrompt = function () {
+      try {
+        var range = document.createRange();
+        range.selectNodeContents(promptEl);
+        var sel = window.getSelection();
+        sel.removeAllRanges();
+        sel.addRange(range);
+      } catch (e) { /* ignore */ }
+    };
+    copyBtn.addEventListener('click', function () {
+      var text = promptEl.textContent;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(function () {
+          copyStatus.textContent = t('Prompt copied. Paste it into a chat with your assistant.');
+        }, function () {
+          selectPrompt();
+          copyStatus.textContent = t('Copy failed. The prompt is selected; copy it by hand.');
+        });
+      } else {
+        selectPrompt();
+        copyStatus.textContent = t('The prompt is selected; copy it by hand.');
+      }
+    });
+  }
+
+  // ---- Email builder wiring (only where the builder exists) ----
   var app = document.getElementById('optout-app');
   if (!app) return;
   app.hidden = false;
