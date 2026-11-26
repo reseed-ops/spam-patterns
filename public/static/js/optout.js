@@ -6,7 +6,9 @@
 // The pure functions (buildEmail, mailtoHref, validate) are exposed as
 // window.STMOptOut so test/optout.test.ts can load this file directly.
 //
-// It also wires the copy button of the AI assistant prompt on the same page.
+// It also wires the copy button of the AI assistant prompt on the same page,
+// and the "Check again in three months" link, which builds a calendar (.ics)
+// file in the browser from today's date (buildReminderIcs).
 //
 // Messages shown on the page follow the page language (<html lang>). The
 // email itself (SUBJECT and buildEmail) stays in English on purpose: it goes
@@ -41,6 +43,14 @@
     'The prompt is selected; copy it by hand.': {
       es: 'Las instrucciones quedaron seleccionadas; cópielas a mano.',
       vi: 'Lời nhắc đã được chọn sẵn; hãy tự sao chép.',
+    },
+    'Check people-search sites again': {
+      es: 'Revisar otra vez los sitios de búsqueda de personas',
+      vi: 'Kiểm tra lại các trang tra cứu thông tin cá nhân',
+    },
+    'Listings come back when new data arrives. Go through the opt-out list again: ': {
+      es: 'Las fichas vuelven a aparecer cuando llegan datos nuevos. Repase otra vez la lista para darse de baja: ',
+      vi: 'Hồ sơ sẽ xuất hiện lại khi có dữ liệu mới. Hãy làm lại danh sách gỡ tên: ',
     },
   };
   var LANG = (typeof document !== 'undefined' && document.documentElement && document.documentElement.lang) || 'en';
@@ -98,7 +108,65 @@
     return 'mailto:' + email.to + '?subject=' + encodeURIComponent(email.subject) + '&body=' + encodeURIComponent(email.body);
   }
 
-  root.STMOptOut = { SUBJECT: SUBJECT, buildEmail: buildEmail, mailtoHref: mailtoHref, validate: validate };
+  // ---- Re-check reminder: an all-day calendar event three months out ----
+  // Built here from the visitor's own clock; nothing is sent or stored.
+
+  // Same day three months later, clamped to the end of a shorter month
+  // (Nov 30 -> Feb 28 or 29).
+  function addMonths(d, n) {
+    var y = d.getFullYear();
+    var m = d.getMonth() + n;
+    var last = new Date(y, m + 1, 0).getDate();
+    return new Date(y, m, Math.min(d.getDate(), last));
+  }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function ymd(d) { return '' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()); }
+  function icsText(s) { return String(s).replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n'); }
+  // RFC 5545 folds lines longer than 75 octets (UTF-8), continuing with a space.
+  function fold(line) {
+    var out = '';
+    var bytes = 0;
+    for (var i = 0; i < line.length; i++) {
+      var c = line.charCodeAt(i);
+      var ch = line[i];
+      var len = c < 0x80 ? 1 : c < 0x800 ? 2 : (c >= 0xd800 && c < 0xdc00) ? 4 : 3;
+      if (len === 4) { ch += line[i + 1]; i++; }
+      if (bytes + len > 75) { out += '\r\n '; bytes = 1; }
+      out += ch;
+      bytes += len;
+    }
+    return out;
+  }
+  var RECHECK_URL = 'https://spampatterns.com/opt-out';
+
+  // {date: 'YYYYMMDD', ics: text} for a reminder three months after `now`.
+  function buildReminderIcs(now) {
+    var start = addMonths(now, 3);
+    var end = new Date(start.getFullYear(), start.getMonth(), start.getDate() + 1);
+    var stamp = now.toISOString().replace(/[-:]/g, '').replace(/\.\d+Z$/, 'Z');
+    var url = RECHECK_URL + (LANG === 'es' || LANG === 'vi' ? '?lang=' + LANG : '');
+    var lines = [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//Spam Patterns//Opt-out reminder//EN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'BEGIN:VEVENT',
+      'UID:' + stamp + '-' + ymd(start) + '-recheck@spampatterns.com',
+      'DTSTAMP:' + stamp,
+      'DTSTART;VALUE=DATE:' + ymd(start),
+      'DTEND;VALUE=DATE:' + ymd(end),
+      'SUMMARY:' + icsText(t('Check people-search sites again')),
+      'DESCRIPTION:' + icsText(t('Listings come back when new data arrives. Go through the opt-out list again: ') + url),
+      'URL:' + url,
+      'TRANSP:TRANSPARENT',
+      'END:VEVENT',
+      'END:VCALENDAR',
+    ];
+    return { date: ymd(start), ics: lines.map(fold).join('\r\n') + '\r\n' };
+  }
+
+  root.STMOptOut = { SUBJECT: SUBJECT, buildEmail: buildEmail, mailtoHref: mailtoHref, validate: validate, buildReminderIcs: buildReminderIcs };
 
   if (typeof document === 'undefined') return;
 
@@ -137,6 +205,23 @@
     };
     copyBtn.addEventListener('click', doCopy);
     if (copyIcon) copyIcon.addEventListener('click', doCopy);
+  }
+
+  // ---- Re-check reminder download (only where the link exists) ----
+  // The file is built on click from today's date and handed to the
+  // browser as a blob: URL on the link itself (a download, no request).
+  var recheck = document.getElementById('recheck-ics');
+  if (recheck && typeof Blob !== 'undefined' && window.URL && URL.createObjectURL) {
+    recheck.hidden = false;
+    var recheckNote = document.getElementById('recheck-note');
+    if (recheckNote) recheckNote.hidden = false;
+    var lastUrl = null;
+    recheck.addEventListener('click', function () {
+      if (lastUrl) URL.revokeObjectURL(lastUrl);
+      var r = buildReminderIcs(new Date());
+      lastUrl = URL.createObjectURL(new Blob([r.ics], { type: 'text/calendar;charset=utf-8' }));
+      recheck.href = lastUrl;
+    });
   }
 
   // ---- Email builder wiring (only where the builder exists) ----

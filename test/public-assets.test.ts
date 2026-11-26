@@ -20,7 +20,9 @@ const VENDOR_ALLOWED = /^public\/static\/vendor\/(?:tesseract\/(?:tesseract|work
 const stripVariant = (rel: string) => rel.replace(/\.(?:br|gz)$/, (m) => (rel.endsWith('traineddata.gz') ? m : ''));
 
 const TRACKERS =
-  /google-analytics|googletagmanager|gtag\(|\bga\(|_gaq|plausible|matomo|piwik|segment\.(?:io|com)|analytics\.js|mixpanel|hotjar|facebook\.net|fbq\(|connect\.facebook|clarity\.ms|sentry|datadog|newrelic|nr-data|cloudflareinsights|beacon\.min\.js|posthog|amplitude|heap(?:analytics)?\.|fullstory|logrocket|intercom|hubspot|doubleclick|adsbygoogle|quantserve|scorecardresearch|tiktok|snap\.licdn|bat\.bing/i;
+  /google-analytics|googletagmanager|gtag\(|\bga\(|_gaq|plausible|matomo|piwik|segment\.(?:io|com)|analytics\.js|mixpanel|hotjar|facebook\.net|fbq\(|connect\.facebook|clarity\.ms|sentry|datadog|newrelic|nr-data|cloudflareinsights|beacon\.min\.js|posthog|amplitude|heap(?:analytics)?\.|fullstory|logrocket|intercom|hubspot|doubleclick|adsbygoogle|quantserve|scorecardresearch|analytics\.tiktok|tiktok\.com\/i18n\/pixel|\bttq\.|snap\.licdn|bat\.bing/i;
+// TikTok's pixel (analytics.tiktok.com, the ttq global) is the tracker; a
+// plain link to TikTok's privacy help on /opt-out is not.
 
 describe('public assets: no third-party scripts or analytics', () => {
   it('found the files to check', () => {
