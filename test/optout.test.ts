@@ -14,7 +14,7 @@ import { join } from 'node:path';
 import { after, before, describe, it } from 'node:test';
 import vm from 'node:vm';
 import { SITEMAP_PATHS, SITEMAP_XML } from '../src/app.ts';
-import { DROP_URL, OPT_OUT_PRIVACY_LINE, OPT_OUT_SITES, OTHER_OPT_OUTS } from '../src/pages.ts';
+import { DROP_URL, GOOGLE_OPT_OUTS, MORE_OPT_OUTS, OPT_OUT_PRIVACY_LINE, OPT_OUT_SITES, OTHER_OPT_OUTS } from '../src/pages.ts';
 import { get, startServer, type TestServer } from './helpers.ts';
 
 interface Email { to: string; subject: string; body: string }
@@ -171,7 +171,7 @@ describe('/opt-out page', () => {
     const { text } = await get(s.base, '/opt-out');
     const main = text.slice(text.indexOf('<main'), text.indexOf('</main>'));
     const external = [...main.matchAll(/href="(https?:[^"]+)"/g)].map((m) => m[1]!);
-    const allowed = new Set([DROP_URL, ...OPT_OUT_SITES.flatMap((x) => (x.form ? [x.form] : [])), ...OTHER_OPT_OUTS.map((o) => o.url)]);
+    const allowed = new Set([DROP_URL, ...OPT_OUT_SITES.flatMap((x) => (x.form ? [x.form] : [])), ...OTHER_OPT_OUTS.map((o) => o.url), ...[...GOOGLE_OPT_OUTS, ...MORE_OPT_OUTS].flatMap((e) => e.links.map((l) => l.url))]);
     for (const h of external) assert.ok(allowed.has(h), h);
     // Not listed as live routes: sites whose opt-out pages could not be checked.
     assert.ok(!/href="[^"]*(radaris|veripages|truepeoplesearch|fastpeoplesearch)/i.test(main));
@@ -309,6 +309,13 @@ describe('browser: /opt-out builder', { skip }, () => {
       await page.locator('#other').scrollIntoViewIfNeeded();
       assert.equal(await page.isVisible('#other'), true);
       for (const o of OTHER_OPT_OUTS) assert.equal(await page.isVisible(`#other-${o.id} a[href="${o.url}"]`), true, o.id);
+
+      // The Google and More sections render and every link is visible.
+      for (const [prefix, list] of [['google', GOOGLE_OPT_OUTS], ['more', MORE_OPT_OUTS]] as const) {
+        await page.locator(`#${prefix}`).scrollIntoViewIfNeeded();
+        assert.equal(await page.isVisible(`#${prefix}`), true, prefix);
+        for (const e of list) for (const l of e.links) assert.equal(await page.isVisible(`#${prefix}-${e.id} a[href="${l.url}"]`), true, `${e.id} ${l.url}`);
+      }
 
       // No horizontal overflow at this width.
       const overflow = await page.evaluate('document.documentElement.scrollWidth - document.documentElement.clientWidth');

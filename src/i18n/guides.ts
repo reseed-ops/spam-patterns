@@ -288,6 +288,168 @@ export const DICT_GUIDES: Dict = {
     vi: 'Không có một nút bấm duy nhất: công cụ từ chối cũ của họ nay chuyển hướng đến hướng dẫn này về cài đặt quyền riêng tư quảng cáo trên trình duyệt, điện thoại và TV của bạn, cùng một tiện ích Chrome gửi tín hiệu Global Privacy Control (yêu cầu không bán hay chia sẻ dữ liệu của bạn).',
   },
 
+  // ---- /opt-out: Google and More places to opt out (GOOGLE_OPT_OUTS, MORE_OPT_OUTS) ----
+  'Settings in your Google Account that change what Google keeps about you and what it shows about you in Search and Maps. Most of them need you to be signed in.': {
+    es: 'Ajustes de su cuenta de Google que cambian lo que Google guarda sobre usted y lo que muestra sobre usted en el buscador y en Maps. Para la mayoría tiene que haber iniciado sesión.',
+    vi: 'Các cài đặt trong Tài khoản Google quyết định Google lưu những gì về bạn và hiển thị những gì về bạn trên Google Tìm kiếm và Google Maps. Hầu hết đều cần bạn đăng nhập.',
+  },
+  'More places to opt out': { es: 'Más lugares donde darse de baja', vi: 'Những nơi khác để từ chối chia sẻ dữ liệu' },
+  'Settings at other companies that collect data about you. Each link goes to the company’s own page.': {
+    es: 'Ajustes en otras empresas que recopilan datos sobre usted. Cada enlace lleva a la página de la propia empresa.',
+    vi: 'Các cài đặt tại những công ty khác thu thập dữ liệu về bạn. Mỗi đường liên kết dẫn đến trang của chính công ty đó.',
+  },
+  'LG and Roku TV settings, Meta (Facebook) ad settings and Bing’s removal request could not be checked automatically, so we do not list them here.': {
+    es: 'No pudimos comprobar de forma automática los ajustes de los televisores LG y Roku, los ajustes de anuncios de Meta (Facebook) ni la solicitud de eliminación de Bing, así que no los incluimos aquí.',
+    vi: 'Chúng tôi không kiểm tra tự động được cài đặt TV của LG và Roku, cài đặt quảng cáo của Meta (Facebook) và yêu cầu gỡ bỏ của Bing, nên không liệt kê ở đây.',
+  },
+  '<dt>Go to</dt><dd>{links}</dd>': {
+    es: '<dt>Dónde</dt><dd>{links}</dd>',
+    vi: '<dt>Truy cập</dt><dd>{links}</dd>',
+  },
+  '<dt>Email</dt><dd>{link}</dd>': {
+    es: '<dt>Correo</dt><dd>{link}</dd>',
+    vi: '<dt>Email</dt><dd>{link}</dd>',
+  },
+  // Google entries
+  'Blur your house on Google Maps (Street View)': {
+    es: 'Difuminar su casa en Google Maps (Street View)',
+    vi: 'Làm mờ nhà bạn trên Google Maps (Street View)',
+  },
+  'Open Street View of your home in Google Maps, click “Report a Problem” in the bottom right and choose your home. Google asks for proof of address, such as a utility bill with your name blacked out, reviews the request, and the blur is permanent.': {
+    es: 'Abra la vista de Street View de su casa en Google Maps, haga clic en la opción para informar de un problema, abajo a la derecha, y elija su casa. Google pide un comprobante de domicilio, como una factura de servicios con su nombre tachado, revisa la solicitud, y el difuminado es permanente.',
+    vi: 'Mở hình ảnh Street View của nhà bạn trên Google Maps, bấm vào mục báo cáo sự cố ở góc dưới bên phải và chọn nhà của bạn. Google yêu cầu giấy tờ chứng minh địa chỉ, chẳng hạn hóa đơn điện nước đã che tên bạn, sẽ xem xét yêu cầu, và phần làm mờ là vĩnh viễn.',
+  },
+  'Google Maps Help: Blur Street View imagery': {
+    es: 'Ayuda de Google Maps: difuminar imágenes de Street View',
+    vi: 'Trợ giúp Google Maps: làm mờ hình ảnh Street View',
+  },
+  'Find your address or phone number in Search': {
+    es: 'Encontrar su dirección o su teléfono en el buscador',
+    vi: 'Tìm địa chỉ hoặc số điện thoại của bạn trên Google Tìm kiếm',
+  },
+  'Google’s Results about you tool finds Search results that show your home address, phone number or email address, and lets you ask for each one to be removed. It can also alert you when new ones appear.': {
+    es: 'La herramienta Results about you de Google encuentra resultados de búsqueda que muestran su dirección, su teléfono o su correo electrónico, y le permite pedir que se quite cada uno. También puede avisarle cuando aparezcan otros nuevos.',
+    vi: 'Công cụ Results about you của Google tìm các kết quả tìm kiếm có địa chỉ nhà, số điện thoại hoặc địa chỉ email của bạn, và cho phép bạn yêu cầu gỡ từng kết quả. Công cụ cũng có thể báo cho bạn khi có kết quả mới.',
+  },
+  'Results about you': { es: 'Results about you (resultados sobre usted)', vi: 'Results about you (kết quả về bạn)' },
+  'Remove other personal information from Search': {
+    es: 'Quitar otros datos personales del buscador',
+    vi: 'Gỡ các thông tin cá nhân khác khỏi Google Tìm kiếm',
+  },
+  'For ID numbers, bank or card numbers, images of your signature or ID, private records or doxxing, send Google a removal request with the URL of each page. Google can only remove the result from Search; the page stays on the website.': {
+    es: 'Para números de identificación, números de cuenta bancaria o de tarjeta, imágenes de su firma o de su identificación, registros privados o doxxing (publicar sus datos para hacerle daño), envíe a Google una solicitud de eliminación con la URL de cada página. Google solo puede quitar el resultado del buscador; la página sigue en el sitio web.',
+    vi: 'Với số giấy tờ tùy thân, số tài khoản ngân hàng hoặc số thẻ, hình chữ ký hay giấy tờ tùy thân, hồ sơ riêng tư hoặc doxxing (công khai thông tin của bạn để gây hại), hãy gửi Google yêu cầu gỡ bỏ kèm URL của từng trang. Google chỉ gỡ được kết quả khỏi Google Tìm kiếm; trang đó vẫn còn trên trang web.',
+  },
+  'Google Search Help: Remove my private info': {
+    es: 'Ayuda de la Búsqueda de Google: quitar mi información privada',
+    vi: 'Trợ giúp Google Tìm kiếm: gỡ thông tin riêng tư của tôi',
+  },
+  'Turn off personalized ads': { es: 'Desactivar los anuncios personalizados', vi: 'Tắt quảng cáo được cá nhân hóa' },
+  'Sign in, open My Ad Center and select Off next to Personalized ads. Google still shows ads, but they are no longer based on your saved info and activity.': {
+    es: 'Inicie sesión, abra My Ad Center (Mi Centro de anuncios) y desactive la opción de anuncios personalizados. Google sigue mostrando anuncios, pero ya no se basan en su información y su actividad guardadas.',
+    vi: 'Đăng nhập, mở My Ad Center (Trung tâm quảng cáo của tôi) và tắt mục quảng cáo được cá nhân hóa. Google vẫn hiển thị quảng cáo, nhưng không còn dựa trên thông tin và hoạt động đã lưu của bạn.',
+  },
+  'My Ad Center': { es: 'My Ad Center (Mi Centro de anuncios)', vi: 'My Ad Center (Trung tâm quảng cáo của tôi)' },
+  'Turn off Web & App Activity, or auto-delete it': {
+    es: 'Desactivar la Actividad en la Web y en Aplicaciones, o borrarla automáticamente',
+    vi: 'Tắt Hoạt động trên web và ứng dụng, hoặc tự động xóa',
+  },
+  'In your Google Account’s activity controls, turn off Web & App Activity, and choose to delete past activity at the same time if you want. Or keep it on and set Auto-delete, so Google only keeps activity for the period you pick.': {
+    es: 'En los controles de actividad de su cuenta de Google, desactive la Actividad en la Web y en Aplicaciones y, si quiere, elija borrar al mismo tiempo la actividad anterior. O déjela activada y configure el borrado automático, para que Google solo guarde la actividad durante el plazo que usted elija.',
+    vi: 'Trong mục kiểm soát hoạt động của Tài khoản Google, tắt Hoạt động trên web và ứng dụng, và nếu muốn thì chọn xóa luôn hoạt động trước đây. Hoặc giữ nguyên và bật tự động xóa, để Google chỉ giữ hoạt động trong khoảng thời gian bạn chọn.',
+  },
+  'Google activity controls': { es: 'Controles de actividad de Google', vi: 'Kiểm soát hoạt động của Google' },
+  'Pause YouTube watch and search history': {
+    es: 'Pausar el historial de reproducciones y de búsquedas de YouTube',
+    vi: 'Tạm dừng nhật ký xem và nhật ký tìm kiếm trên YouTube',
+  },
+  'In My Activity, open YouTube History, go to the Controls tab and turn it off. Videos you watch and your YouTube searches stop being saved; past history can be deleted on the same page.': {
+    es: 'En Mi actividad, abra el historial de YouTube, vaya a la pestaña de controles y desactívelo. Dejan de guardarse los videos que ve y sus búsquedas en YouTube; el historial anterior se puede borrar en la misma página.',
+    vi: 'Trong Hoạt động của tôi, mở nhật ký YouTube, vào thẻ kiểm soát và tắt đi. Video bạn xem và nội dung bạn tìm trên YouTube sẽ không còn được lưu; nhật ký cũ có thể xóa ngay trên trang đó.',
+  },
+  'YouTube History in My Activity': { es: 'Historial de YouTube en Mi actividad', vi: 'Nhật ký YouTube trong Hoạt động của tôi' },
+  'Turn off Google Maps Timeline': { es: 'Desactivar Cronología de Google Maps', vi: 'Tắt Dòng thời gian của Google Maps' },
+  'Timeline saves the places you go and the routes you take. Turn it off in the Timeline section of your Google Account, and delete past visits in the Google Maps app on each phone, because the data is kept on the phone.': {
+    es: 'Cronología guarda los lugares a los que va y las rutas que toma. Desactívela en la sección Cronología de su cuenta de Google y borre las visitas anteriores en la app de Google Maps de cada teléfono, porque los datos se guardan en el teléfono.',
+    vi: 'Dòng thời gian lưu những nơi bạn đến và các tuyến đường bạn đi. Tắt tính năng này trong mục Dòng thời gian của Tài khoản Google, và xóa các lượt ghé thăm cũ trong ứng dụng Google Maps trên từng điện thoại, vì dữ liệu được lưu trên điện thoại.',
+  },
+  'Timeline settings in your Google Account': {
+    es: 'Ajustes de Cronología en su cuenta de Google',
+    vi: 'Cài đặt Dòng thời gian trong Tài khoản Google',
+  },
+  // More places to opt out
+  'Credit freeze': { es: 'Congelación del crédito', vi: 'Đóng băng hồ sơ tín dụng' },
+  'A freeze is not an opt-out, it is a lock: nobody, you included, can open new credit in your name until you lift it yourself, which you do before you apply for credit. The FTC says it costs nothing to place or lift; freeze at each bureau separately, including TransUnion at transunion.com (its site blocked our automated checks, so we do not link it).': {
+    es: 'Una congelación no es darse de baja, es un candado: nadie, ni siquiera usted, puede abrir un crédito nuevo a su nombre hasta que usted mismo la levante, cosa que hace antes de solicitar un crédito. Según la FTC, ponerla y levantarla no cuesta nada; congele su expediente en cada agencia por separado, incluida TransUnion en transunion.com (su sitio bloqueó nuestras comprobaciones automáticas, así que no lo enlazamos).',
+    vi: 'Đóng băng không phải là từ chối chia sẻ dữ liệu, mà là khóa lại: không ai, kể cả bạn, mở được khoản tín dụng mới đứng tên bạn cho đến khi chính bạn mở khóa, việc bạn làm trước khi xin vay hay mở thẻ. Theo FTC, đóng băng và mở khóa đều không mất phí; hãy đóng băng riêng ở từng công ty báo cáo tín dụng, kể cả TransUnion tại transunion.com (trang này chặn việc kiểm tra tự động của chúng tôi, nên chúng tôi không đặt liên kết).',
+  },
+  'Equifax security freeze': { es: 'Congelación de seguridad en Equifax', vi: 'Đóng băng bảo mật tại Equifax' },
+  'Experian security freeze': { es: 'Congelación de seguridad en Experian', vi: 'Đóng băng bảo mật tại Experian' },
+  'Innovis security freeze': { es: 'Congelación de seguridad en Innovis', vi: 'Đóng băng bảo mật tại Innovis' },
+  'FTC: Credit freezes and fraud alerts': {
+    es: 'FTC: congelaciones de crédito y alertas de fraude',
+    vi: 'FTC: đóng băng tín dụng và cảnh báo gian lận',
+  },
+  'Phone carriers': { es: 'Compañías telefónicas', vi: 'Nhà mạng điện thoại' },
+  'Verizon’s Custom Experience (based on the websites and apps you use) and AT&T’s Personalized ad program are on unless you opt out in your account’s privacy settings; Verizon also takes opt-outs at 866-211-0874 (press 2). T-Mobile’s Privacy Dashboard lets you tell it to stop using your data for advertising.': {
+    es: 'Custom Experience de Verizon (basado en los sitios web y las apps que usa) y el programa de anuncios Personalized de AT&T están activados a menos que se dé de baja en los ajustes de privacidad de su cuenta; Verizon también acepta bajas en el 866-211-0874 (marque 2). El Privacy Dashboard (panel de privacidad) de T-Mobile le permite pedir que dejen de usar sus datos para publicidad.',
+    vi: 'Chương trình Custom Experience của Verizon (dựa trên các trang web và ứng dụng bạn dùng) và chương trình quảng cáo Personalized của AT&T luôn bật trừ khi bạn từ chối trong cài đặt quyền riêng tư của tài khoản; Verizon cũng nhận yêu cầu từ chối qua số 866-211-0874 (bấm phím 2). Privacy Dashboard (bảng quyền riêng tư) của T-Mobile cho phép bạn yêu cầu ngừng dùng dữ liệu của bạn cho quảng cáo.',
+  },
+  'Verizon Custom Experience FAQ (how to opt out)': {
+    es: 'Preguntas frecuentes de Verizon Custom Experience (cómo darse de baja)',
+    vi: 'Câu hỏi thường gặp về Verizon Custom Experience (cách từ chối)',
+  },
+  'AT&T privacy choices (sign in)': {
+    es: 'Opciones de privacidad de AT&T (requiere iniciar sesión)',
+    vi: 'Lựa chọn quyền riêng tư của AT&T (cần đăng nhập)',
+  },
+  'T-Mobile Privacy Dashboard': { es: 'Privacy Dashboard de T-Mobile', vi: 'Privacy Dashboard của T-Mobile' },
+  'Samsung smart TVs': { es: 'Televisores inteligentes Samsung', vi: 'TV thông minh Samsung' },
+  'If you agreed to Viewing Information Services when you set up the TV, it uses Automatic Content Recognition to record what you watch. You can turn it off at any time in the TV’s Settings menu.': {
+    es: 'Si aceptó Viewing Information Services (servicios de información de visualización) al configurar el televisor, este usa Automatic Content Recognition (reconocimiento automático de contenido) para registrar lo que ve. Puede desactivarlo en cualquier momento en el menú de ajustes del televisor.',
+    vi: 'Nếu bạn đã đồng ý với Viewing Information Services (dịch vụ thông tin xem) khi cài đặt TV, TV sẽ dùng Automatic Content Recognition (nhận dạng nội dung tự động) để ghi lại những gì bạn xem. Bạn có thể tắt tính năng này bất cứ lúc nào trong menu cài đặt của TV.',
+  },
+  'Samsung: Automatic Content Recognition': {
+    es: 'Samsung: reconocimiento automático de contenido',
+    vi: 'Samsung: nhận dạng nội dung tự động',
+  },
+  'Microsoft and Bing ads': { es: 'Anuncios de Microsoft y Bing', vi: 'Quảng cáo của Microsoft và Bing' },
+  'Sign in to your Microsoft account’s ad settings and turn off personalized ads. Microsoft still shows ads, but not ones based on the searches, purchases and other activity it has collected.': {
+    es: 'Inicie sesión en los ajustes de anuncios de su cuenta de Microsoft y desactive los anuncios personalizados. Microsoft sigue mostrando anuncios, pero no basados en las búsquedas, compras y demás actividad que ha recopilado.',
+    vi: 'Đăng nhập vào cài đặt quảng cáo của tài khoản Microsoft và tắt quảng cáo được cá nhân hóa. Microsoft vẫn hiển thị quảng cáo, nhưng không dựa trên các lượt tìm kiếm, giao dịch mua và hoạt động khác mà họ đã thu thập.',
+  },
+  'Microsoft ad settings': { es: 'Ajustes de anuncios de Microsoft', vi: 'Cài đặt quảng cáo của Microsoft' },
+  'Blur your house in Apple Maps (Look Around)': {
+    es: 'Difuminar su casa en Apple Maps (Look Around)',
+    vi: 'Làm mờ nhà bạn trên Apple Maps (Look Around)',
+  },
+  'Apple blurs faces and license plates in Look Around. To ask Apple to blur your house too, email the address on its image collection page.': {
+    es: 'Apple difumina las caras y las placas de los vehículos en Look Around. Para pedir que también difumine su casa, escriba a la dirección de correo que aparece en su página sobre la recopilación de imágenes.',
+    vi: 'Apple làm mờ khuôn mặt và biển số xe trong Look Around. Để yêu cầu Apple làm mờ cả nhà bạn, hãy gửi email đến địa chỉ ghi trên trang thu thập hình ảnh của họ.',
+  },
+  'Apple Maps Image Collection': {
+    es: 'Recopilación de imágenes de Apple Maps',
+    vi: 'Thu thập hình ảnh của Apple Maps',
+  },
+  'Payments set to Public or Friends show the names and the note. In the app, go to the Me tab, tap the Settings gear, then Privacy, and choose Private; the same menu can hide all your past payments.': {
+    es: 'Los pagos marcados como públicos o para amigos muestran los nombres y la nota. En la app, vaya a la pestaña Me (Yo), toque el engranaje de ajustes, luego Privacy (Privacidad), y elija Private (Privado); en el mismo menú puede ocultar todos sus pagos anteriores.',
+    vi: 'Các khoản thanh toán để chế độ công khai hoặc bạn bè sẽ hiện tên và ghi chú. Trong ứng dụng, vào thẻ Me (Tôi), chạm vào biểu tượng bánh răng cài đặt, rồi Privacy (Quyền riêng tư), và chọn Private (Riêng tư); cũng trong menu đó bạn có thể ẩn mọi khoản thanh toán trước đây.',
+  },
+  Venmo: { es: 'Venmo', vi: 'Venmo' },
+  Strava: { es: 'Strava', vi: 'Strava' },
+  'Venmo Help: Changing payment privacy': {
+    es: 'Ayuda de Venmo: cambiar la privacidad de los pagos',
+    vi: 'Trợ giúp Venmo: thay đổi quyền riêng tư của khoản thanh toán',
+  },
+  'In Settings, Privacy Controls, Map Visibility, enter your home address to hide the part of any activity that starts or ends near it, or hide the start and end of every activity. Strava warns this does not make a hidden place impossible to work out.': {
+    es: 'En Settings (Ajustes), Privacy Controls (Controles de privacidad), Map Visibility (Visibilidad del mapa), escriba la dirección de su casa para ocultar el tramo de cualquier actividad que empiece o termine cerca, u oculte el inicio y el final de todas las actividades. Strava advierte que esto no impide del todo que alguien deduzca un lugar oculto.',
+    vi: 'Trong Settings (Cài đặt), Privacy Controls (Kiểm soát quyền riêng tư), Map Visibility (Hiển thị bản đồ), nhập địa chỉ nhà để ẩn đoạn của mọi hoạt động bắt đầu hoặc kết thúc gần đó, hoặc ẩn điểm đầu và điểm cuối của mọi hoạt động. Strava lưu ý rằng việc này không khiến người khác hoàn toàn không thể đoán ra nơi đã ẩn.',
+  },
+  'Strava Support: Edit your map visibility': {
+    es: 'Ayuda de Strava: editar la visibilidad del mapa',
+    vi: 'Hỗ trợ Strava: chỉnh hiển thị bản đồ',
+  },
+
   // ---- /scams ----
   'Common scams, by medium': { es: 'Estafas comunes, por medio', vi: 'Các kiểu lừa đảo phổ biến, theo kênh' },
   'The same few tricks show up again and again: something urgent, a link or number to use right now, and a request for money, a code or a login. Here is what the common ones look like on each channel.': {
@@ -431,6 +593,8 @@ export const KEEP_GUIDES: string[] = [
   'Digital Advertising Alliance',
   'Global Privacy Control',
   'Suppression Center',
+  // Product and setting names on /opt-out, as each company labels them in English.
+  'Results about you',
   // Literal labels printed on mail.
   'Current Resident',
   'Postal Customer',

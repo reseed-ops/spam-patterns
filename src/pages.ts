@@ -1371,6 +1371,150 @@ export function otherOptOutNote(o: OtherOptOut): string {
   return t(o.note);
 }
 
+export interface GuideLink {
+  url: string;
+  label: string;
+}
+
+/** A privacy setting or request at one company: information only, never in the email builder. */
+export interface GuideEntry {
+  id: string;
+  name: string;
+  /** One or two short sentences: what it does and how to do it, as the company's own page says. */
+  text: string;
+  /** The company's own pages (or, for credit freezes, the FTC's). */
+  links: GuideLink[];
+  /** Address the company's own page gives for the request. */
+  email?: string;
+}
+
+/**
+ * Google privacy settings and removal requests. Every URL answered 200 on
+ * OPT_OUT_CHECKED (account pages answer with Google's sign-in, as they do in
+ * a browser) and is the one Google's own help article links to; every step
+ * was read in that article the same day:
+ *   support.google.com/maps/answer/15439776 (Street View blur),
+ *   websearch/answer/12719076 and 9673730 (Results about you, removals),
+ *   My-Ad-Center-Help/answer/12155656 (personalized ads),
+ *   accounts/answer/54068 and 465 (Web & App Activity, auto-delete),
+ *   youtube/answer/95725 (YouTube History), accounts/answer/3118687 (Timeline).
+ * Location History is now Timeline, so the two are one entry.
+ */
+export const GOOGLE_OPT_OUTS: GuideEntry[] = [
+  {
+    id: 'street-view',
+    name: 'Blur your house on Google Maps (Street View)',
+    text: 'Open Street View of your home in Google Maps, click “Report a Problem” in the bottom right and choose your home. Google asks for proof of address, such as a utility bill with your name blacked out, reviews the request, and the blur is permanent.',
+    links: [{ url: 'https://support.google.com/maps/answer/15439776', label: 'Google Maps Help: Blur Street View imagery' }],
+  },
+  {
+    id: 'results-about-you',
+    name: 'Find your address or phone number in Search',
+    text: 'Google’s Results about you tool finds Search results that show your home address, phone number or email address, and lets you ask for each one to be removed. It can also alert you when new ones appear.',
+    links: [{ url: 'https://myactivity.google.com/results-about-you', label: 'Results about you' }],
+  },
+  {
+    id: 'search-removal',
+    name: 'Remove other personal information from Search',
+    text: 'For ID numbers, bank or card numbers, images of your signature or ID, private records or doxxing, send Google a removal request with the URL of each page. Google can only remove the result from Search; the page stays on the website.',
+    links: [{ url: 'https://support.google.com/websearch/answer/9673730', label: 'Google Search Help: Remove my private info' }],
+  },
+  {
+    id: 'ad-center',
+    name: 'Turn off personalized ads',
+    text: 'Sign in, open My Ad Center and select Off next to Personalized ads. Google still shows ads, but they are no longer based on your saved info and activity.',
+    links: [{ url: 'https://myadcenter.google.com/', label: 'My Ad Center' }],
+  },
+  {
+    id: 'activity',
+    name: 'Turn off Web & App Activity, or auto-delete it',
+    text: 'In your Google Account’s activity controls, turn off Web & App Activity, and choose to delete past activity at the same time if you want. Or keep it on and set Auto-delete, so Google only keeps activity for the period you pick.',
+    links: [{ url: 'https://myaccount.google.com/activitycontrols', label: 'Google activity controls' }],
+  },
+  {
+    id: 'youtube',
+    name: 'Pause YouTube watch and search history',
+    text: 'In My Activity, open YouTube History, go to the Controls tab and turn it off. Videos you watch and your YouTube searches stop being saved; past history can be deleted on the same page.',
+    links: [{ url: 'https://myactivity.google.com/product/youtube', label: 'YouTube History in My Activity' }],
+  },
+  {
+    id: 'timeline',
+    name: 'Turn off Google Maps Timeline',
+    text: 'Timeline saves the places you go and the routes you take. Turn it off in the Timeline section of your Google Account, and delete past visits in the Google Maps app on each phone, because the data is kept on the phone.',
+    links: [{ url: 'https://myaccount.google.com/activitycontrols/location', label: 'Timeline settings in your Google Account' }],
+  },
+];
+
+/**
+ * Other companies' privacy settings. Every URL answered 200 on OPT_OUT_CHECKED
+ * (AT&T's pages refuse curl but answered a browser-style request) and every
+ * step was read on the company's own page that day. Left out because they
+ * could not be checked: TransUnion (its site blocks automated requests; named
+ * but not linked), LG Live Plus and Roku (no readable current help page),
+ * Meta / Facebook (every page refuses automated requests) and Bing's removal
+ * request (the page only renders in a browser).
+ */
+export const MORE_OPT_OUTS: GuideEntry[] = [
+  {
+    id: 'credit-freeze',
+    name: 'Credit freeze',
+    text: 'A freeze is not an opt-out, it is a lock: nobody, you included, can open new credit in your name until you lift it yourself, which you do before you apply for credit. The FTC says it costs nothing to place or lift; freeze at each bureau separately, including TransUnion at transunion.com (its site blocked our automated checks, so we do not link it).',
+    links: [
+      { url: 'https://www.equifax.com/personal/credit-report-services/credit-freeze/', label: 'Equifax security freeze' },
+      { url: 'https://www.experian.com/help/credit-freeze/', label: 'Experian security freeze' },
+      { url: 'https://www.innovis.com/personal/securityFreeze', label: 'Innovis security freeze' },
+      { url: 'https://consumer.ftc.gov/articles/credit-freezes-and-fraud-alerts', label: 'FTC: Credit freezes and fraud alerts' },
+    ],
+  },
+  {
+    id: 'carriers',
+    name: 'Phone carriers',
+    text: 'Verizon’s Custom Experience (based on the websites and apps you use) and AT&T’s Personalized ad program are on unless you opt out in your account’s privacy settings; Verizon also takes opt-outs at 866-211-0874 (press 2). T-Mobile’s Privacy Dashboard lets you tell it to stop using your data for advertising.',
+    links: [
+      { url: 'https://www.verizon.com/support/verizon-custom-experience-programs-faqs/', label: 'Verizon Custom Experience FAQ (how to opt out)' },
+      { url: 'https://att.com/PrivacyChoices', label: 'AT&T privacy choices (sign in)' },
+      { url: 'https://www.t-mobile.com/privacy-center/dashboard', label: 'T-Mobile Privacy Dashboard' },
+    ],
+  },
+  {
+    id: 'samsung-tv',
+    name: 'Samsung smart TVs',
+    text: 'If you agreed to Viewing Information Services when you set up the TV, it uses Automatic Content Recognition to record what you watch. You can turn it off at any time in the TV’s Settings menu.',
+    links: [{ url: 'https://www.samsung.com/us/support/answer/ANS10010616/', label: 'Samsung: Automatic Content Recognition' }],
+  },
+  {
+    id: 'microsoft',
+    name: 'Microsoft and Bing ads',
+    text: 'Sign in to your Microsoft account’s ad settings and turn off personalized ads. Microsoft still shows ads, but not ones based on the searches, purchases and other activity it has collected.',
+    links: [{ url: 'https://account.microsoft.com/privacy/ad-settings', label: 'Microsoft ad settings' }],
+  },
+  {
+    id: 'apple-maps',
+    name: 'Blur your house in Apple Maps (Look Around)',
+    text: 'Apple blurs faces and license plates in Look Around. To ask Apple to blur your house too, email the address on its image collection page.',
+    links: [{ url: 'https://maps.apple.com/imagecollection', label: 'Apple Maps Image Collection' }],
+    email: 'MapsImageCollection@apple.com',
+  },
+  {
+    id: 'venmo',
+    name: 'Venmo',
+    text: 'Payments set to Public or Friends show the names and the note. In the app, go to the Me tab, tap the Settings gear, then Privacy, and choose Private; the same menu can hide all your past payments.',
+    links: [{ url: 'https://help.venmo.com/cs/articles/changing-payment-privacy-hiding-past-payments-vhel191', label: 'Venmo Help: Changing payment privacy' }],
+  },
+  {
+    id: 'strava',
+    name: 'Strava',
+    text: 'In Settings, Privacy Controls, Map Visibility, enter your home address to hide the part of any activity that starts or ends near it, or hide the start and end of every activity. Strava warns this does not make a hidden place impossible to work out.',
+    links: [{ url: 'https://support.strava.com/en-us/articles/15402012-how-do-i-edit-my-map-visibility-on-strava', label: 'Strava Support: Edit your map visibility' }],
+  },
+];
+
+function guideEntryItem(prefix: string, e: GuideEntry): string {
+  const links = e.links.map((l) => `<a href="${esc(l.url)}">${esc(t(l.label))}</a>`).join('<br>');
+  const email = e.email ? t('<dt>Email</dt><dd>{link}</dd>', { link: `<a href="mailto:${esc(e.email)}">${esc(e.email)}</a>` }) : '';
+  return `<li id="${prefix}-${esc(e.id)}"><h3>${esc(t(e.name))}</h3><p>${esc(t(e.text))}</p><dl class="dl">${t('<dt>Go to</dt><dd>{links}</dd>', { links })}${email}</dl></li>`;
+}
+
 export function optOutPage(ctx: PageCtx): string {
   const hero = {
     kicker: t('Practical next steps'),
@@ -1454,6 +1598,19 @@ ${OPT_OUT_SITES.map(optOutSiteItem).join('\n')}
 ${OTHER_OPT_OUTS.map(otherOptOutItem).join('\n')}
 </ul>
 <p class="meta">${t('OptOutPrescreen.com (prescreened credit and insurance offers) and the Digital Advertising Alliance’s ad opt-out blocked our automated checks, so we do not link them here. The <a href="/junk-mail#prescreened">junk mail guide</a> describes OptOutPrescreen.')}</p>
+
+<h2 id="google">Google</h2>
+<p>${t('Settings in your Google Account that change what Google keeps about you and what it shows about you in Search and Maps. Most of them need you to be signed in.')}</p>
+<ul class="script-list" id="google-list">
+${GOOGLE_OPT_OUTS.map((e) => guideEntryItem('google', e)).join('\n')}
+</ul>
+
+<h2 id="more">${t('More places to opt out')}</h2>
+<p>${t('Settings at other companies that collect data about you. Each link goes to the company’s own page.')}</p>
+<ul class="script-list" id="more-list">
+${MORE_OPT_OUTS.map((e) => guideEntryItem('more', e)).join('\n')}
+</ul>
+<p class="meta">${t('LG and Roku TV settings, Meta (Facebook) ad settings and Bing’s removal request could not be checked automatically, so we do not list them here.')}</p>
 
 <p class="meta">${t('This page collects no information and links only to the sites named. Routes checked {date}; each site sets its own process and can change it. For spam texts, <a href="/report">file a report here</a> and forward the original to <strong>7726</strong>.', { date: esc(fmtDay(OPT_OUT_CHECKED)) })}</p>
 </div>`;
