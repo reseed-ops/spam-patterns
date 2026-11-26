@@ -142,7 +142,7 @@ textarea { resize: vertical; }
 .panel { background: var(--surface); border: 1px solid var(--divider); border-radius: var(--radius); padding: 20px; margin: 0 0 16px; }
 .scrubbed { white-space: pre-wrap; overflow-wrap: anywhere; }
 .scrubbed.panel { background: var(--tint); border-color: #D9E7F5; line-height: 1.65; }
-.ai-prompt { max-height: 28rem; overflow-y: auto; margin-top: 8px; font-size: 14px; }
+.ai-prompt { max-height: 12rem; overflow-y: auto; margin-top: 8px; font-size: 14px; }
 .ai-copy { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
 .dl { display: grid; grid-template-columns: minmax(8em, max-content) 1fr; gap: 8px 16px; margin: 0 0 16px; }
 .dl dt { font-weight: 700; } .dl dd { margin: 0; overflow-wrap: anywhere; }
