@@ -1515,6 +1515,93 @@ function guideEntryItem(prefix: string, e: GuideEntry): string {
   return `<li id="${prefix}-${esc(e.id)}"><h3>${esc(t(e.name))}</h3><p>${esc(t(e.text))}</p><dl class="dl">${t('<dt>Go to</dt><dd>{links}</dd>', { links })}${email}</dl></li>`;
 }
 
+// ---------------- Ask an AI assistant to opt out for you (copyable prompt) ----------------
+
+/**
+ * The email format the prompt gives the assistant, in English on every page
+ * language like the builder's email. It is exactly what optout.js buildEmail
+ * writes with these bracketed fields (test/optout-ai.test.ts checks it).
+ */
+export const AI_EMAIL_FIELDS = { name: '[full name]', siteName: '[site name]', url: '[listing URL]', reply: '[reply email address]' };
+export const AI_EMAIL_TEMPLATE = [
+  'Subject: Request to suppress/remove my personal information',
+  '',
+  'Hello,',
+  '',
+  'My name is [full name]. Please suppress or remove my personal information from name search on [site name].',
+  '',
+  'My listing: [listing URL]',
+  '',
+  'Please confirm when this is done by replying to [reply email address].',
+  '',
+  'Thank you,',
+  '[full name]',
+];
+
+/**
+ * The prompt a visitor pastes into an AI assistant, in the current page
+ * language. Plain text (the caller escapes it). The list is built from the
+ * same data as the page, so it stays in step with the sections below.
+ */
+export function aiOptOutPrompt(): string {
+  const out: string[] = [];
+  const bullet = (s: string) => out.push(`- ${s}`);
+  let n = 0;
+  const item = (head: string, rows: string[]) => {
+    n += 1;
+    out.push(`${n}. ${head}`, ...rows.filter(Boolean).map((r) => `   ${r}`));
+  };
+  out.push(
+    t('Please help me opt out of people-search sites and other places that collect and share my personal data. The list below comes from {url} (routes checked {date}). If you can open web pages, read that page for the full details.', {
+      url: 'https://spampatterns.com/opt-out',
+      date: OPT_OUT_CHECKED,
+    }),
+    '',
+    t('BEFORE YOU START'),
+  );
+  bullet(t('Ask me for my full legal name and for the email address replies should go to.'));
+  bullet(t('Ask whether I already know the URL of my listing on any of these sites, or offer to search for it. Show me each listing you find and use it only after I confirm it is mine.'));
+  out.push('', t('RULES'));
+  bullet(t('Never invent personal details. Never guess an email address or a listing URL: use only the addresses and links in this list, or ones I give you.'));
+  bullet(t('Never pay for anything, never start a trial or a subscription, and never delete an account. If a route asks for money, stop and tell me.'));
+  bullet(t('Draft every email from the format below and keep the email itself in English. Show me each email before you send it, and send nothing until I say yes.'));
+  bullet(t('Steps that need my own click, an email confirmation, a phone verification, a CAPTCHA or a password stay with me. Hand them back to me with the exact step and the link.'));
+  bullet(t('Never tell me an opt-out worked when the request is only sent and waiting.'));
+  out.push('', t('HOW TO WORK'));
+  bullet(t('Go through the list in order. For each item, report one of: done; sent and waiting; needs me (with the exact step and link); could not be done (with the reason).'));
+  bullet(t('If you cannot send email or open web pages yourself, give me the finished email or the exact steps for each item instead.'));
+  bullet(t('At the end, give me a short checklist: what is done, what is waiting, and what I still have to do myself.'));
+  out.push('', t('EMAIL FORMAT (KEEP IT IN ENGLISH)'), ...AI_EMAIL_TEMPLATE, t('Leave out the “My listing” line when there is no listing URL.'),
+    t('This format is for the people-search sites. For any other email in the list, write a short, plain request in English and show it to me first.'),
+  );
+  out.push('', t('THE LIST'), '', t('People-search sites'));
+  for (const s of OPT_OUT_SITES) {
+    item(s.name, [
+      s.covers.length ? t('Also covers {list}.', { list: s.covers.join(', ') }) : '',
+      s.email ? t('Email: {email}', { email: s.email }) : '',
+      s.form ? t('Web form: {url}', { url: s.form }) : '',
+      t(s.note),
+    ]);
+  }
+  out.push('', t('Other opt-outs'));
+  for (const o of OTHER_OPT_OUTS) {
+    item(`${o.name}: ${t(o.stops)}`, [o.url, o.phone ? t('Phone: {phone}', { phone: o.phone }) : '', otherOptOutNote(o)]);
+  }
+  out.push('', 'Google');
+  for (const e of GOOGLE_OPT_OUTS) item(t(e.name), e.links.map((l) => l.url));
+  out.push('', t('More places to opt out'));
+  for (const e of MORE_OPT_OUTS) item(t(e.name), [...e.links.map((l) => l.url), e.email ? t('Email: {email}', { email: e.email }) : '']);
+  return out.join('\n');
+}
+
+function aiOptOutSection(): string {
+  return `<h2 id="ai">${t('Ask an AI assistant to do it for you')}</h2>
+<p>${t('Opting out by hand takes a while. You can copy the prompt below, paste it into a chat with your AI assistant (Muse, ChatGPT, Claude or another one), answer its questions, and let it work through the list.')}</p>
+<p>${t('Some steps stay with you: anything that needs your own click, an email confirmation, a phone verification, a CAPTCHA or a password. The prompt tells the assistant to hand those back to you with clear instructions, and to show you every email before it sends it.')}</p>
+<div class="ai-copy"><button class="btn btn-secondary" type="button" id="ai-copy" hidden>${t('Copy the prompt')}</button><span class="meta" id="ai-copy-status" role="status"></span></div>
+<pre class="scrubbed panel ai-prompt" id="ai-prompt" tabindex="0" aria-label="${esc(t('Prompt for your AI assistant'))}">${esc(aiOptOutPrompt())}</pre>`;
+}
+
 export function optOutPage(ctx: PageCtx): string {
   const hero = {
     kicker: t('Practical next steps'),
@@ -1585,6 +1672,8 @@ ${englishEmailNote}<noscript><p class="notice notice-info">${t('The email builde
 <p id="o-fo-note"></p>
 </div>
 </div>
+
+${aiOptOutSection()}
 
 <h2 id="sites">${t('The sites and their opt-out routes')}</h2>
 <ul class="script-list" id="site-list">
