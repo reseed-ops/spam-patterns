@@ -106,10 +106,12 @@
   // Copies the text of the <pre> as it is; without the Clipboard API it
   // selects the text so the visitor can copy it by hand.
   var copyBtn = document.getElementById('ai-copy');
+  var copyIcon = document.getElementById('ai-copy-icon');
   var promptEl = document.getElementById('ai-prompt');
   var copyStatus = document.getElementById('ai-copy-status');
   if (copyBtn && promptEl && copyStatus) {
     copyBtn.hidden = false;
+    if (copyIcon) copyIcon.hidden = false;
     var selectPrompt = function () {
       try {
         var range = document.createRange();
@@ -119,7 +121,7 @@
         sel.addRange(range);
       } catch (e) { /* ignore */ }
     };
-    copyBtn.addEventListener('click', function () {
+    var doCopy = function () {
       var text = promptEl.textContent;
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(text).then(function () {
@@ -132,7 +134,9 @@
         selectPrompt();
         copyStatus.textContent = t('The prompt is selected; copy it by hand.');
       }
-    });
+    };
+    copyBtn.addEventListener('click', doCopy);
+    if (copyIcon) copyIcon.addEventListener('click', doCopy);
   }
 
   // ---- Email builder wiring (only where the builder exists) ----

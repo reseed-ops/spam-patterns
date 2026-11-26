@@ -142,7 +142,11 @@ textarea { resize: vertical; }
 .panel { background: var(--surface); border: 1px solid var(--divider); border-radius: var(--radius); padding: 20px; margin: 0 0 16px; }
 .scrubbed { white-space: pre-wrap; overflow-wrap: anywhere; }
 .scrubbed.panel { background: var(--tint); border-color: #D9E7F5; line-height: 1.65; }
-.ai-prompt { max-height: 12rem; overflow-y: auto; margin-top: 8px; font-size: 14px; }
+.ai-prompt { max-height: 6rem; overflow-y: auto; margin-top: 8px; font-size: 14px; }
+.ai-prompt-wrap { position: relative; }
+.ai-copy-icon { position: absolute; top: 8px; right: 8px; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; background: var(--surface); border: 1px solid var(--divider); border-radius: 8px; cursor: pointer; }
+.ai-copy-icon:hover { background: var(--tint); }
+.ai-copy-icon svg { display: block; }
 .ai-copy { display: flex; flex-wrap: wrap; align-items: center; gap: 0 8px; }
 .dl { display: grid; grid-template-columns: minmax(8em, max-content) 1fr; gap: 8px 16px; margin: 0 0 16px; }
 .dl dt { font-weight: 700; } .dl dd { margin: 0; overflow-wrap: anywhere; }

@@ -58,6 +58,10 @@ describe('/opt-out: Ask an AI assistant to do it for you', () => {
     assert.match(sec, /your own click, an email confirmation, a phone verification, a CAPTCHA or a password/);
     // Button starts hidden; optout.js reveals it, so without JS nobody sees a dead button.
     assert.ok(sec.includes('<button class="btn btn-secondary" type="button" id="ai-copy" hidden>Copy the prompt</button>'));
+    // A clipboard icon sits on the prompt box itself and copies the whole prompt.
+    assert.ok(sec.includes('<div class="ai-prompt-wrap">'));
+    assert.ok(sec.includes('id="ai-copy-icon" hidden aria-label="Copy the prompt"'));
+    assert.ok(sec.includes('<svg width="18" height="18" viewBox="0 0 24 24"'));
     assert.ok(sec.includes('<span class="meta" id="ai-copy-status" role="status"></span>'));
     assert.equal(promptText(sec), aiOptOutPrompt());
     assert.match(text, /<script src="\/static\/js\/optout\.js"/);
@@ -164,8 +168,8 @@ describe('optout.js: copy button for the AI prompt', () => {
   /** Run optout.js against a tiny fake page with the prompt, the button and an optional clipboard. */
   function page(lang: string, clipboard: 'ok' | 'fail' | 'none') {
     const els: Record<string, { hidden?: boolean; textContent: string; listeners: Record<string, () => void>; addEventListener: (t: string, f: () => void) => void }> = {};
-    for (const id of ['ai-copy', 'ai-prompt', 'ai-copy-status']) {
-      const el = { hidden: id === 'ai-copy', textContent: '', listeners: {} as Record<string, () => void>, addEventListener(t: string, f: () => void) { el.listeners[t] = f; } };
+    for (const id of ['ai-copy', 'ai-copy-icon', 'ai-prompt', 'ai-copy-status']) {
+      const el = { hidden: id === 'ai-copy' || id === 'ai-copy-icon', textContent: '', listeners: {} as Record<string, () => void>, addEventListener(t: string, f: () => void) { el.listeners[t] = f; } };
       els[id] = el;
     }
     els['ai-prompt']!.textContent = 'PROMPT TEXT';
@@ -190,6 +194,15 @@ describe('optout.js: copy button for the AI prompt', () => {
     const p = page('en', 'ok');
     assert.equal(p.els['ai-copy']!.hidden, false);
     p.els['ai-copy']!.listeners.click!();
+    await tick();
+    assert.deepEqual(p.copied, ['PROMPT TEXT']);
+    assert.equal(p.els['ai-copy-status']!.textContent, 'Prompt copied. Paste it into a chat with your assistant.');
+  });
+
+  it('reveals the copy icon and copies the whole prompt when it is clicked', async () => {
+    const p = page('en', 'ok');
+    assert.equal(p.els['ai-copy-icon']!.hidden, false);
+    p.els['ai-copy-icon']!.listeners.click!();
     await tick();
     assert.deepEqual(p.copied, ['PROMPT TEXT']);
     assert.equal(p.els['ai-copy-status']!.textContent, 'Prompt copied. Paste it into a chat with your assistant.');

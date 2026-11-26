@@ -1599,7 +1599,7 @@ function aiOptOutSection(): string {
 <p>${t('Opting out by hand takes a while. You can copy the prompt below, paste it into a chat with your AI assistant (Muse, ChatGPT, Claude or another one), answer its questions, and let it work through the list.')}</p>
 <p>${t('Some steps stay with you: anything that needs your own click, an email confirmation, a phone verification, a CAPTCHA or a password. The prompt tells the assistant to hand those back to you with clear instructions, and to show you every email before it sends it.')}</p>
 <div class="ai-copy"><button class="btn btn-secondary" type="button" id="ai-copy" hidden>${t('Copy the prompt')}</button><span class="meta" id="ai-copy-status" role="status"></span></div>
-<pre class="scrubbed panel ai-prompt" id="ai-prompt" tabindex="0" aria-label="${esc(t('Prompt for your AI assistant'))}">${esc(aiOptOutPrompt())}</pre>`;
+<div class="ai-prompt-wrap"><pre class="scrubbed panel ai-prompt" id="ai-prompt" tabindex="0" aria-label="${esc(t('Prompt for your AI assistant'))}">${esc(aiOptOutPrompt())}</pre><button class="ai-copy-icon" type="button" id="ai-copy-icon" hidden aria-label="${esc(t('Copy the prompt'))}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button></div>`;
 }
 
 export function optOutPage(ctx: PageCtx): string {
