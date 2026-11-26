@@ -142,7 +142,10 @@ textarea { resize: vertical; }
 .panel { background: var(--surface); border: 1px solid var(--divider); border-radius: var(--radius); padding: 20px; margin: 0 0 16px; }
 .scrubbed { white-space: pre-wrap; overflow-wrap: anywhere; }
 .scrubbed.panel { background: var(--tint); border-color: #D9E7F5; line-height: 1.65; }
-.ai-prompt { max-height: 6rem; overflow-y: auto; margin-top: 8px; font-size: 14px; }
+.ai-prompt { max-height: 12rem; overflow-y: scroll; margin-top: 8px; font-size: 14px; touch-action: pan-y; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: var(--outline) transparent; }
+.ai-prompt::-webkit-scrollbar { width: 10px; }
+.ai-prompt::-webkit-scrollbar-track { background: transparent; }
+.ai-prompt::-webkit-scrollbar-thumb { background: var(--outline); border-radius: 5px; border: 2px solid var(--tint); }
 .ai-prompt-wrap { position: relative; }
 .ai-copy-icon { position: absolute; top: 8px; right: 8px; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; background: var(--surface); border: 1px solid var(--divider); border-radius: 8px; cursor: pointer; }
 .ai-copy-icon:hover { background: var(--tint); }

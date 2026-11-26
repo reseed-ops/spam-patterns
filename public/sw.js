@@ -21,7 +21,7 @@
 'use strict';
 
 var VERSION = '0.1.10';
-var CACHE_REV = 8; // 2: main nav restyled as tabs; 3: Menu removed, tabs always shown; 4: language switcher, translated scripts; 5: AI assistant prompt on /opt-out; 6: AI prompt box compact; 7: AI prompt box half height + copy icon; 8: optout.js re-check reminder (.ics)
+var CACHE_REV = 9; // 2: main nav restyled as tabs; 3: Menu removed, tabs always shown; 4: language switcher, translated scripts; 5: AI assistant prompt on /opt-out; 6: AI prompt box compact; 7: AI prompt box half height + copy icon; 8: optout.js re-check reminder (.ics); 9: AI prompt box back to 12rem, visible scrollbar, touch scrolling
 var CACHE = 'stm-v' + VERSION + '-r' + CACHE_REV;
 var OFFLINE_URL = '/offline';
 // Not 'stm-'-prefixed, so a release's activate step leaves a pending share alone.
