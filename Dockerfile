@@ -1,6 +1,6 @@
 # Spam Patterns — single supported image. Node 24 runs the TypeScript
 # sources directly (type stripping); there is no build step.
-FROM node:24-slim
+FROM node:25-slim
 ENV NODE_ENV=production
 WORKDIR /app
 COPY package.json package-lock.json ./
