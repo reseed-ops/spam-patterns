@@ -90,7 +90,7 @@ const TYPES: Record<string, string> = {
   '.webmanifest': 'application/manifest+json',
 };
 
-/** Web app manifest (served at /manifest.webmanifest). Icons are rendered from /static/img/logo.svg. */
+/** Web app manifest (served at /manifest.webmanifest). Icons are rendered from /static/img/favicon.svg (maskable: full-bleed background, mark at 80%). */
 export const MANIFEST = {
   name: 'Spam Patterns',
   short_name: 'Spam Patterns',
