@@ -12,7 +12,7 @@ function footerOf(html: string): string {
   return html.slice(html.indexOf('<nav aria-label="Footer">'), html.indexOf('</footer>'));
 }
 function mainNavsOf(html: string): string {
-  // The header minus the language switcher, whose flags link to this page.
+  // The header minus any language switcher (now in the footer), whose flags link to this page.
   return html.slice(html.indexOf('<header'), html.indexOf('</header>')).replace(/<nav class="lang-switch"[\s\S]*?<\/nav>/, '');
 }
 

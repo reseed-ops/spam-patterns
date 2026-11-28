@@ -154,8 +154,11 @@ describe('i18n pages', () => {
         const url = lang ? `${path}${path.includes('?') ? '&' : '?'}lang=${lang}` : path;
         const { text } = await get(s.base, url);
         const header = text.slice(text.indexOf('<header'), text.indexOf('</header>'));
-        const sw = /<nav class="lang-switch" aria-label="[^"]+">(.*?)<\/nav>/.exec(header);
-        assert.ok(sw, `${url}: switcher in the header`);
+        assert.ok(!header.includes('lang-switch') && !header.includes('hreflang='), `${url}: no flags in the header`);
+        const footer = text.slice(text.indexOf('<footer'), text.indexOf('</footer>'));
+        const sw = /<nav class="lang-switch" aria-label="[^"]+">(.*?)<\/nav>/.exec(footer);
+        assert.ok(sw, `${url}: switcher in the footer`);
+        assert.equal(text.split('class="lang-switch"').length - 1, 1, `${url}: one switcher`);
         const flags = [...sw[1]!.matchAll(/<a href="([^"]*)" hreflang="(\w+)" lang="\w+" aria-label="([^"]+)"[^>]*>(<svg[\s\S]*?<\/svg>)<\/a>/g)];
         assert.deepEqual(flags.map((f) => [f[2], f[3]]), [['en', 'English'], ['es', 'Español'], ['vi', 'Tiếng Việt']], url);
         for (const f of flags) assert.match(f[1]!, new RegExp(`(?:\\?|&amp;)lang=${f[2]}$`), `${url}: flag link carries ?lang=`);

@@ -171,7 +171,7 @@ export function layout(o: LayoutOptions): string {
 ${hreflangLinks(o.path)}
 <meta name="theme-color" content="${THEME_COLOR}">
 <link rel="stylesheet" href="/static/css/app.css">
-<link rel="icon" href="/static/img/logo.svg" type="image/svg+xml">
+<link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/static/icons/favicon-32.png" type="image/png" sizes="32x32">
 <link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.webmanifest">
@@ -182,7 +182,6 @@ ${scripts}
 <body>
 <a class="skip" href="#main">${esc(t('Skip to content'))}</a>
 <header class="site-header">
-  <div class="lang-bar"><div class="wrap">${langSwitcher(o.path)}</div></div>
   <div class="wrap header-row">
     <a class="wordmark" href="/"><img class="logo" src="/static/img/logo.svg" alt="" width="32" height="32">Spam Patterns</a>
     <nav class="nav-desktop nav-tabs" aria-label="${esc(t('Main'))}">${nav}</nav>
@@ -215,6 +214,7 @@ ${o.body}
       <a class="footer-brand" href="/"><img src="/static/img/logo.svg" alt="" width="28" height="28">Spam Patterns</a>
       <nav aria-label="${esc(t('Footer'))}">${FOOT.map((f) => `<a href="${f[0]}">${esc(t(f[1]))}</a>`).join('')}</nav>
     </div>
+    ${langSwitcher(o.path)}
     <p class="meta footer-legal">${esc(t('Spam Patterns is a project of Reseed LLC. Reports are voluntary submissions. A listing is not an allegation against any person or business. Counts visits and filed reports in total, nothing about you.'))}</p>
   </div>
 </footer>

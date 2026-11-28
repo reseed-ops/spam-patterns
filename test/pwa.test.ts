@@ -128,7 +128,7 @@ describe('PWA: manifest, service worker, icons', () => {
       assert.ok(status === 200, `${p} ${status}`);
       assert.ok(text.includes('<link rel="manifest" href="/manifest.webmanifest">'), p);
       assert.ok(text.includes(`<meta name="theme-color" content="${THEME_COLOR}">`), p);
-      assert.ok(text.includes('<link rel="icon" href="/static/img/logo.svg" type="image/svg+xml">'), p);
+      assert.ok(text.includes('<link rel="icon" href="/static/img/favicon.svg" type="image/svg+xml">'), p);
       assert.ok(text.includes('<link rel="icon" href="/static/icons/favicon-32.png" type="image/png" sizes="32x32">'), p);
       assert.ok(text.includes('<link rel="apple-touch-icon" href="/static/icons/apple-touch-icon.png">'), p);
       assert.ok(text.includes('<script src="/static/js/pwa.js" defer></script>'), p);
@@ -231,14 +231,20 @@ describe('logo, flow diagram, privacy line', () => {
   before(async () => (s = await startServer()));
   after(() => s.close());
 
-  it('the logo is a hand-built SVG in the exact palette', async () => {
-    const svg = read('public/static/img/logo.svg');
-    assert.ok(!/<image|base64|<text/i.test(svg));
-    const colors = new Set([...svg.matchAll(/#[0-9A-Fa-f]{6}/g)].map((m) => m[0].toUpperCase()));
-    assert.deepEqual([...colors].sort(), ['#204A73', '#3B6B9B', '#6D98C5', '#A9C5E2', '#FFFFFF']);
-    const r = await fetch(s.base + '/static/img/logo.svg');
-    assert.equal(r.status, 200);
-    assert.equal(r.headers.get('content-type'), 'image/svg+xml');
+  it('the logo and favicon are hand-built SVGs in the exact palette', async () => {
+    const want: Record<string, string[]> = {
+      'logo.svg': ['#16B8AB', '#24489E', '#356CE9', '#3F64D7'],
+      'favicon.svg': ['#356CE9'],
+    };
+    for (const [name, palette] of Object.entries(want)) {
+      const svg = read(`public/static/img/${name}`);
+      assert.ok(!/<image|base64|<text|<script|href=/i.test(svg), name);
+      const colors = new Set([...svg.matchAll(/#[0-9A-Fa-f]{6}/g)].map((m) => m[0].toUpperCase()));
+      assert.deepEqual([...colors].sort(), palette, name);
+      const r = await fetch(s.base + `/static/img/${name}`);
+      assert.equal(r.status, 200, name);
+      assert.equal(r.headers.get('content-type'), 'image/svg+xml', name);
+    }
   });
 
   it('home has How it works directly under the hero: five text steps, then a report button', async () => {

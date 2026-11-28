@@ -6,7 +6,7 @@
 //   - a page opened with ?lang=en|es|vi stores that language;
 //   - a page opened without ?lang= while Spanish or Vietnamese is stored is
 //     reopened at once with ?lang= added (location.replace, so Back still works).
-// The flags in the header are plain links to ?lang=en|es|vi, so switching
+// The flags in the footer are plain links to ?lang=en|es|vi, so switching
 // works without this file too; it just will not be remembered.
 //
 // Exposed as window.STMLang.decide for test/i18n.test.ts.
